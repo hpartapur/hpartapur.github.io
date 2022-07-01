@@ -1,0 +1,62 @@
+h1 {
+ text-align: center;
+}
+
+#game-board {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+body {
+ background-image: url("bg.jpg");
+ background-color: #cccccc;
+}
+
+.letter-box {
+  border: 2px solid gray;
+  border-radius: 3px;
+  margin: 2px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  height: 3rem;
+  width: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+.filled-box {
+  border: 2px solid black;
+    font-family: "Kanz-al-Marjaan"
+}
+
+.letter-row {
+  display: flex;
+}
+
+#keyboard-cont {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#keyboard-cont div {
+  display: flex;
+}
+
+.second-row {
+  margin: 0.5rem 0;
+}
+
+.keyboard-button {
+    font-family: "Kanz-al-Marjaan";
+  font-size: 1rem;
+  font-weight: 1000;
+  padding: 0.5rem;
+  margin: 03px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
