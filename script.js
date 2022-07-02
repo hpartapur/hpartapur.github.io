@@ -1,7 +1,7 @@
 import { WORDS } from "./words.js";
 import { HUROOF} from "./huroof.js";
 
-const NUMBER_OF_GUESSES = 7;
+const NUMBER_OF_GUESSES = 6;
 let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
