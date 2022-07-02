@@ -56,8 +56,23 @@ body {
     font-family: "Kanz-al-Marjaan";
   font-size: 1rem;
   font-weight: 1000;
-  padding: 0.5rem;
+  padding: 0.4rem;
   margin: 03px;
   cursor: pointer;
   text-transform: uppercase;
+}
+p {
+    text-align: center;
+    font-size: 1.5rem;
+    font-family: "Kanz-al-Marjaan"
+}
+strong {
+    font-family:sans-serif;
+    color:darkgoldenrod;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
