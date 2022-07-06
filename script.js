@@ -220,9 +220,8 @@ initBoard();
 
 document.getElementById("hint").addEventListener("click", (e) => {
     var n=(Math. floor(Math. random() * rightGuessString.length));
+		console.log(score_n)
     toastr.info(rightGuessString[n]+" This word contains the letter ")
     score_n-=2
-    console.log(score_n)
     document.getElementById("score").innerHTML = "Score: "+score_n
     })
-
