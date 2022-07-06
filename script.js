@@ -7,6 +7,7 @@ let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
 let rightGuessString = WORDS[Math.floor(Math.random() * WORDS.length)]//Selects random word from words list.
+var score_n = 0;
 
 //Outputs correct word to console
 console.log(rightGuessString)
@@ -59,6 +60,7 @@ function checkGuess () {
     let row = document.getElementsByClassName("letter-row")[6 - guessesRemaining]
     let guessString = ''
     let rightGuess = Array.from(rightGuessString)
+    console.log(rightGuess)
 
     for (const val of currentGuess) {
         guessString += val
@@ -74,8 +76,7 @@ function checkGuess () {
 //        return
 //    }
 
-
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i <rightGuessString.length; i++) {
         let letterColor = ''
         let box = row.children[i]
         let letter = currentGuess[i]
@@ -91,6 +92,7 @@ function checkGuess () {
             if (currentGuess[i] === rightGuess[i]) {
                 // shade green
                 letterColor = 'green'
+                score_n+=2
             } else {
                 // shade box yellow
                 letterColor = 'yellow'
@@ -107,11 +109,15 @@ function checkGuess () {
             box.style.backgroundColor = letterColor
             shadeKeyBoard(letter, letterColor)
         }, delay)
+        document.getElementById("score").innerHTML = "Score: "+score_n
     }
 
     if (guessString === rightGuessString) {
         toastr.success("You guessed right! Game over!")
         toastr.info(`The right word was: "${rightGuessString}"`)
+        score_n+=rightGuessString.length*2
+        score_n+=rightGuessString.length*guessesRemaining
+        document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
         return
     } else {
@@ -127,7 +133,7 @@ function checkGuess () {
 }
 
 function insertLetter (pressedKey) {
-    if (nextLetter === 5) {
+    if (nextLetter === rightGuessString.length) {
         return
     }
     pressedKey = pressedKey.toLowerCase()
@@ -211,3 +217,12 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 })
 
 initBoard();
+
+document.getElementById("hint").addEventListener("click", (e) => {
+    var n=(Math. floor(Math. random() * rightGuessString.length));
+    toastr.info(rightGuessString[n]+" This word contains the letter ")
+    score_n-=2
+    console.log(score_n)
+    document.getElementById("score").innerHTML = "Score: "+score_n
+    })
+
