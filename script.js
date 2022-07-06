@@ -1,3 +1,4 @@
+// بسم الله الرحمن الرحيم
 import { WORDS } from "./words.js";
 import { HUROOF} from "./huroof.js";
 
@@ -16,7 +17,7 @@ function initBoard() {
     for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
         let row = document.createElement("div")
         row.className = "letter-row"
-        
+
         for (let j = 0; j < rightGuessString.length; j++) {
             let box = document.createElement("div")
             box.className = "letter-box"
@@ -33,7 +34,7 @@ function shadeKeyBoard(letter, color) {
             let oldColor = elem.style.backgroundColor
             if (oldColor === 'green') {
                 return
-            } 
+            }
 
             if (oldColor === 'yellow' && color !== 'green') {
                 return
@@ -73,12 +74,12 @@ function checkGuess () {
 //        return
 //    }
 
-    
+
     for (let i = 0; i < 5; i++) {
         let letterColor = ''
         let box = row.children[i]
         let letter = currentGuess[i]
-        
+
         let letterPosition = rightGuess.indexOf(currentGuess[i])
         // is letter in the correct guess
         if (letterPosition === -1) {
@@ -86,9 +87,9 @@ function checkGuess () {
         } else {
             // now, letter is definitely in word
             // if letter index and right guess index are the same
-            // letter is in the right position 
+            // letter is in the right position
             if (currentGuess[i] === rightGuess[i]) {
-                // shade green 
+                // shade green
                 letterColor = 'green'
             } else {
                 // shade box yellow
@@ -130,7 +131,7 @@ function insertLetter (pressedKey) {
         return
     }
     pressedKey = pressedKey.toLowerCase()
-    
+
     let row = document.getElementsByClassName("letter-row")[6 - guessesRemaining]
     let box = row.children[nextLetter]
     animateCSS(box, "pulse")
@@ -147,7 +148,7 @@ const animateCSS = (element, animation, prefix = 'animate__') =>
     // const node = document.querySelector(element);
     const node = element
     node.style.setProperty('--animate-duration', '0.3s');
-    
+
     node.classList.add(`${prefix}animated`, animationName);
 
     // When the animation ends, we clean the classes and resolve the Promise
@@ -176,8 +177,8 @@ document.addEventListener("keyup", (e) => {
         checkGuess()
         return
     }
-    
-    
+
+
 
 //    let found = pressedKey.match(/[a-z]/gi)
 //    if (!found || found.length > 1) {
@@ -185,7 +186,7 @@ document.addEventListener("keyup", (e) => {
 //    } else {
 //        return
 //    }
-    
+
     var found=HUROOF.indexOf(pressedKey)
     if (found != -1){
         insertLetter(pressedKey)
@@ -196,7 +197,7 @@ document.addEventListener("keyup", (e) => {
 
 document.getElementById("keyboard-cont").addEventListener("click", (e) => {
     const target = e.target
-    
+
     if (!target.classList.contains("keyboard-button")) {
         return
     }
@@ -204,7 +205,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
     if (key === "Del") {
         key = "Backspace"
-    } 
+    }
 
     document.dispatchEvent(new KeyboardEvent("keyup", {'key': key}))
 })
