@@ -11,7 +11,6 @@ var score_n = 0;
 
 //Outputs correct word to console
 console.log(rightGuessString)
-
 function initBoard() {
     let board = document.getElementById("game-board");//assigns "gameboard" in html to board variable
 
@@ -209,7 +208,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
     }
     let key = target.textContent
 
-    if (key === "Del") {
+    if (key === "Delete") {
         key = "Backspace"
     }
 
