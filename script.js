@@ -208,7 +208,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
     }
     let key = target.textContent
 
-    if (key === "Delete") {
+    if (key === "Del") {
         key = "Backspace"
     }
 
