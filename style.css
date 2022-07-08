@@ -1,13 +1,6 @@
-/*@font-face {
-  font-family: "Kanz Al Marjaan";
-  src: url('kanz-al-marjaan-webfont.eot');
-  src: url('kanz-al-marjaan-webfont.eot') format('embedded-opentype'),
-       url('kanz-al-marjaan-webfont.woff2') format('woff2'),
-       url('kanz-al-marjaan-webfont.woff') format('woff'),
-       url('kanz-al-marjaan-webfont.ttf') format('truetype');
-}*/
 
-...
+
+
 h1 {
  text-align: center;
  font-size: 4.5rem;
