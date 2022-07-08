@@ -30,7 +30,7 @@ body {
 
 .filled-box {
   border: 2px solid black;
-    font-family: "Kanz-al-Marjaan"
+    font-family: "Kanz-al-Marjaan", "Al-Kanz";
 }
 
 .letter-row {
@@ -53,7 +53,7 @@ body {
 }
 
 .keyboard-button {
-    font-family: "Kanz-al-Marjaan";
+    font-family: "Kanz-al-Marjaan", "Al-Kanz";
   font-size: 1rem;
   font-weight: 1000;
   padding: 0.4rem;
@@ -64,7 +64,7 @@ body {
 p {
     text-align: center;
     font-size: 1.5rem;
-    font-family: "Kanz-al-Marjaan"
+    font-family: "Kanz-al-Marjaan", "Al-Kanz";
 }
 strong {
     font-family:sans-serif;
