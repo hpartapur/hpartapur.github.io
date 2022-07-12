@@ -74,6 +74,7 @@ function checkGuess () {
 //        toastr.error("Word not in list!")
 //        return
 //    }
+//Needs to be readded once words list is complete    
 
     for (let i = 0; i <rightGuessString.length; i++) {
         let letterColor = ''
@@ -217,10 +218,13 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
 initBoard();
 
-document.getElementById("hint").addEventListener("click", (e) => {
+document.getElementById("hint").addEventListener("click", (e) => { //if "hint" button is clicked
     var n=(Math. floor(Math. random() * rightGuessString.length));
-		console.log(score_n)
+    //assign n to a random letter in the rightguesstring
     toastr.info(rightGuessString[n]+" This word contains the letter ")
+    //and have n pop up in a toastr message
     score_n-=2
+    //deduct score by 2 for using a hint
     document.getElementById("score").innerHTML = "Score: "+score_n
+    //update new score in HTML
     })
