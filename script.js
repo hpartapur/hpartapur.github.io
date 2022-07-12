@@ -17,6 +17,7 @@ function initBoard() {
     for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
         let row = document.createElement("div")
         row.className = "letter-row"
+        //for every guess allowed, add a row to the gameboard
 
         for (let j = 0; j < rightGuessString.length; j++) {
             let box = document.createElement("div")
