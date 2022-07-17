@@ -90,7 +90,6 @@ function checkGuess () {
     }
 
     if (guessString.length != rightGuessString.length) {
-        toastr.error("Not enough letters!")
         modal.style.display = "block";
         document.getElementById("Modal Header").innerHTML = "Not enough letters"
         document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
@@ -143,8 +142,6 @@ function checkGuess () {
     }
 
     if (guessString === rightGuessString) {
-        toastr.success("You guessed right! Game over!")
-        toastr.info(`The right word was: "${rightGuessString}"`)
         score_n+=rightGuessString.length*2
         score_n+=rightGuessString.length*guessesRemaining
         document.getElementById("score").innerHTML = "Score: "+score_n
@@ -168,11 +165,8 @@ function checkGuess () {
         nextLetter = 0;
 
         if (guessesRemaining === 0) {
-            toastr.error("You've run out of guesses! Game over!")
-            toastr.info(`The right word was: "${rightGuessString}"`)
-            
             modal.style.display = "block";
-            document.getElementById("Modal Header").innerHTML = "Game Over!"
+            document.getElementById("Modal Header").innerHTML = "You've run out of guesses! Game Over!"
             document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
             document.getElementById("Modal Body 2").innerHTML = ''
             document.getElementById("Modal Footer").innerHTML = `!Try again and improve your vocabulary`
@@ -271,8 +265,6 @@ initBoard();
 document.getElementById("hint").addEventListener("click", (e) => { //if "hint" button is clicked
     var n=(Math. floor(Math. random() * rightGuessString.length));
     //assign n to a random letter in the rightguesstring
-    toastr.info(rightGuessString[n]+" This word contains the letter ")
-    //and have n pop up in a toastr message
     score_n-=2
     //deduct score by 2 for using a hint
     document.getElementById("score").innerHTML = "Score: "+score_n
