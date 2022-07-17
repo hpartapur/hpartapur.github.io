@@ -13,46 +13,23 @@ var score_n = 0;
 
 //Outputs correct word to console
 console.log(rightGuessString)
-//do {
-//    var firstguess =WORDS[Math.floor(Math.random() * WORDS.length)]
-//    console.log(firstguess)
-//    firstguess=Array.from(firstguess)
-//    var checkletter=(Math. floor(Math. random() * rightGuessString.length))
-//}
-//while(rightGuessString.indexOf(checkletter)!= -1);
-//if (guessesRemaining==NUMBER_OF_GUESSES){
-//    for (var i=0;i<firstguess.length;i++){
-//        nextLetter=firstguess[i]
-//        console.log(firstguess[i])
-//    }
-//}
 
 
-// // Get the modal
-// var modal = document.getElementById("myModal");
-//
-// // Get the button that opens the modal
-// var btn = document.getElementById("myBtn");
-//
-// // Get the <span> element that closes the modal
-// var span = document.getElementsByClassName("close")[0];
-//
-// // When the user clicks on the button, open the modal
-// btn.onclick = function() {
-//   modal.style.display = "block";
-// }
-//
-// // When the user clicks on <span> (x), close the modal
-// span.onclick = function() {
-//   modal.style.display = "none";
-// }
-//
-// // When the user clicks anywhere outside of the modal, close it
-// window.onclick = function(event) {
-//   if (event.target == modal) {
-//     modal.style.display = "none";
-//   }
-// }
+
+ // Get the modal
+ var modal = document.getElementById("myModal");
+ // Get the <span> element that closes the modal
+ var span = document.getElementsByClassName("close")[0];
+// When the user clicks on <span> (x), close the modal
+ span.onclick = function() {
+   modal.style.display = "none";
+ }
+ // When the user clicks anywhere outside of the modal, close it
+ window.onclick = function(event) {
+   if (event.target == modal) {
+     modal.style.display = "none";
+   }
+ }
 
 
 
@@ -114,6 +91,12 @@ function checkGuess () {
 
     if (guessString.length != rightGuessString.length) {
         toastr.error("Not enough letters!")
+        modal.style.display = "block";
+        document.getElementById("Modal Header").innerHTML = "Not enough letters"
+        document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
+        document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
+        document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
+        
         return
     }
 
@@ -166,6 +149,18 @@ function checkGuess () {
         score_n+=rightGuessString.length*guessesRemaining
         document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
+        
+        
+        modal.style.display = "block";
+        document.getElementById("Modal Header").innerHTML = "You win!"
+        document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
+        document.getElementById("Modal Body 2").innerHTML = ''
+        document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
+        document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
+        document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
+        
+        
+        
         return
     } else {
         guessesRemaining -= 1;
@@ -175,6 +170,14 @@ function checkGuess () {
         if (guessesRemaining === 0) {
             toastr.error("You've run out of guesses! Game over!")
             toastr.info(`The right word was: "${rightGuessString}"`)
+            
+            modal.style.display = "block";
+            document.getElementById("Modal Header").innerHTML = "Game Over!"
+            document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
+            document.getElementById("Modal Body 2").innerHTML = ''
+            document.getElementById("Modal Footer").innerHTML = `!Try again and improve your vocabulary`
+            document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
+            document.getElementById("ModalFooterDiv").style.backgroundColor="red"
         }
     }
 }
@@ -274,4 +277,12 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     //deduct score by 2 for using a hint
     document.getElementById("score").innerHTML = "Score: "+score_n
     //update new score in HTML
+    
+    modal.style.display = "block";
+    document.getElementById("Modal Header").innerHTML = "Pssst..."
+    document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString[n]}" :This word contains the letter `
+    document.getElementById("Modal Body 2").innerHTML = ''
+    document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points! Don't lose too many`
+    document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
+    document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
     })

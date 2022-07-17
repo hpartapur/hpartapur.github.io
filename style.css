@@ -95,6 +95,7 @@ strong {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    font-family: KM;
 }
 
 /* Modal Content */
@@ -139,15 +140,20 @@ strong {
 }
 
 .modal-header {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
+    padding: 2px 16px;
+    background-color: forestgreen;
+    color: white;
+    text-align: center
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {
+    padding: 2px 16px;
+    text-align: center
+}
 
 .modal-footer {
   padding: 2px 16px;
-  background-color: #5cb85c;
+  background-color: forestgreen;
   color: white;
+    text-align: center
 }
