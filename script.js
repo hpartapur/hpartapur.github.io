@@ -1,16 +1,62 @@
 // بسم الله الرحمن الرحيم
 import { WORDS } from "./words.js";
+import { WORDS1 } from "./words1.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
 let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
-let rightGuessString = WORDS[Math.floor(Math.random() * WORDS.length)]//Selects random word from words list.
+let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
 var score_n = 0;
+
 
 //Outputs correct word to console
 console.log(rightGuessString)
+//do {
+//    var firstguess =WORDS[Math.floor(Math.random() * WORDS.length)]
+//    console.log(firstguess)
+//    firstguess=Array.from(firstguess)
+//    var checkletter=(Math. floor(Math. random() * rightGuessString.length))
+//}
+//while(rightGuessString.indexOf(checkletter)!= -1);
+//if (guessesRemaining==NUMBER_OF_GUESSES){
+//    for (var i=0;i<firstguess.length;i++){
+//        nextLetter=firstguess[i]
+//        console.log(firstguess[i])
+//    }
+//}
+
+
+// // Get the modal
+// var modal = document.getElementById("myModal");
+//
+// // Get the button that opens the modal
+// var btn = document.getElementById("myBtn");
+//
+// // Get the <span> element that closes the modal
+// var span = document.getElementsByClassName("close")[0];
+//
+// // When the user clicks on the button, open the modal
+// btn.onclick = function() {
+//   modal.style.display = "block";
+// }
+//
+// // When the user clicks on <span> (x), close the modal
+// span.onclick = function() {
+//   modal.style.display = "none";
+// }
+//
+// // When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//   if (event.target == modal) {
+//     modal.style.display = "none";
+//   }
+// }
+
+
+
+
 function initBoard() {
     let board = document.getElementById("game-board");//assigns "gameboard" in html to board variable
 
@@ -75,7 +121,7 @@ function checkGuess () {
 //        toastr.error("Word not in list!")
 //        return
 //    }
-//Needs to be readded once words list is complete    
+//Needs to be readded once words list is complete
 
     for (let i = 0; i <rightGuessString.length; i++) {
         let letterColor = ''
