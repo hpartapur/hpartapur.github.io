@@ -1,6 +1,7 @@
 // بسم الله الرحمن الرحيم
 import { WORDS } from "./words.js";
 import { WORDS1 } from "./words1.js";
+import { WORDSDEF } from "./words1.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -95,7 +96,7 @@ function checkGuess () {
         document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
         document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
         document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
-        
+
         return
     }
 
@@ -146,18 +147,18 @@ function checkGuess () {
         score_n+=rightGuessString.length*guessesRemaining
         document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
-        
-        
+
+
         modal.style.display = "block";
         document.getElementById("Modal Header").innerHTML = "You win!"
         document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
-        document.getElementById("Modal Body 2").innerHTML = ''
+        document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
-        
-        
-        
+
+
+
         return
     } else {
         guessesRemaining -= 1;
@@ -169,7 +170,7 @@ function checkGuess () {
             document.getElementById("Modal Header").innerHTML = "You've run out of guesses! Game Over!"
             document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
             document.getElementById("Modal Body 2").innerHTML = ''
-            document.getElementById("Modal Footer").innerHTML = `!Try again and improve your vocabulary`
+            document.getElementById("Modal Footer").innerHTML = `!Try again`
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
         }
@@ -269,7 +270,7 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     //deduct score by 2 for using a hint
     document.getElementById("score").innerHTML = "Score: "+score_n
     //update new score in HTML
-    
+
     modal.style.display = "block";
     document.getElementById("Modal Header").innerHTML = "Pssst..."
     document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString[n]}" :This word contains the letter `
@@ -278,3 +279,6 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
     })
+function resest(){
+
+}
