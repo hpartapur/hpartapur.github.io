@@ -141,7 +141,7 @@ strong {
 
 .modal-header {
     padding: 2px 16px;
-    background-color: sandybrown;
+    background-color: navy;
     color: white;
     text-align: center
 }
@@ -153,7 +153,7 @@ strong {
 
 .modal-footer {
   padding: 2px 16px;
-  background-color: sandybrown;
+  background-color: navy;
   color: white;
     text-align: center
 }
