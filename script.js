@@ -262,6 +262,8 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 })
 
 initBoard();
+modal.style.display = "block";
+
 
 document.getElementById("hint").addEventListener("click", (e) => { //if "hint" button is clicked
     var n=(Math. floor(Math. random() * rightGuessString.length));
