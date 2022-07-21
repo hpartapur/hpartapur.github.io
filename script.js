@@ -164,12 +164,23 @@ function checkGuess () {
         guessesRemaining -= 1;
         currentGuess = [];
         nextLetter = 0;
+        
+    if (guessesRemaining==1){
+        console.log("HI")
+        modal.style.display = "block";
+        document.getElementById("Modal Header").innerHTML = "Pssst..."
+        document.getElementById("Modal Body 1").innerHTML = `This word means`
+        document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+        document.getElementById("Modal Footer").innerHTML = `You're almost out of tries, but don't give up now`
+        document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
+        document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+    }
 
         if (guessesRemaining === 0) {
             modal.style.display = "block";
             document.getElementById("Modal Header").innerHTML = "You've run out of guesses! Game Over!"
             document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
-            document.getElementById("Modal Body 2").innerHTML = ''
+            document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
             document.getElementById("Modal Footer").innerHTML = `!Try again`
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
@@ -191,6 +202,7 @@ function insertLetter (pressedKey) {
     currentGuess.push(pressedKey)
     nextLetter += 1
 }
+
 
 const animateCSS = (element, animation, prefix = 'animate__') =>
   // We create a Promise and return it
@@ -263,6 +275,7 @@ document.getElementById("keyboard-cont").addEventListener("click", (e) => {
 
 initBoard();
 modal.style.display = "block";
+
 
 
 document.getElementById("hint").addEventListener("click", (e) => { //if "hint" button is clicked
