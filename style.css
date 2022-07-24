@@ -60,10 +60,9 @@ body {
 
 .keyboard-button {
   font-family: KM;
-  font-size: 1.21rem;
+  font-size: 1.19rem;
   font-weight: 1000;
-  padding: 0.43rem;
-  margin: 1.10px;
+  padding: 0.51rem;
   cursor: pointer;
   text-transform: uppercase;
     color: black;
