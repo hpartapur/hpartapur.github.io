@@ -62,12 +62,12 @@ body {
   font-family: KM;
   font-size: 1.21rem;
   font-weight: 1000;
-  padding: 0.43rem;
+  padding: 0.53rem;
   margin: 1.10px;
   cursor: pointer;
   text-transform: uppercase;
     color: black;
-    border: 1px solid gray;
+    border: .7px solid gray;
     border-radius: 2px;
 }
 .keyboard-button:hover{
