@@ -60,15 +60,19 @@ body {
 
 .keyboard-button {
   font-family: KM;
-  font-size: 1.53rem;
+  font-size: 1.21rem;
   font-weight: 1000;
-  padding: 0.53rem;
-  margin: 1.21px;
+  padding: 0.43rem;
+  margin: 1.10px;
   cursor: pointer;
   text-transform: uppercase;
     color: black;
     border: 1px solid gray;
     border-radius: 2px;
+}
+.keyboard-button:hover{
+    color: saddlebrown;
+    background-color: lightgray;
 }
 p {
     text-align: center;
