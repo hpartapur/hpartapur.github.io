@@ -68,6 +68,7 @@ body {
     color: black;
     border: .7px solid gray;
     border-radius: 2px;
+		float: right;
 }
 .keyboard-button:hover{
     color: saddlebrown;
