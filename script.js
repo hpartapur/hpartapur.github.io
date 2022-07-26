@@ -10,6 +10,9 @@ let currentGuess = [];
 let nextLetter = 0;
 let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
 var score_n = 0;
+var hintarray=[];
+
+
 
 
 //Outputs correct word to console
@@ -72,7 +75,7 @@ function shadeKeyBoard(letter, color) {
 }
 
 function deleteLetter () {
-    let row = document.getElementsByClassName("letter-row")[6 - guessesRemaining]
+    let row = document.getElementsByClassName("letter-row")[NUMBER_OF_GUESSES - guessesRemaining]
     let box = row.children[nextLetter - 1]
     box.textContent = ""
     box.classList.remove("filled-box")
@@ -81,7 +84,7 @@ function deleteLetter () {
 }
 
 function checkGuess () {
-    let row = document.getElementsByClassName("letter-row")[6 - guessesRemaining]
+    let row = document.getElementsByClassName("letter-row")[NUMBER_OF_GUESSES - guessesRemaining]
     let guessString = ''
     let rightGuess = Array.from(rightGuessString)
     console.log(rightGuess)
@@ -279,7 +282,12 @@ modal.style.display = "block";
 
 
 document.getElementById("hint").addEventListener("click", (e) => { //if "hint" button is clicked
-    var n=(Math. floor(Math. random() * rightGuessString.length));
+    if (hintarray.length==0){
+        hintarray=Array.from(rightGuessString)
+    }
+    var n=(Math. floor(Math. random() * hintarray.length));
+    var l = hintarray.splice(n,1)
+    console.log(l)
     //assign n to a random letter in the rightguesstring
     score_n-=2
     //deduct score by 2 for using a hint
@@ -288,8 +296,8 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
 
     modal.style.display = "block";
     document.getElementById("Modal Header").innerHTML = "Pssst..."
-    document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString[n]}" :This word contains the letter `
-    document.getElementById("Modal Body 2").innerHTML = ''
+    document.getElementById("Modal Body 1").innerHTML = `"${l}" :This word contains the letter `
+    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]} :This word means `
     document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points! Don't lose too many`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
