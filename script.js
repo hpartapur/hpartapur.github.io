@@ -12,12 +12,10 @@ let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Select
 var score_n = 0;
 var hintarray=[];
 var scoreboard=``;
+var scoreboardl=``;
 var greenbox="🟩";
 var yellowbox="🟨";
 var greybox="⬜";
-
-
-
 
 //Outputs correct word to console
 console.log(rightGuessString)
@@ -122,7 +120,7 @@ function checkGuess () {
         // is letter in the correct guess
         if (letterPosition === -1) {
             letterColor = 'grey'
-            scoreboard=scoreboard.concat(greybox)
+            scoreboardl=scoreboardl.concat(greybox)
         } else {
             // now, letter is definitely in word
             // if letter index and right guess index are the same
@@ -130,12 +128,12 @@ function checkGuess () {
             if (currentGuess[i] === rightGuess[i]) {
                 // shade green
                 letterColor = 'green'
-                scoreboard=scoreboard.concat(greenbox)
+                scoreboardl=scoreboardl.concat(greenbox)
                 score_n+=2
             } else {
                 // shade box yellow
                 letterColor = 'yellow'
-                scoreboard=scoreboard.concat(yellowbox)
+                scoreboardl=scoreboardl.concat(yellowbox)
             }
 
             rightGuess[letterPosition] = "#"
@@ -150,8 +148,13 @@ function checkGuess () {
             shadeKeyBoard(letter, letterColor)
         }, delay)
         document.getElementById("score").innerHTML = "Score: "+score_n
-        scoreboard=scoreboard.concat("\n")
     }
+
+    console.log(scoreboardl)
+    scoreboardl=scoreboardl.concat("%0a")
+    scoreboard=scoreboard.concat(scoreboardl)
+    scoreboardl=``;
+    console.log(scoreboard)
 
     if (guessString === rightGuessString) {
         score_n+=rightGuessString.length*2
@@ -165,6 +168,8 @@ function checkGuess () {
         document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
         document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
+        document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
+        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 
@@ -193,6 +198,8 @@ function checkGuess () {
             document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
             document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
             document.getElementById("Modal Footer").innerHTML = `!Try again`
+            document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
+            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
         }
@@ -293,6 +300,12 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     if (hintarray.length==0){
         hintarray=Array.from(rightGuessString)
     }
+   
+    gtag('event', 'aaa', 
+         {'event_category' : 'bbb',
+        'event_label' : 'ccc'
+                         });
+    gtag('event', 'login', {'method': 'Google'});
     var n=(Math. floor(Math. random() * hintarray.length));
     var l = hintarray.splice(n,1)
     console.log(l)
@@ -309,8 +322,6 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points! Don't lose too many`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
-    document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-     document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard
 
     })
 function resest(){
