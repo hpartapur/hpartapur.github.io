@@ -300,10 +300,11 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("Modal Body 1").innerHTML = `"${l}" :This word contains the letter `
     document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]} :This word means `
     document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points! Don't lose too many`
-    document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-     document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+    document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
+     document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard
+    
     })
 function resest(){
 
