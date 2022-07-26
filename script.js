@@ -11,7 +11,10 @@ let nextLetter = 0;
 let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
 var score_n = 0;
 var hintarray=[];
-var scoreboard=`🟩🟨⬜`;
+var scoreboard=``;
+var greenbox="🟩";
+var yellowbox="🟨";
+var greybox="⬜";
 
 
 
@@ -119,6 +122,7 @@ function checkGuess () {
         // is letter in the correct guess
         if (letterPosition === -1) {
             letterColor = 'grey'
+            scoreboard=scoreboard.concat(greybox)
         } else {
             // now, letter is definitely in word
             // if letter index and right guess index are the same
@@ -126,10 +130,12 @@ function checkGuess () {
             if (currentGuess[i] === rightGuess[i]) {
                 // shade green
                 letterColor = 'green'
+                scoreboard=scoreboard.concat(greenbox)
                 score_n+=2
             } else {
                 // shade box yellow
                 letterColor = 'yellow'
+                scoreboard=scoreboard.concat(yellowbox)
             }
 
             rightGuess[letterPosition] = "#"
@@ -144,6 +150,7 @@ function checkGuess () {
             shadeKeyBoard(letter, letterColor)
         }, delay)
         document.getElementById("score").innerHTML = "Score: "+score_n
+        scoreboard=scoreboard.concat("\n")
     }
 
     if (guessString === rightGuessString) {
@@ -168,7 +175,7 @@ function checkGuess () {
         guessesRemaining -= 1;
         currentGuess = [];
         nextLetter = 0;
-        
+
     if (guessesRemaining==1){
         console.log("HI")
         modal.style.display = "block";
@@ -304,7 +311,7 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
     document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
      document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard
-    
+
     })
 function resest(){
 
