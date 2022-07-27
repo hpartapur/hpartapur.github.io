@@ -168,6 +168,8 @@ function checkGuess () {
         document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
 
+        gtag("event", "level_end", {level_name: "The journey begins...",success: true,});
+
 
         modal.style.display = "block";
         document.getElementById("Modal Header").innerHTML = "You win!"
