@@ -91,7 +91,7 @@ function checkGuess () {
     let guessString = ''
     let rightGuess = Array.from(rightGuessString)
     console.log(rightGuess)
-    
+
     gtag('event', 'ًWord Tried', {
     'event_label': guessString,
     'event_category': "Word Guessed",
@@ -168,7 +168,6 @@ function checkGuess () {
         document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
 
-        gtag("event", "level_end", {level_name: "The journey begins...",success: true,});
 
 
         modal.style.display = "block";
@@ -180,7 +179,7 @@ function checkGuess () {
         document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
-        
+
         gtag('event', 'ًCorrect Word', {
         'event_label': guessString,
         'event_category': "Word Guessed",
@@ -217,7 +216,7 @@ function checkGuess () {
             document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
-            
+
             gtag('event', 'ًFailed Word', {
             'event_label': rightGuessString,
             'event_category': "Word Failed",
