@@ -322,7 +322,7 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
         hintarray=Array.from(rightGuessString)
     }
 		gtag('event', 'Hint Used', {
-  'event_label': rightGuesstring,
+  'event_label': rightGuessString,
   'event_category': 'hint category',
   'non_interaction': true
 });
