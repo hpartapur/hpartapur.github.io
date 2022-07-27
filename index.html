@@ -31,7 +31,7 @@
 </head>
 <body>
 <body>
-    
+
     <div>
         <!-- <div><a href="help.html" target="_blank" rel="noopener noreferrer">Instructions</a></div> -->
         <p id="score">Score: 0</p><button id="hint" class="keyboard-button">Hint</button>
@@ -65,7 +65,13 @@
               Feel free to use the hint button if you're stuck. Be careful though, you lose two points for each hint<br>
               !Happy guessing</p>
               <a id=whatsappshare href="whatsapp://send?text=GFG Example for whatsapp sharing"
-               data-action="share/whatsapp/share"target="_blank"></a>
+               data-action="share/whatsapp/share"target="_blank"
+                onclick="gtag('event', 'ًShared to Whatsapp', {
+            'event_label': rightGuessString,
+            'event_category': 'Shared to Whatsapp',
+            'non_interaction': true,
+            'value':score_n
+            });"></a>
         </div>
         <div id = "ModalFooterDiv" class="modal-footer">
           <h3 id="Modal Footer">Brought to you by Kawakib Creations</h3>
@@ -127,7 +133,7 @@
             <button class="keyboard-button">ر</button>
             <button class="keyboard-button">ء</button>
             <button class="keyboard-button">ئ</button>
-            <button class="keyboard-button">Enter</button>
+            <button id="Enter"class="keyboard-button">Enter</button>
         </div>
     </div>
 		<img class = "image" src="kawakibcreations.png" alt="Kawakib Creations Logo" width="153" height="153">

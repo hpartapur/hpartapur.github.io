@@ -85,11 +85,18 @@ function deleteLetter () {
     nextLetter -= 1
 }
 
+
 function checkGuess () {
     let row = document.getElementsByClassName("letter-row")[NUMBER_OF_GUESSES - guessesRemaining]
     let guessString = ''
     let rightGuess = Array.from(rightGuessString)
     console.log(rightGuess)
+    
+    gtag('event', 'ًWord Tried', {
+    'event_label': guessString,
+    'event_category': "Word Guessed",
+    'non_interaction': true
+    });
 
     for (const val of currentGuess) {
         guessString += val
@@ -101,7 +108,6 @@ function checkGuess () {
         document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
         document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
         document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
-
         return
     }
 
@@ -172,6 +178,13 @@ function checkGuess () {
         document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
+        
+        gtag('event', 'ًCorrect Word', {
+        'event_label': guessString,
+        'event_category': "Word Guessed",
+        'non_interaction': true,
+        'value':score_n
+        });
 
 
 
@@ -202,6 +215,13 @@ function checkGuess () {
             document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
+            
+            gtag('event', 'ًFailed Word', {
+            'event_label': rightGuessString,
+            'event_category': "Word Failed",
+            'non_interaction': true,
+            'value':score_n
+            });
         }
     }
 }
@@ -300,12 +320,11 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     if (hintarray.length==0){
         hintarray=Array.from(rightGuessString)
     }
-   
-    gtag('event', 'aaa', 
-         {'event_category' : 'bbb',
-        'event_label' : 'ccc'
-                         });
-    gtag('event', 'login', {'method': 'Google'});
+		gtag('event', 'Hint Used', {
+  'event_label': rightGuesstring,
+  'event_category': 'hint category',
+  'non_interaction': true
+});
     var n=(Math. floor(Math. random() * hintarray.length));
     var l = hintarray.splice(n,1)
     console.log(l)
@@ -324,6 +343,3 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
 
     })
-function resest(){
-
-}
