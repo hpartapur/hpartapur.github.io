@@ -175,10 +175,12 @@ function checkGuess () {
         document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
         document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
+				document.getElementById("refresh").innerHTML = "!Next round"
         document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
         document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
+				buttonize()
 
         gtag('event', 'ًCorrect Word', {
         'event_label': guessString,
@@ -213,9 +215,11 @@ function checkGuess () {
             document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
             document.getElementById("Modal Footer").innerHTML = `!Try again`
             document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
+            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"https://khardal.net/";
+            document.getElementById("refresh").innerHTML = "Play Again"
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
+            buttonize();
 
             gtag('event', 'ًFailed Word', {
             'event_label': rightGuessString,
@@ -225,6 +229,15 @@ function checkGuess () {
             });
         }
     }
+}
+
+function buttonize (){
+	document.getElementById("refresh").style.padding="14px 25px"
+	document.getElementById("refresh").style.backgroundColor="limegreen"
+	document.getElementById("refresh").style.display="inline-block"
+	document.getElementById("whatsappshare").style.padding="14px 25px"
+	document.getElementById("whatsappshare").style.backgroundColor="limegreen"
+	document.getElementById("whatsappshare").style.display="inline-block"
 }
 
 function insertLetter (pressedKey) {
@@ -339,7 +352,7 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("Modal Header").innerHTML = "Pssst..."
     document.getElementById("Modal Body 1").innerHTML = `"${l}" :This word contains the letter `
     document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]} :This word means `
-    document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points! Don't lose too many`
+    document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points<br>! Don't lose too many`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
 

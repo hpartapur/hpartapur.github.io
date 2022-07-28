@@ -3,6 +3,19 @@
       src: url(Kanz-al-Marjaan.ttf);
 }
 
+a:link, a:visited {
+	background-color:;
+color: white;
+padding:;
+text-align: center;
+text-decoration: none;
+display: none;
+}
+
+a:hover, a:active {
+  background-color: green;
+}
+
 h1 {
     text-align: center;
     font-size: 43px;
