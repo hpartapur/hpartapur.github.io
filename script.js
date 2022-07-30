@@ -171,7 +171,7 @@ function checkGuess () {
 
 
         modal.style.display = "block";
-        document.getElementById("Modal Header").innerHTML = "You win!"
+        document.getElementById("Modal Header").innerHTML = "Great Job!"
         document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
         document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
