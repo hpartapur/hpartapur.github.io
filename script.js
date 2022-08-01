@@ -179,7 +179,7 @@ function checkGuess () {
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 				document.getElementById("refresh").innerHTML = "!Next round"
         document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"www.khardal.net";
+        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 2: "+score_n+"%0a"+"www.khardal.net";
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 				buttonize()
