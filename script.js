@@ -38,12 +38,7 @@ console.log(rightGuessString)
     firsthint()
    }
  }
-if (document.getElementById("Modal Footer").innerHTML=="Brought to you by Kawakib Creations"
-    &&modal.style.display!="block"){
-     console.log("HELLO")
-    }
-
-
+ 
 
 
 
@@ -60,7 +55,7 @@ function initBoard() {
             box.className = "letter-box"
             row.appendChild(box)
         }
-
+        
         board.appendChild(row)
     }
 }
@@ -367,11 +362,26 @@ function firsthint(){
     if (document.getElementById("Modal Footer").innerHTML=="Brought to you by Kawakib Creations"
     &&modal.style.display!="block"){
     setTimeout(() => {  modal.style.display = "block"; }, 1000);
-    document.getElementById("Modal Header").innerHTML = "Pssst..."
-    document.getElementById("Modal Body 1").innerHTML = `This word means`
-    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
-    document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
-    document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
-    document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+    
+    }
+}
+function modalgenerator(category, color){
+    if (category=="firsthint"){
+        document.getElementById("Modal Header").innerHTML = "Pssst..."
+        document.getElementById("Modal Body 1").innerHTML = `This word means`
+        document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+        document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
+        document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
+        document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+    }
+    else if (category=="tooshort"){
+        modal.style.display = "block";
+        document.getElementById("Modal Header").innerHTML = "Not enough letters"
+        document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
+        document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
+        document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
+    }
+    else if (category=="tooshort"){
+        
     }
 }
