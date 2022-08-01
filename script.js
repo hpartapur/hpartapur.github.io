@@ -1,7 +1,7 @@
 // بسم الله الرحمن الرحيم
 import { WORDS } from "./words.js";
-import { WORDS1 } from "./day1.js";
-import { WORDSDEF } from "./day1.js";
+import { WORDS1 } from "./day2.js";
+import { WORDSDEF } from "./day2.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -29,13 +29,20 @@ console.log(rightGuessString)
 // When the user clicks on <span> (x), close the modal
  span.onclick = function() {
    modal.style.display = "none";
+     firsthint()
  }
  // When the user clicks anywhere outside of the modal, close it
  window.onclick = function(event) {
    if (event.target == modal) {
      modal.style.display = "none";
+    firsthint()
    }
  }
+if (document.getElementById("Modal Footer").innerHTML=="Brought to you by Kawakib Creations"
+    &&modal.style.display!="block"){
+     console.log("HELLO")
+    }
+
 
 
 
@@ -177,7 +184,7 @@ function checkGuess () {
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 				document.getElementById("refresh").innerHTML = "!Next round"
         document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n;
+        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"www.khardal.net";
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 				buttonize()
@@ -198,7 +205,6 @@ function checkGuess () {
         nextLetter = 0;
 
     if (guessesRemaining==1){
-        console.log("HI")
         modal.style.display = "block";
         document.getElementById("Modal Header").innerHTML = "Pssst..."
         document.getElementById("Modal Body 1").innerHTML = `This word means`
@@ -357,3 +363,15 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
 
     })
+function firsthint(){
+    if (document.getElementById("Modal Footer").innerHTML=="Brought to you by Kawakib Creations"
+    &&modal.style.display!="block"){
+    setTimeout(() => {  modal.style.display = "block"; }, 1000);
+    document.getElementById("Modal Header").innerHTML = "Pssst..."
+    document.getElementById("Modal Body 1").innerHTML = `This word means`
+    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+    document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
+    document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
+    document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+    }
+}
