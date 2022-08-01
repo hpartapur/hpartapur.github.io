@@ -362,7 +362,12 @@ function firsthint(){
     if (document.getElementById("Modal Footer").innerHTML=="Brought to you by Kawakib Creations"
     &&modal.style.display!="block"){
     setTimeout(() => {  modal.style.display = "block"; }, 1000);
-    
+    document.getElementById("Modal Header").innerHTML = "Pssst..."
+    document.getElementById("Modal Body 1").innerHTML = `This word means`
+    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+    document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
+    document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
+    document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
     }
 }
 function modalgenerator(category, color){
