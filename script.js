@@ -1,7 +1,7 @@
 // بسم الله الرحمن الرحيم
 import { WORDS } from "./words.js";
-import { WORDS1 } from "./day2.js";
-import { WORDSDEF } from "./day2.js";
+import { WORDS1 } from "./day3.js";
+import { WORDSDEF } from "./day3.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -38,7 +38,7 @@ console.log(rightGuessString)
     firsthint()
    }
  }
- 
+
 
 
 
@@ -55,7 +55,7 @@ function initBoard() {
             box.className = "letter-box"
             row.appendChild(box)
         }
-        
+
         board.appendChild(row)
     }
 }
@@ -179,7 +179,7 @@ function checkGuess () {
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 				document.getElementById("refresh").innerHTML = "!Next round"
         document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 2: "+score_n+"%0a"+"www.khardal.net";
+        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 3: "+score_n+"%0a"+"www.khardal.net";
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 				buttonize()
@@ -216,7 +216,7 @@ function checkGuess () {
             document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
             document.getElementById("Modal Footer").innerHTML = `!Try again`
             document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"https://khardal.net/";
+            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 3: "+score_n+"%0a"+"https://khardal.net/";
             document.getElementById("refresh").innerHTML = "Play Again"
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
@@ -352,7 +352,8 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     modal.style.display = "block";
     document.getElementById("Modal Header").innerHTML = "Pssst..."
     document.getElementById("Modal Body 1").innerHTML = `"${l}" :This word contains the letter `
-    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]} :This word means `
+    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]} <br>:This word means `
+    document.getElementById("Modal Body 2").innerHTML = `:This word means<br>${WORDSDEF[rightGuessString]}`
     document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points<br>! Don't lose too many`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
@@ -387,6 +388,6 @@ function modalgenerator(category, color){
         document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
     }
     else if (category=="tooshort"){
-        
+
     }
 }

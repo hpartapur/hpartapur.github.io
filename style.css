@@ -94,8 +94,9 @@ p {
     font-family: KM;
 }
 strong {
-    font-family:sans-serif;
+    font-family:KM;
     color:darkgoldenrod;
+    font-weight: 900;
 }
 .center {
   display: block;
