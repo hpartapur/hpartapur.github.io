@@ -1,7 +1,7 @@
 // بسم الله الرحمن الرحيم
 import { WORDS } from "./words.js";
-import { WORDS1 } from "./day4.js";
-import { WORDSDEF } from "./day4.js";
+import { WORDS1 } from "./day5.js";
+import { WORDSDEF } from "./day5.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -179,7 +179,7 @@ function checkGuess () {
         document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 				document.getElementById("refresh").innerHTML = "!Next round"
         document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 4: "+score_n+"%0a"+"www.khardal.net";
+        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 5: "+score_n+"%0a"+"www.khardal.net";
         document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
         document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 				buttonize()
@@ -216,7 +216,7 @@ function checkGuess () {
             document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
             document.getElementById("Modal Footer").innerHTML = `!Try again`
             document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 4: "+score_n+"%0a"+"https://khardal.net/";
+            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 5: "+score_n+"%0a"+"https://khardal.net/";
             document.getElementById("refresh").innerHTML = "Play Again"
             document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
             document.getElementById("ModalFooterDiv").style.backgroundColor="red"
