@@ -1,7 +1,7 @@
 // بسم الله الرحمن الرحيم
-import { WORDS } from "./words.js";
-import { WORDS1 } from "./day7.js";
-import { WORDSDEF } from "./day7.js";
+// import { WORDS } from "./words.js";
+import { WORDS1 } from "./alldays.js";
+import { WORDSDEF } from "./alldays.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -105,11 +105,7 @@ function checkGuess () {
     }
 
     if (guessString.length != rightGuessString.length) {
-        modal.style.display = "block";
-        document.getElementById("Modal Header").innerHTML = "Not enough letters"
-        document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
-        document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
-        document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
+        modalgenerator("tooshort")
         return
     }
 
@@ -158,11 +154,10 @@ function checkGuess () {
         document.getElementById("score").innerHTML = "Score: "+score_n
     }
 
-    console.log(scoreboardl)
     scoreboardl=scoreboardl.concat("%0a")
     scoreboard=scoreboard.concat(scoreboardl)
     scoreboardl=``;
-    console.log(scoreboard)
+
 
     if (guessString === rightGuessString) {
         score_n+=rightGuessString.length*2
@@ -172,17 +167,7 @@ function checkGuess () {
 
 
 
-        modal.style.display = "block";
-        document.getElementById("Modal Header").innerHTML = "Great Job!"
-        document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
-        document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
-        document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
-				document.getElementById("refresh").innerHTML = "!Next round"
-        document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-        document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 7: "+score_n+"%0a"+"www.khardal.net";
-        document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
-        document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
-				buttonize()
+        modalgenerator("youwin")
 
         gtag('event', 'ًCorrect Word', {
         'event_label': guessString,
@@ -200,27 +185,11 @@ function checkGuess () {
         nextLetter = 0;
 
     if (guessesRemaining==1){
-        modal.style.display = "block";
-        document.getElementById("Modal Header").innerHTML = "Pssst..."
-        document.getElementById("Modal Body 1").innerHTML = `This word means`
-        document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
-        document.getElementById("Modal Footer").innerHTML = `You're almost out of tries, but don't give up now`
-        document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
-        document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+        modalgenerator("lasttry")
     }
 
         if (guessesRemaining === 0) {
-            modal.style.display = "block";
-            document.getElementById("Modal Header").innerHTML = "You've run out of guesses! Game Over!"
-            document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
-            document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
-            document.getElementById("Modal Footer").innerHTML = `!Try again`
-            document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-            document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 7: "+score_n+"%0a"+"https://khardal.net/";
-            document.getElementById("refresh").innerHTML = "Play Again"
-            document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
-            document.getElementById("ModalFooterDiv").style.backgroundColor="red"
-            buttonize();
+            modalgenerator("youlose")
 
             gtag('event', 'ًFailed Word', {
             'event_label': rightGuessString,
@@ -296,13 +265,6 @@ document.addEventListener("keyup", (e) => {
 
 
 
-//    let found = pressedKey.match(/[a-z]/gi)
-//    if (!found || found.length > 1) {
-//        insertLetter(pressedKey)
-//    } else {
-//        return
-//    }
-
     var found=HUROOF.indexOf(pressedKey)
     if (found != -1){
         insertLetter(pressedKey)
@@ -371,7 +333,7 @@ function firsthint(){
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
     }
 }
-function modalgenerator(category, color){
+function modalgenerator(category){
     if (category=="firsthint"){
         document.getElementById("Modal Header").innerHTML = "Pssst..."
         document.getElementById("Modal Body 1").innerHTML = `This word means`
@@ -387,7 +349,39 @@ function modalgenerator(category, color){
         document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
         document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
     }
-    else if (category=="tooshort"){
-
+    else if (category=="youwin"){
+			modal.style.display = "block";
+			document.getElementById("Modal Header").innerHTML = "Great Job!"
+			document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
+			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+			document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
+			document.getElementById("refresh").innerHTML = "!Next round"
+			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
+			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 7: "+score_n+"%0a"+"www.khardal.net";
+			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
+			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
+			buttonize()
     }
+		else if (category=="youlose"){
+			modal.style.display = "block";
+			document.getElementById("Modal Header").innerHTML = "You've run out of guesses! Game Over!"
+			document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
+			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+			document.getElementById("Modal Footer").innerHTML = `!Try again`
+			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
+			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 7: "+score_n+"%0a"+"https://khardal.net/";
+			document.getElementById("refresh").innerHTML = "Play Again"
+			document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
+			document.getElementById("ModalFooterDiv").style.backgroundColor="red"
+			buttonize();
+		}
+		else if (category=="lasttry"){
+			modal.style.display = "block";
+			document.getElementById("Modal Header").innerHTML = "Pssst..."
+			document.getElementById("Modal Body 1").innerHTML = `This word means`
+			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+			document.getElementById("Modal Footer").innerHTML = `You're almost out of tries, but don't give up now`
+			document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
+			document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+		}
 }
