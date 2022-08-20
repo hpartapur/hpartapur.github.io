@@ -31,6 +31,7 @@ h1 {
 body {
     background-image: url("bg.jpg");
     background-color: #cccccc;
+    margin: 0;
 }
 
 .letter-box {
@@ -178,4 +179,52 @@ strong {
   background-color: navy;
   color: white;
     text-align: center
+}
+
+
+ul.sidenav {
+  list-style-type: none;
+  margin: 0;
+/*  padding: 0;*/
+  background-color: #f1f1f1;
+  height: 100%;
+  overflow: auto;
+}
+
+
+ 
+ul.sidenav li a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+ul.sidenav li a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+/*
+div.content {
+  margin-right: 25%;
+  padding: 1px 16px;
+  height: 10px;
+}
+*/
+
+@media screen and (max-width: 1500px) {
+  ul.sidenav {
+    width: 100%;
+    height: auto;
+    position: relative;
+    opacity: 95%
+  }
+  
+  ul.sidenav li a {
+    float: left;
+    padding: 15px;
+    display: block;
+    color: #000;
+  }
+  
+/*  div.content {margin-left: 0;}*/
 }
