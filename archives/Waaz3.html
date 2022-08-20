@@ -20,14 +20,22 @@
     </script>
 
 </head>
-<ul class="sidenav">
-  <li><a href="https://khardal.net/">Home</a></li>
-  <li><a href="https://khardal.net/archives/Waaz1.html">Waaz 1</a></li>
-  <li><a href="https://khardal.net/archives/Waaz2.html">Waaz 2</a></li>
-	<li><a class="active" href="https://khardal.net/archives/Waaz3.html">Waaz 3</a></li>
-</ul>
 <body>
-<body>
+	<div class="topnav" id="myTopnav">
+	  <a href="#home" class="active">Home</a>
+	  <div class="dropdown">
+	    <button class="dropbtn">Dropdown
+	      <i class="fa fa-caret-down"></i>
+	    </button>
+	    <div class="dropdown-content">
+	      <a href="../archives/Waaz1.html">Link 1</a>
+	      <a href="#">Link 2</a>
+	      <a href="#" class="active">Link 3</a>
+	    </div>
+	  </div>
+	  <a href="#about">About</a>
+	  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+	</div>
     <div>
         <p id="score">Score: 0</p><button id="hint" class="keyboard-button">Hint</button>
     </div>
@@ -151,5 +159,15 @@ src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 crossorigin="anonymous"></script>
 <script src="Waaz3.js" type="module"></script>
+<script>
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+</script>
 </body>
 </html>
