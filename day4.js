@@ -1,5 +1,4 @@
 export const WORDS1 =[
-'نشأة',
 'توحيد',
 'موت',
 'پيدائش',
@@ -22,8 +21,6 @@ export const WORDS1 =[
 'خلقة',
 ]
 export const WORDSDEF ={
-'نشأة':
-    'پيدائش',
 'توحيد':
     'خدا نسس ايك مانوو، monotheism',
 'موت':

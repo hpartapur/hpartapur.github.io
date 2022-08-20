@@ -33,7 +33,7 @@ export const WORDS1 =[
 'حرام',
 'جادوگر',
 'عصا',
-'مسيح',''
+'مسيح',
 ]
 export const WORDSDEF ={
 'قانون':

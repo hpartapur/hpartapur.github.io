@@ -69,5 +69,5 @@ export const WORDSDEF ={
 'خوبي':
     "talent, good characteristic",
 'سركهامني':
-    "بسس ححيز نسس equal ككنوو",    
+    "بسس ححيز نسس equal ككنوو",
 }
