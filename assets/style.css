@@ -203,13 +203,11 @@ ul.sidenav li a:hover:not(.active) {
   color: white;
 }
 
-/*
 div.content {
   margin-right: 25%;
   padding: 1px 16px;
   height: 10px;
 }
-*/
 
 @media screen and (max-width: 1500px) {
   ul.sidenav {
