@@ -84,7 +84,9 @@ body {
 #keyboard-cont div {
     display: flex;
 }
-
+.lsd-row {
+    margin: 0.4rem 0;
+}
 .second-row {
     margin: 0.5rem 0;
 }
