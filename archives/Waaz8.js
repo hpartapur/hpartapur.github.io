@@ -357,7 +357,7 @@ function modalgenerator(category){
 			document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 			document.getElementById("refresh").innerHTML = "!Next round"
 			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 7: "+score_n+"%0a"+"www.khardal.net";
+			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Waaz 8: "+score_n+"%0a"+"www.khardal.net";
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 			buttonize()
@@ -369,7 +369,7 @@ function modalgenerator(category){
 			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
 			document.getElementById("Modal Footer").innerHTML = `!Try again`
 			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Day 7: "+score_n+"%0a"+"https://khardal.net/";
+			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Waaz 8: "+score_n+"%0a"+"https://khardal.net/";
 			document.getElementById("refresh").innerHTML = "Play Again"
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="red"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="red"
