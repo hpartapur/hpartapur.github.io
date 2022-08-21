@@ -20,7 +20,13 @@ var greybox="⬜";
 //Outputs correct word to console
 console.log(rightGuessString)
 
-
+//Get parameters from URL
+const queryString = window.location.search;//get url parameters
+const urlParams = new URLSearchParams(queryString);
+if(urlParams.has("score")){
+    score_n= urlParams.get('score')
+    document.getElementById("score").innerHTML = "Score: "+score_n
+}
 
  // Get the modal
  var modal = document.getElementById("myModal");
@@ -355,6 +361,7 @@ function modalgenerator(category){
 			document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
 			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
 			document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
+			document.getElementById("refresh").href +="?score="+score_n
 			document.getElementById("refresh").innerHTML = "!Next round"
 			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
 			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score Waaz 2: "+score_n+"%0a"+"www.khardal.net";
