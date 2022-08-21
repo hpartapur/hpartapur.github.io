@@ -21,6 +21,18 @@ h1 {
     font-size: 43px;
     font-family: KM;
 }
+h4 {
+   text-align: center;
+    font-size: 33px;
+    font-family:KM;
+    color:green;
+}
+h5 {
+   text-align: center;
+    font-size: 27px;
+    font-family:KM;
+    color:forestgreen;
+}
 
 #game-board {
     display: flex;

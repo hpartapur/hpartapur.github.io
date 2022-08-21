@@ -1,26 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/style.css">
     </head>
 
 <body>
-    <h1 style="font-family:Al-Kanz; font-size:43px"> خردل </h1>
-    <h1 style="font-family:Al-Kanz; font-size:53px"> Khardal Instructions </h1>
-		<center><a href="index.html">Return to Page</a></center>
-    <p >Inspired by the New York Times' <strong >Wordle</strong></p>
-    <a href="https://www.nytimes.com/games/wordle/index.html"target="_blank" rel="noopener noreferrer">Wordle</a>
-    <p>Guess the <strong> Khardal</strong>in six tries or less.</p>
-    <p>Type or click the buttons to make up a word, and hit "Enter" to submit.</p>
-    <p>After each guess, the color of the tiles will change to show how close your guess was to the word.</p>
-    <center><img class = "image" src="assets/black.PNG" alt="Gray Tiles" width="200" height="40"></center>
-    <p>The letters م ص ط ف ى are not in the word.</p>
-    <center><img class = "image" src="assets/green.PNG" alt="Green Tiles" width="200" height="40"></center>
-    <p>The letter و is in the word and in the correct position.</p>
-    <center><img class = "image" src="assets/yellow.PNG" alt="Yellow Tiles" width="200" height="40"></center>
-    <p>The letter ا is in the word. However, it is not in the correct position</p>
-    <center><img class = "image" src="assets/correct.PNG" alt="Correct" width="200" height="40"></center>
-    <p>You placed all the letters in their correct positions and found the answer!</p>
-
-		<p>Contact kawakibcreations@gmail.com </p>
+	<div class="topnav" id="myTopnav">
+		<a href="index.html">Home</a>
+		<div class="dropdown">
+			<button class="dropbtn">Waaz Day List
+				<i class="fa fa-caret-down"></i>
+			</button>
+			<div class="dropdown-content">
+				<a href="./archives/Waaz1.html">Waaz 1</a>
+				<a href="./archives/Waaz2.html">Waaz 2</a>
+				<a href="./archives/Waaz3.html">Waaz 3</a>
+				<a href="./archives/Waaz4.html">Waaz 4</a>
+				<a href="./archives/Waaz5.html">Waaz 5</a>
+				<a href="./archives/Waaz6.html">Waaz 6</a>
+				<a href="./archives/Waaz7.html">Waaz 7</a>
+				<a href="./archives/Waaz8.html">Waaz 8</a>
+			</div>
+		</div>
+		<a href="#about"  class="active">About</a>
+		<a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+	</div>
+    <center><img class = "image" src="assets/Khardal%20Logo.png" alt="Khardal Logo" width="230px" margin-left="auto" margin-right="auto"> </center>
+    
+    <h4 style="font: Arial" >Khardal, inspired by the New York Times' Wordle!
+    <br>
+    The game developed with the intention of strengthening one's Lisan u Dawat vocabulary.
+    <br>
+    Khardal in Arabic means mustard seed (known in Lisan u Dawat as رائي نو دانه.)
+    <img class = "image" src="assets/Khardal%20Logo.png" alt="Khardal Logo" width="80px" margin-left="auto" margin-right="auto">
+    <br>
+    The game has one simple principle: Guess the word!
+    </h4>
+    <h5>Use the keyboard provided to create a Lisanuddawat word. Once you're ready, press "Enter".</h5>
+    <h5>The boxes for each letter will then light up gray, yellow, or green.</h5>
+    
+    <h5>If the letter is gray, then this letter is not present in the correct answer.</h5>
+    <center>
+    <img class = "image" src="assets/black.PNG" alt="Gray Tiles" width="200" height="40">
+    <figcaption>The letters م ص ط ف ى are not in the word.</figcaption>
+    </center>
+    
+ 
+    <h5>If the letter is yellow, this letter is present in the answer,
+        but not in the place you've put it.</h5>
+    <center><img class = "image" src="assets/yellow.PNG" alt="Yellow Tiles" width="200" height="40">
+    <figcaption>The letter ا is in the word. However, it is not in the correct position</figcaption>
+    </center>
+    
+    <h5>If the letter is green, you've placed the letter in the correct position!</h5>
+    <center><img class = "image" src="assets/green.PNG" alt="Green Tiles" width="200" height="40">
+    <figcaption>The letter و is in the word and in the correct position.</figcaption>
+    </center>
+    
+    <h5>Keep guessing until all the boxes are green! Be careful though, you only have 6 guesses.</h5>
+    <center><img class = "image" src="assets/correct.PNG" alt="Correct" width="200" height="40">
+    <figcaption>You placed all the letters in their correct positions and found the answer!</figcaption>
+    </center>
+		
+    <h4 href="khardal.net">For any queries or suggestions, contact kawakibcreations@gmail.com </h4>
+    <center><img class = "image" src="assets/kawakibcreations.png" alt="Kawakib Creations Logo" width="153" height="153"></center>
+    
 </body>
