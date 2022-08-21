@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khardal</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/style.css">
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -23,23 +23,34 @@
 
 </head>
 <body>
-<body>
-
-    <div>
-        <!-- <div><a href="help.html" target="_blank" rel="noopener noreferrer">Instructions</a></div> -->
-        <p id="score">Score: 0</p><button id="hint" class="keyboard-button">Hint</button>
-				<!-- <div><a href="https://github.com/hpartapur/hpartapur.github.io" target="_blank" rel="noopener noreferrer">Github</a></div> -->
-<!--       <h1> خردل </h1>-->
-<!--        <img class = "image" src="assets/khardal.jpeg" alt="Kawakib Creations Logo" width="300" height="200" width="40%" margin-left="auto" margin-right="auto">-->
-
-
+	<div class="topnav" id="myTopnav">
+		<a href="index.html" class="active">Home</a>
+		<div class="dropdown">
+			<button class="dropbtn">Waaz Day List
+				<i class="fa fa-caret-down"></i>
+			</button>
+			<div class="dropdown-content">
+				<a href="./archives/Waaz1.html">Waaz 1</a>
+				<a href="./archives/Waaz2.html">Waaz 2</a>
+				<a href="./archives/Waaz3.html">Waaz 3</a>
+				<a href="./archives/Waaz4.html">Waaz 4</a>
+				<a href="./archives/Waaz5.html">Waaz 5</a>
+				<a href="./archives/Waaz6.html">Waaz 6</a>
+				<a href="./archives/Waaz7.html">Waaz 7</a>
+				<a href="./archives/Waaz8.html">Waaz 8</a>
+			</div>
+		</div>
+		<a href="#about">About</a>
+		<a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+	</div>
+        <p id="score">Score: 0</p>
+				<button id="hint" class="keyboard-button">Hint</button>
     </div>
     <br>
     <br>
     <div>
         <p></p>
-        <center><img class = "image" src="../assets/Khardal%20Logo.png" alt="Kawakib Creations Logo" width="230px" margin-left="auto" margin-right="auto"> </center>
-
+        <center><img class = "image" src="assets/Khardal%20Logo.png" alt="Khardal Logo" width="230px" margin-left="auto" margin-right="auto"> </center>
     </div>
     <!-- The Modal -->
 
@@ -139,12 +150,22 @@
             <button id="Enter"class="keyboard-button">Enter</button>
         </div>
     </div>
-		<img class = "image" src="../assets/kawakibcreations.png" alt="Kawakib Creations Logo" width="153" height="153">
+		<img class = "image" src="assets/kawakibcreations.png" alt="Kawakib Creations Logo" width="153" height="153">
 		<!-- <div><a href="projects.html">Other Projects</a></div> -->
 <script
 src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 crossorigin="anonymous"></script>
 <script src="script.js" type="module"></script>
+<script>
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+</script>
 </body>
 </html>

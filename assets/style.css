@@ -4,7 +4,7 @@
 }
 
 a:link, a:visited {
-	background-color:;
+background-color:;
 color: white;
 padding:;
 text-align: center;
@@ -181,11 +181,11 @@ strong {
     text-align: center
 }
 
-body {margin:0;font-family:Arial}
+body {margin:0;font-family:KM}
 
 .topnav {
   overflow: hidden;
-  background-color: #333;
+  background-color: #e3ab4b;
 }
 
 .topnav a {
@@ -193,9 +193,9 @@ body {margin:0;font-family:Arial}
   display: block;
   color: #f2f2f2;
   text-align: center;
-  padding: 14px 16px;
+  padding: 14px 21px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 21px;
 }
 
 .active {
@@ -213,11 +213,11 @@ body {margin:0;font-family:Arial}
 }
 
 .dropdown .dropbtn {
-  font-size: 17px;
+  font-size: 21px;
   border: none;
   outline: none;
   color: white;
-  padding: 14px 16px;
+  padding: 14px 21px;
   background-color: inherit;
   font-family: inherit;
   margin: 0;
