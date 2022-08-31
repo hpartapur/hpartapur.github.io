@@ -100,11 +100,7 @@ function checkGuess () {
     let rightGuess = Array.from(rightGuessString)
     console.log(rightGuess)
 
-    gtag('event', 'ًWord Tried', {
-    'event_label': guessString,
-    'event_category': "Word Guessed",
-    'non_interaction': true
-    });
+
 
     for (const val of currentGuess) {
         guessString += val
@@ -158,6 +154,12 @@ function checkGuess () {
             shadeKeyBoard(letter, letterColor)
         }, delay)
         document.getElementById("score").innerHTML = "Score: "+score_n
+
+				gtag('event', 'ًWord Tried', {
+				'event_label': guessString,
+				'event_category': "Word Guessed",
+				'non_interaction': true
+				});
     }
 
     scoreboardl=scoreboardl.concat("%0a")
