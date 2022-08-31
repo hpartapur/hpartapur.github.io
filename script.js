@@ -24,8 +24,9 @@ console.log(rightGuessString)
 const queryString = window.location.search;//get url parameters
 const urlParams = new URLSearchParams(queryString);
 if(urlParams.has("score")){
-    score_n= urlParams.get('score')
-    document.getElementById("score").innerHTML = "Score: "+score_n
+    score_n= Number(urlParams.get('score'))
+    document.getElementById("score").innerHTML = "Score: " + +score_n
+
 }
 
  // Get the modal
