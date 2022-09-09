@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khardal</title>
-    <link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf"
+    <link rel="preload" as="font" href="./assets/Kanz-al-Marjaan.ttf"
     type="font/ttf" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/style.css">
     <link
@@ -21,6 +21,9 @@
 
 		  gtag('config', 'G-ZJM8TVT5H6');
 		</script>
+    <script>var SoundOn = true;</script>
+<!--		<script src="haptics.js" type="module"></script>-->
+
 
 
 </head>
@@ -43,6 +46,7 @@
 			</div>
 		</div>
 		<a href="./help.html">About</a>
+        <button id="sound" class="keyboard-button" onclick="toggleSound()">🔊</button>
 		<a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
 	</div>
         <p id="score">Score: 0</p>
@@ -167,6 +171,16 @@ function myFunction() {
     x.className = "topnav";
   }
 }
+</script>
+<script>
+   function toggleSound(){
+       SoundOn = !SoundOn
+       if (SoundOn){
+           document.getElementById("sound").innerHTML="🔊"
+       }else{
+           document.getElementById("sound").innerHTML="🔇"
+       }
+   }
 </script>
 </body>
 </html>

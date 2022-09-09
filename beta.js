@@ -20,6 +20,13 @@ var clickSound = new Audio('assets/click.mp3');
 var winSound = new Audio ('assets/celebrate.mp3')
 
 
+function playAudio (audio){
+if (document.getElementById("sound").innerHTML == "🔊"){
+    audio.play()
+}
+else{SoundOn=false;}
+}
+
 
 //Outputs correct word to console
 console.log(rightGuessString)
@@ -178,8 +185,8 @@ function checkGuess () {
         document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
 
-
-        winSound.play()
+        window.navigator.vibrate(500);
+        playAudio(winSound);
         modalgenerator("youwin")
 
         gtag('event', 'ًCorrect Word', {
@@ -281,7 +288,7 @@ document.addEventListener("keyup", (e) => {
     var found=HUROOF.indexOf(pressedKey)
     if (found != -1){
         insertLetter(pressedKey)
-        clickSound.play();
+        playAudio(clickSound)
     } else {
         return
     }
