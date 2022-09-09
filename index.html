@@ -79,26 +79,17 @@
               Feel free to use the hint button if you're stuck. Be careful though, you lose two points for each hint<br>
               !Happy guessing</p>
               <a id=whatsappshare href="whatsapp://send?text=GFG Example for whatsapp sharing"
-               data-action="share/whatsapp/share"target="_blank"
-                onclick="gtag('event', 'ًShared to Whatsapp', {
-            'event_label': rightGuessString,
-            'event_category': 'Shared to Whatsapp',
-            'non_interaction': true,
-            'value':score_n
-            });"></a>
+               data-action="share/whatsapp/share"target="_blank"></a>
         </div>
         <div id = "ModalFooterDiv" class="modal-footer">
           <h3 id="Modal Footer">Brought to you by Kawakib Creations</h3>
-					<a id="refresh"href="."></a>
+            <a id="refresh"href="."></a>
         </div>
       </div>
-
     </div>
 
 
-    <div id="game-board">
-
-    </div>
+    <div id="game-board"></div>
     <div id="keyboard-cont">
         <div class="lsd-row">
             <button class="keyboard-button">د</button>
@@ -108,10 +99,8 @@
             <button class="keyboard-button">چ</button>
             <button class="keyboard-button">ے</button>
             <button class="keyboard-button">ذ</button>
-
         </div>
         <div class="container first-row">
-
             <button class="keyboard-button">ج</button>
             <button class="keyboard-button">ح</button>
             <button class="keyboard-button">خ</button>
@@ -123,7 +112,6 @@
             <button class="keyboard-button">ث</button>
             <button class="keyboard-button">ص</button>
             <button class="keyboard-button">ض</button>
-
         </div>
         <div class="second-row">
             <button class="keyboard-button">ط</button>
@@ -152,7 +140,6 @@
         </div>
     </div>
 		<img class = "image" src="assets/kawakibcreations.png" alt="Kawakib Creations Logo" width="153" height="153">
-		<!-- <div><a href="projects.html">Other Projects</a></div> -->
 <script
 src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -167,6 +154,15 @@ function myFunction() {
     x.className = "topnav";
   }
 }
+</script>
+<script>
+    function WhatsappShareEvent (){
+    gtag('event', 'ًShared to Whatsapp', {
+        'event_label': rightGuessString,
+        'event_category': 'Shared to Whatsapp',
+        'non_interaction': true,
+        'value':score_n
+        });}
 </script>
 </body>
 </html>

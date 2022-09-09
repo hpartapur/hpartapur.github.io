@@ -6,7 +6,7 @@ import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
 let guessesRemaining = NUMBER_OF_GUESSES;
-let currentGuess = [];
+let currentGuess = []; //array of letters guessed
 let nextLetter = 0;
 let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
 var score_n = 0;
@@ -26,14 +26,12 @@ const urlParams = new URLSearchParams(queryString);
 if(urlParams.has("score")){
     score_n= Number(urlParams.get('score'))
     document.getElementById("score").innerHTML = "Score: " + +score_n
-
 }
 
  // Get the modal
  var modal = document.getElementById("myModal");
  // Get the <span> element that closes the modal
- var span = document.getElementsByClassName("close")[0];
-// When the user clicks on <span> (x), close the modal
+ var span = document.getElementsByClassName("close")[0];//close modal when x clicked
  span.onclick = function() {
    modal.style.display = "none";
 //     firsthint()
@@ -47,11 +45,8 @@ if(urlParams.has("score")){
  }
 
 
-
-
 function initBoard() {
     let board = document.getElementById("game-board");//assigns "gameboard" in html to board variable
-
     for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
         let row = document.createElement("div")
         row.className = "letter-row"
@@ -60,9 +55,8 @@ function initBoard() {
         for (let j = 0; j < rightGuessString.length; j++) {
             let box = document.createElement("div")
             box.className = "letter-box"
-            row.appendChild(box)
+            row.appendChild(box)//for every letter in a word, add a box to the row
         }
-
         board.appendChild(row)
     }
 }
@@ -101,8 +95,7 @@ function checkGuess () {
     let rightGuess = Array.from(rightGuessString)
     console.log(rightGuess)
 
-
-
+    
     for (const val of currentGuess) {
         guessString += val
     }
