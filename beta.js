@@ -185,7 +185,7 @@ function checkGuess () {
         document.getElementById("score").innerHTML = "Score: "+score_n
         guessesRemaining = 0
 
-        window.navigator.vibrate(500);
+        window.navigator.vibrate(753);
         playAudio(winSound);
         modalgenerator("youwin")
 
@@ -210,7 +210,7 @@ function checkGuess () {
 
         if (guessesRemaining === 0) {
             modalgenerator("youlose")
-
+            window.navigator.vibrate(500);
             gtag('event', 'ًFailed Word', {
             'event_label': rightGuessString,
             'event_category': "Word Failed",
@@ -378,7 +378,7 @@ function modalgenerator(category){
 			document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 			document.getElementById("refresh").href +="?score="+score_n
 			document.getElementById("refresh").innerHTML = "!Next round"
-			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
+			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp 💬`
 			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"www.khardal.net";
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
