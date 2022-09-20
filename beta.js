@@ -1,14 +1,23 @@
 // بسم الله الرحمن الرحيم
-// import { WORDS } from "./words.js";
-import { WORDS1 } from "./alldays.js";
-import { WORDSDEF } from "./alldays.js";
-import { HUROOF} from "./huroof.js";
+//// import { WORDS } from "./words.js";
+//import { WORDS1 } from "./alldays.js";
+//import { WORDSDEF } from "./alldays.js";
+import {HUROOF} from "./huroof.js";
+import {wordlistt} from "./wordlist1.js";
+import {confetti} from "./confetti.js";
 
 const NUMBER_OF_GUESSES = 6;
 let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
-let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
+//let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
+var currentDate = new Date()
+var referenceDate = new Date('9/19/2022')
+var difference = currentDate.getTime() - referenceDate.getTime();
+difference = Math.ceil(difference / (1000 * 3600 * 24));
+console.log(difference)
+var wordinfo = wordlistt[difference]
+var rightGuessString=wordinfo["Word"]
 var score_n = 0;
 var hintarray=[];
 var scoreboard=``;
@@ -17,7 +26,12 @@ var greenbox="🟩";
 var yellowbox="🟨";
 var greybox="⬜";
 var clickSound = new Audio('assets/click.mp3');
-var winSound = new Audio ('assets/celebrate.mp3')
+var winSound = new Audio ('assets/celebrate.mp3');
+var advanced=false;
+
+var sentence=wordinfo["Sentence"];
+var definition =wordinfo["Definition"]+"<br>"+wordinfo["English"];
+
 
 
 function playAudio (audio){
@@ -27,6 +41,11 @@ if (document.getElementById("sound").innerHTML == "🔊"){
 else{SoundOn=false;}
 }
 
+function hardMode (){
+    if (advanced==false){
+        
+    }
+}
 
 //Outputs correct word to console
 console.log(rightGuessString)
@@ -47,13 +66,13 @@ if(urlParams.has("score")){
 // When the user clicks on <span> (x), close the modal
  span.onclick = function() {
    modal.style.display = "none";
-//     firsthint()
+     if (advanced==false){firsthint()}
  }
  // When the user clicks anywhere outside of the modal, close it
  window.onclick = function(event) {
    if (event.target == modal) {
      modal.style.display = "none";
-//    firsthint()
+            if (advanced==false){firsthint()}
    }
  }
 
@@ -335,7 +354,7 @@ document.getElementById("hint").addEventListener("click", (e) => { //if "hint" b
     modal.style.display = "block";
     document.getElementById("Modal Header").innerHTML = "Pssst..."
     document.getElementById("Modal Body 1").innerHTML = `"${l}" :This word contains the letter `
-    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]} <br>:This word means `
+    document.getElementById("Modal Body 2").innerHTML = `<br>:This word means ${definition}  `//TODODO!!!!
     document.getElementById("Modal Body 2").innerHTML = `:This word means<br>${WORDSDEF[rightGuessString]}`
     document.getElementById("Modal Footer").innerHTML = `! Each hint deducts 2 points<br>! Don't lose too many`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
@@ -348,17 +367,20 @@ function firsthint(){
     setTimeout(() => {  modal.style.display = "block"; }, 1000);
     document.getElementById("Modal Header").innerHTML = "Pssst..."
     document.getElementById("Modal Body 1").innerHTML = `This word means`
-    document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+    document.getElementById("Modal Body 2").innerHTML = `${definition}`
+//    document.getElementById("Modal Body 3").innerHTML = `${wordinfo["English"]}`
     document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
+        
+
     }
 }
 function modalgenerator(category){
     if (category=="firsthint"){
         document.getElementById("Modal Header").innerHTML = "Pssst..."
         document.getElementById("Modal Body 1").innerHTML = `This word means`
-        document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+        document.getElementById("Modal Body 2").innerHTML = `${wordinfo["Definition"]}`
         document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
         document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
         document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
@@ -371,10 +393,13 @@ function modalgenerator(category){
         document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
     }
     else if (category=="youwin"){
+            confetti.start()
+            setTimeout(() => {  confetti.stop(); }, 5253);
 			modal.style.display = "block";
 			document.getElementById("Modal Header").innerHTML = "Great Job!"
 			document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
-			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+            document.getElementById("Modal Body 2").innerHTML = `${sentence}`
+			document.getElementById("Modal Body 3").innerHTML = `${definition}`
 			document.getElementById("Modal Footer").innerHTML = `${score_n} :Your Score`
 			document.getElementById("refresh").href +="?score="+score_n
 			document.getElementById("refresh").innerHTML = "!Next round"
@@ -383,6 +408,8 @@ function modalgenerator(category){
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 			buttonize()
+                var gform=`<center><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScb1T2VmpwxXokJeMfWf3gvI-_KZRvZWRK0VfXMNkqvb2VdaA/viewform?embedded=true" width="640" height="382" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe></center>`
+        document.getElementById("Modal Footer").innerHTML=gform;
     }
 		else if (category=="youlose"){
 			modal.style.display = "block";
@@ -407,3 +434,4 @@ function modalgenerator(category){
 			document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
 		}
 }
+
