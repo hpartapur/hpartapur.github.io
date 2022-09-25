@@ -43,7 +43,7 @@ else{SoundOn=false;}
 
 function hardMode (){
     if (advanced==false){
-        
+
     }
 }
 
@@ -372,7 +372,7 @@ function firsthint(){
     document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
-        
+
 
     }
 }
@@ -408,7 +408,7 @@ function modalgenerator(category){
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 			buttonize()
-                var gform=`<center><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScb1T2VmpwxXokJeMfWf3gvI-_KZRvZWRK0VfXMNkqvb2VdaA/viewform?embedded=true" width="640" height="382" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe></center>`
+        var gform=`<center><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScb1T2VmpwxXokJeMfWf3gvI-_KZRvZWRK0VfXMNkqvb2VdaA/viewform?embedded=true" width="640" height="382" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe></center>`
         document.getElementById("Modal Footer").innerHTML=gform;
     }
 		else if (category=="youlose"){
@@ -434,4 +434,3 @@ function modalgenerator(category){
 			document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
 		}
 }
-
