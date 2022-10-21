@@ -21,8 +21,24 @@
 
 		  gtag('config', 'G-ZJM8TVT5H6');
 		</script>
+    <script>
+function SubForm (){
+    $.ajax({
+        url:'https://api.apispreadsheets.com/data/T4926la3HVikmMkZ/',
+        type:'post',
+        data:$("#myForm").serializeArray(),
+        success: function(){
+          alert("Form Data Submitted :)")
+        },
+        error: function(){
+          alert("There was an error :(")
+        }
+    });
+}
+</script>
     <script>var SoundOn = true;</script>
     <script>"confetti.js"</script>
+    <script>console.log(document.cookie['ga'])</script>
 
 
 

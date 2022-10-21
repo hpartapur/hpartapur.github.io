@@ -119,12 +119,4 @@ export var wordlistt =[
    "Transliteration": "Iyaal",
    "French": "famille"
  },
- {
-   "Word": "chambre",
-   "Sentence": "chambre",
-   "Definition": "chambre",
-   "English": "chambre",
-   "Transliteration": "chambre",
-   "French": "chambre"
- }
 ]

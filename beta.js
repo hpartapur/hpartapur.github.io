@@ -12,7 +12,7 @@ let currentGuess = [];
 let nextLetter = 0;
 //let rightGuessString = WORDS1[Math.floor(Math.random() * WORDS1.length)]//Selects random word from words list.
 var currentDate = new Date()
-var referenceDate = new Date('9/19/2022')
+var referenceDate = new Date('10/14/2022')
 var difference = currentDate.getTime() - referenceDate.getTime();
 difference = Math.ceil(difference / (1000 * 3600 * 24));
 console.log(difference)
@@ -43,7 +43,7 @@ else{SoundOn=false;}
 
 function hardMode (){
     if (advanced==false){
-        
+
     }
 }
 
@@ -266,22 +266,16 @@ function insertLetter (pressedKey) {
 
 
 const animateCSS = (element, animation, prefix = 'animate__') =>
-  // We create a Promise and return it
   new Promise((resolve, reject) => {
     const animationName = `${prefix}${animation}`;
-    // const node = document.querySelector(element);
     const node = element
     node.style.setProperty('--animate-duration', '0.3s');
-
     node.classList.add(`${prefix}animated`, animationName);
-
-    // When the animation ends, we clean the classes and resolve the Promise
     function handleAnimationEnd(event) {
       event.stopPropagation();
       node.classList.remove(`${prefix}animated`, animationName);
       resolve('Animation ended');
     }
-
     node.addEventListener('animationend', handleAnimationEnd, {once: true});
 });
 
@@ -372,7 +366,7 @@ function firsthint(){
     document.getElementById("Modal Footer").innerHTML = `!Use this hint to find the correct word`
     document.getElementById("ModalHeaderDiv").style.backgroundColor="dodgerblue"
     document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
-        
+
 
     }
 }
@@ -388,7 +382,16 @@ function modalgenerator(category){
     else if (category=="tooshort"){
         modal.style.display = "block";
         document.getElementById("Modal Header").innerHTML = "Not enough letters"
-        document.getElementById("Modal Body 1").innerHTML = "You need to add more letters to complete a guess"
+        document.getElementById("Modal Body 1").innerHTML = `<form id="myForm" dir="ltr">
+  <label for="fname">First name</label>
+  <input type="text" id="fname" name="fname" value=""><br>
+  <label for="lname">Last name</label>
+  <input type="text" id="lname" name="lname" value=""><br>
+    <label for="email">Email Address</label>
+  <input type="text" id="email" name="email" value=""><br>
+    <input type="text,hidden" id="time" name="time" value="${score_n}" readonly>
+  <input type="submit" value="Submit" onclick="SubForm()">
+</form> `
         document.getElementById("ModalHeaderDiv").style.backgroundColor="orangered"
         document.getElementById("ModalFooterDiv").style.backgroundColor="orangered"
     }
@@ -408,14 +411,15 @@ function modalgenerator(category){
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 			buttonize()
-                var gform=`<center><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScb1T2VmpwxXokJeMfWf3gvI-_KZRvZWRK0VfXMNkqvb2VdaA/viewform?embedded=true" width="640" height="382" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe></center>`
-        document.getElementById("Modal Footer").innerHTML=gform;
+//                var gform=`<center><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScb1T2VmpwxXokJeMfWf3gvI-_KZRvZWRK0VfXMNkqvb2VdaA/viewform?embedded=true" width="640" height="382" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe></center>`
+//        document.getElementById("Modal Footer").innerHTML=gform;
     }
 		else if (category=="youlose"){
 			modal.style.display = "block";
 			document.getElementById("Modal Header").innerHTML = "You've run out of guesses! Game Over!"
 			document.getElementById("Modal Body 1").innerHTML = `"${rightGuessString}" :The correct word was`
-			document.getElementById("Modal Body 2").innerHTML = `${WORDSDEF[rightGuessString]}`
+			document.getElementById("Modal Body 2").innerHTML = `${sentence}`
+			document.getElementById("Modal Body 3").innerHTML = `${definition}`
 			document.getElementById("Modal Footer").innerHTML = `!Try again`
 			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
 			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"https://khardal.net/";
@@ -434,4 +438,3 @@ function modalgenerator(category){
 			document.getElementById("ModalFooterDiv").style.backgroundColor="dodgerblue"
 		}
 }
-
