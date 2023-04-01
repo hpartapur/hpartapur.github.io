@@ -7,8 +7,8 @@ var centerLetter = "";
 var cursor = true;
 var numFound = 0;
 var maxscore = 0;
-setInterval(() => {
-  if(cursor) {
+setInterval(() => { //toggle cursor every 600ms 
+  if(cursor) { 
     document.getElementById('cursor').style.opacity = 0;
     cursor = false;
   }else {
@@ -60,10 +60,11 @@ function get_valid_words(){
 }
 
 
-
+//gives maxscore value to html page
 function initialize_score(){
-  document.getElementById("maxscore").innerHTML = String(maxscore);
+  document.getElementById("maxscore").innerHTML = String(maxscore); 
 }
+
 //Creates the hexagon grid of 7 letters with middle letter as special color
 function initialize_letters(){
     
@@ -95,17 +96,8 @@ function initialize_letters(){
     }
 }
 
-Array.prototype.shuffle = function() {
-  let input = this;
-  for (let i = input.length-1; i >=0; i--) {
-    let randomIndex = Math.floor(Math.random()*(i+1)); 
-    let itemAtIndex = input[randomIndex]; 
-    input[randomIndex] = input[i]; 
-    input[i] = itemAtIndex;
-  }
-  return input;
-}
 
+//Shuffles the letters and makes sure the center letter is in the middle
 function shuffleLetters() {
     letters.shuffle()
     //get center letter back to letter[3]
@@ -120,34 +112,25 @@ function shuffleLetters() {
       hexgrid.removeChild(hexgrid.firstChild);
     }
     initialize_letters()
-
-    /*
-    //fill in shuffled letters into hex grid 
-    for(var i=0; i<letters.length; i++) {
-        var char = letters[i];
-        var hexLetterElement = document.getElementsByClassName("hexLink");
-        hexLetterElement[i].removeChild(hexLetterElement[i].firstChild);
-
-        var pElement = document.createElement("P");
-        pElement.innerHTML = char;
-        hexLetterElement[i].appendChild(pElement); 
-    }*/
+}
+//shuffle function dependency
+Array.prototype.shuffle = function() {
+  let input = this;
+  for (let i = input.length-1; i >=0; i--) {
+    let randomIndex = Math.floor(Math.random()*(i+1)); 
+    let itemAtIndex = input[randomIndex]; 
+    input[randomIndex] = input[i]; 
+    input[i] = itemAtIndex;
+  }
+  return input;
 }
 
-//Validate whether letter typed into input box was from one of 7 available letters
-// document.getElementById("testword").addEventListener("keydown", function(event){
-//     if(!letters.includes(event.key.toUpperCase())){
-//         alert('Invalid Letter Typed')
-//         event.preventDefault();
-//     }
-//   }
-//   )
 
 //When letter is clicked add it to input box
 var clickLetter = function(letter){
   return function curried_func(e){
     var tryword = document.getElementById("testword");
-    tryword.innerHTML = tryword.innerHTML + letter.toLowerCase();
+    tryword.innerHTML = tryword.innerHTML + letter;
   }
 }
 
@@ -161,31 +144,34 @@ function deleteLetter(){
   }
 }
 
+//if input is invalid, fades out and shakes the input box and clears the input
 function wrongInput(selector){
   $(selector).fadeIn(1000);
   $(selector).fadeOut(500);
   $("#cursor").hide();
   $( "#testword" ).effect("shake", {times:2.5}, 450, function(){
-      clearInput();
+      clearInput(); //TODO if you want to not remove guess, comment this line
       $("#cursor").show();
     } );
 
 }
 
+//word fades in and then out
 function rightInput(selector){
-  $(selector).fadeIn(1500).delay(500).fadeOut(1500);
-  
+  $(selector).fadeIn(1500).delay(700).fadeOut(1500);
   clearInput();
 }
 
+//clears letters entered
 function clearInput(){
   $("#testword").empty();
 }
 
-function showPoints(pts){
+//points won popup
+function showPoints(pts){ 
   $(".points").html("+" + pts);
-
 }
+
 //check if the word is valid and clear the input box
 //word must be at least 4 letters
 //word must contain center letter
@@ -196,8 +182,8 @@ function submitWord(){
 
   let score = 0;
   var isPangram = false;
-  var showScore = document.getElementById("totalScore");
 
+  //Check that word is not too short, already found, or missing center letter
   if(tryword.innerHTML.length < 1){ 
     wrongInput("#too-short");
   }else if(discoveredWords.includes(tryword.innerHTML.toLowerCase())){
@@ -205,6 +191,7 @@ function submitWord(){
   }else if(!tryword.innerHTML.toLowerCase().includes(centerLetter.toLowerCase())){
     wrongInput("#miss-center");
 
+  //if word is valid, and in word list
   }else if(validWords.includes(tryword.innerHTML.toLowerCase())){
 
     var isPangram = checkPangram(tryword.innerHTML);
@@ -217,16 +204,18 @@ function submitWord(){
     document.getElementById("numfound").innerHTML = numFound;
     document.getElementById("score").innerHTML = totalScore;
 
-    var l = tryword.innerHTML.length;
+    //Scoring System
+    //TODO: Change scoring system by length and points
+    var wordlength = tryword.innerHTML.length;
     if(isPangram){
       rightInput("#pangram");
       showPoints(17);
-    }else if(l < 5){
+    }else if(wordlength < 5){
       rightInput("#good");
       showPoints(1);
-    }else if(l<7){
+    }else if(wordlength<7){
       rightInput("#great");
-      showPoints(l);
+      showPoints(wordlength);
     }else{
       rightInput("#amazing");
       showPoints(l);
@@ -237,19 +226,19 @@ function submitWord(){
   }
 }
 
-//if word was valid, display it 
+//if word was valid, display it below the grid
 //if all words are found end game.
 function showDiscoveredWord(input){
     
     var discText = document.getElementById("discoveredText");
-    discoveredWords.push(input.toLowerCase());
-    discoveredWords.sort() 
+    discoveredWords.push(input);
+    discoveredWords.sort() //add new word to discovered list and sort alphabetically
     while(discText.firstChild){
       discText.removeChild(discText.firstChild);
     }
-
     var numFound = discoveredWords.length; 
-    var numCol = Math.ceil(numFound/6);
+
+    var numCol = Math.ceil(numFound/6); //how many columns for the discoveredwords
     var w = 0; 
     for(var c=0; c<numCol; c++){
       var list = document.createElement("UL");
@@ -277,8 +266,12 @@ function showDiscoveredWord(input){
         w++;
       }
     }
+
+     /* TODO: if score reaches a certain amount, modal should pop up
+     modal should say, you have won. press here to try to find more words and achieve a high score
+      */
     if (numFound == validWords.length){
-      alert("You have found all of the possible words! Thanks for playing");
+      alert("You have found all of the possible words! Thanks for playing"); //TODO: change popup to modal
     }
 }
 
@@ -292,13 +285,10 @@ function calculateWordScore(input, isPangram) {
   
   let len = input.length;
   let returnScore = 1; 
-  if(len > 4) {
-    if(isPangram) {
-      returnScore = len + 7;
-      
-    }else{
-      returnScore = len;
-    }
+  if(isPangram) {
+    returnScore = len + 27; //plus pangram bonus
+  }else{
+    returnScore = len;
   }
   console.log('score ' + returnScore)
   return returnScore;
@@ -306,7 +296,6 @@ function calculateWordScore(input, isPangram) {
 
 //checks if "input" word is a pangram
 function checkPangram(input) {
-  
   var i;
   var containsCount = 0;
   var containsAllLetters = false;
@@ -320,24 +309,14 @@ function checkPangram(input) {
   }
   console.log("isPangram?: " + containsAllLetters);
   return containsAllLetters;
-  
-  // console.log(input.value);
-  // if(input==pangram){
-  //  return true;
-  // }
- return false;
 }
 
+//checks if "input" contains any letters that are not in the hexagon
 function checkIncorrectLetters(input) {
-  var i;
-  var badLetterCount = 0;
   for(i = 0; i < input.length; i++) {
     if(!letters.includes(input[i])) {
-      badLetterCount++;
+      return true;
     }
-  }
-  if(badLetterCount > 0) {
-    return true;
   }
   return false;
 }
@@ -354,12 +333,14 @@ function input_from_keyboard(event) {
     deleteLetter();
   }
 
+
+  
   //validation for just alphabet letters input
   if(event.keyCode >= 97 && event.keyCode <= 122 ||
     event.keyCode >=65 && event.keyCode <=90) {
     tryword.innerHTML = tryword.innerHTML+ String.fromCharCode(event.keyCode).toLowerCase();
     if(checkIncorrectLetters(tryword.innerHTML)) {
-      tryword.style.color = 'grey';
+      tryword.style.color = 'red';
     }
   }
 }
