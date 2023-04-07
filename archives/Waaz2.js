@@ -1,7 +1,7 @@
 // بسم الله الرحمن الرحيم
 // import { WORDS } from "./words.js";
-import { WORDS1 } from "../day2.js";
-import { WORDSDEF } from "../day2.js";
+import { WORDS1 } from "./dailywordlists/day2.js";
+import { WORDSDEF } from "./dailywordlists/day2.js";
 import { HUROOF} from "../huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
