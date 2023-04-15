@@ -100,7 +100,6 @@ function initialize_letters(){
 //Shuffles the letters and makes sure the center letter is in the middle
 function shuffleLetters() {
     letters.shuffle()
-    navigator.vibrate(500)
     //get center letter back to letter[3]
     var centerIndex = letters.indexOf(centerLetter);
     if(letters[3] != centerLetter) {
