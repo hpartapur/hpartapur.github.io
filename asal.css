@@ -282,15 +282,15 @@ ul {
 }
 
 /* if mobile screen, grow hexgrid and  hexagons to 200% of original size and grow fonts*/
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1000px) {
   #hexGrid{
     grid-template-columns: repeat(6,3fr);
     padding-bottom: 5.4%;
     margin-bottom:2vh;
   }
   .hex{
-    width: 200%;
-    height: 200%;
+    width: 110%;
+    height: 110%;
   }
   .hex p {
     padding: 38%;
