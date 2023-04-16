@@ -285,15 +285,15 @@
   @media only screen and (max-width: 1000px) {
     #hexGrid{
       grid-template-columns: repeat(6,3fr);
-      width:80%;
+      width:95%;
       padding-bottom: 5.4%;
       margin-bottom:2vh;
       grid-row-gap: .5rem;
       grid-column-gap: 1.53rem;
     }
     .hex{
-      width: 150%;
-      height: 150%;
+      width: 120%;
+      height: 120%;
     }
     .hex p {
       padding: 38%;
