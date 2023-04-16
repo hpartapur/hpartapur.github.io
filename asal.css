@@ -300,24 +300,26 @@
       font-size:500%;
     }
     #testword {
-      height:50px; 
+      height:10%; 
       text-align: center;  
       font-family: KM;
-      font-size: 80px;
+      font-size:553%;
       padding-top:3px;
+      font-weight: 10;
+
     }
     #cursor {
       font-family: KM;
-      font-size: 2.5rem;
+      font-size:553%;
       font-weight: 100;
-      height:6vw;
+      height:10%;
       color: rgb(255, 187, 0);
     }
     h1 {
       text-align: center;
-      margin-top:4vh; 
-      margin-bottom:1vhpx; 
-      font-size: 2.5rem;
+      margin-top:1vh; 
+      margin-bottom:1vh; 
+      font-size: 5rem;
       font-family: KM;
     }
     .scoreText {
@@ -328,26 +330,26 @@
     }
     .button {
       background-color: white; 
-      border: 2px solid #e7e7e7;
+      border: .21rem solid #e7e7e7;
       margin: 0 auto;
       color: black;
-      padding: 0px 15px;
+      padding: 0rem 1.5rem;
       text-align: center;
       text-decoration: none;
       display: inline-block;
-      font-size: 1.2em;
-      border-radius:30px;
+      font-size: 2.21rem;
+      border-radius:3rem;
       cursor: pointer;
     }
     .notifications {
       background-color:black; 
       color:white; 
       display:flex;
-      padding:5px;
+      padding:.7rem;
       align-items:center;
       justify-content:center;
-      border-radius:3px;
+      border-radius:1.53rem;
       font-family: 'Calibri Light',sans-serif;
-      font-size: 1em;
+      font-size: 2.53rem;
     }
   }
