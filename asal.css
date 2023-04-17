@@ -282,16 +282,18 @@
   }
 
   /* if mobile screen, grow hexgrid and  hexagons to 200% of original size and grow fonts*/
-  @media only screen and (max-width: 1000px) {
-    #hexGrid{
+  @media only screen and (max-width: 1000px){
+  #hexGrid {
       grid-template-columns: repeat(6,3fr);
-      width:90%;
-      height:110;
-      padding-bottom: 5.4%;
-      margin-bottom:2vh;
-      grid-row-gap: .5rem;
-      grid-column-gap: 1.53rem;
-    }
+      width: 90%;
+      height: 100%;
+      padding-bottom: 15%;
+      padding-left: 2%;
+      padding-right: 2%;
+      margin-bottom: 2vh;
+      grid-row-gap: 1%;
+      grid-column-gap: 5%;
+  }
     .hex{
       width: 110%;
       height: 110%;
@@ -352,5 +354,29 @@
       border-radius:1.53rem;
       font-family: 'Calibri Light',sans-serif;
       font-size: 2.53rem;
+    }
+    .scoreText {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 3rem;
+      font-weight:100;
+      align-self:center;
+    }
+    #discoveredText {
+      font-family: KM;
+      font-size: 2rem;
+      align-self:center;
+      display:flex;
+      flex-direction:row;
+      flex-wrap:wrap;
+      padding: auto;
+    }
+    #wordsdiscovered {
+      font-family: KM;
+      font-size: 2rem;
+      align-self:center;
+      display:flex;
+      flex-direction:row;
+      flex-wrap:wrap;
+      padding: auto;
     }
   }
