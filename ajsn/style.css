@@ -1,0 +1,15 @@
+  html {
+  overflow-x:visible; /* Hide horizontal scrollbar */
+  overflow-y:visible; /* Add vertical scrollbar */
+}
+body {
+  background-image: url("images/bg.jpg");
+  background-repeat: repeat;
+  background-size: 10%;
+}
+/* if mobile, change background size to 30% */
+@media only screen and (max-width: 600px) {
+  body {
+    background-size: 30%;
+  }
+}
