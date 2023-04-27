@@ -113,6 +113,8 @@ function shuffleLetters() {
     }
     initialize_letters()
 }
+
+
 //shuffle function dependency
 Array.prototype.shuffle = function() {
   let input = this;
