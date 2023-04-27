@@ -12,3 +12,5 @@ create day3,day4, day5 html pages
 add photos to departments.html
 
 update navbars
+
+change link in feedback
