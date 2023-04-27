@@ -10,6 +10,8 @@ create day3,day4, day5 html pages
 
 add photos to departments.html
 
+add info to buildings.html
+
 update navbars
 
 how to password protect static website
