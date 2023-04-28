@@ -10,13 +10,12 @@ create day3,day4, day5 html pages
 
 add multiple images for each builiding
 
-add py-5 divs to later buildings
 
 add info to buildings.html
 
 update navbars
 
-how to password protect static website
+
 
 travel information plus sightseeing
 create another webpage called travel.html for travel information and sightseeing
