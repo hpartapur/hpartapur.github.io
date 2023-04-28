@@ -27,7 +27,7 @@ clicking logo on different days should take to different day pages
 make newmodal pop up only once
 use cookies
 
-current day should blink
+current day should blink https://www.geeksforgeeks.org/how-to-shake-an-image-using-css-keyframe/
 
 asbaq venues tab
 
@@ -39,3 +39,12 @@ take input of trnumber and save corresponding group in cookie
 create 12 table data htmls for each group and for each day
 
 add images and text from edu email
+
+// returns the cookie with the given name,
+// or undefined if not found
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
