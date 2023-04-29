@@ -12,7 +12,7 @@ function modalDelay(){
         }, 1200);
     });
 }
-
+// 
 function chooseschedule (day){
     var group = getCookie("group");
     if (group != undefined){
