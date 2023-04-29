@@ -12,6 +12,3 @@ function modalDelay(){
         }, 1200);
     });
 }
-function tester (){
-    console.log("yahooo")
-}

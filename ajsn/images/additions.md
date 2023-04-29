@@ -2,15 +2,13 @@ resources page
 check whether page can provide pdfs
 
 
-create day3,day4, day5 html pages
-
-
-
 add info to buildings.html
+fix maskan mawaid copyrighted text
 add multiple images for each builiding
 
 update navbars
 
+popup text
 
 
 make newmodal pop up only once

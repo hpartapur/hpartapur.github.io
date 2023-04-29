@@ -15,7 +15,7 @@
 </head>
 
 
-<body onload="modalDelay();tester();">
+<body onload="modalDelay()">
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -243,7 +243,7 @@ function trr(){
     "28038": "1BFBurhani",
   }
   var group = groupdata[tr]
-  alert("Your group is "+ group)
+  alert("Your Orientation group is {}. Kindly check your daily schedule from the menu bar.".format(group))
   document.cookie="group="+groupdata[tr]
 }
 </script>
