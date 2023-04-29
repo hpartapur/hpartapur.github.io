@@ -24,7 +24,7 @@ gallery
 
 create a script.js and move as many scripts as possible
 
-
+before schedule change group name from h4 to h3
 
 create 12 table data htmls for each group and for each day
 

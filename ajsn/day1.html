@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="script.js"></script>
+
 
 <!-- TODO!! ADD TOOLTIPS -->
   <!-- Required meta tags -->
@@ -181,14 +183,8 @@
   </div>
 
 <script>
-  function getCookie(name) {
-  let matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
 var g=getCookie("group");
-if (g=="1AMSaifee"){
-  document.getElementById("1AMSaifee").hidden=false;
+if (g!=undefined){
+  document.getElementById(g).hidden=false;
 }
 </script>
