@@ -22,6 +22,9 @@ asbaq venues tab
 
 gallery
 
+create a script.js and move as many scripts as possible
+
+
 
 create 12 table data htmls for each group and for each day
 
