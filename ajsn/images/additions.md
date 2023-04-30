@@ -1,8 +1,5 @@
 create a script.js and move as many scripts as possible
 
-
-add office location to contact page
-
 add images and text from edu email
 add info to buildings.html
 fix maskan mawaid copyrighted text
@@ -23,13 +20,6 @@ current day should blink https://www.geeksforgeeks.org/how-to-shake-an-image-usi
 asbaq venues tab
 
 gallery
-
-
-
-
-
-
-
 
 resources page
 check whether page can provide pdfs
