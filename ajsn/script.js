@@ -21,3 +21,14 @@ function chooseschedule (day){
         document.getElementById("schedulecaption").innerHTML="Day"+day+" Schedule for " + group;
     }
 }
+function loadnavbar() {
+    var path = window.location.pathname;
+    var page = path.split("/").pop();
+  
+    $("#navbar-placeholder").load("navbar.html", function () {
+      $('.nav-link[href="' + page + '"]').addClass("active");
+    });
+  }
+  
+
+  
