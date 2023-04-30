@@ -16,5 +16,6 @@ asbaq venues tab
 
 gallery
 
-resources page
-check whether page can provide pdfs
+compress maktabat and academic images
+
+add analytics
