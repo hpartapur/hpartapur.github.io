@@ -32,6 +32,10 @@ body {
   background-color: #d4b60e;
 
 }
+.img-container{
+  overflow-x: auto;
+  white-space: nowrap;
+}
 
 /* Responsive design */
 @media only screen and (max-width: 768px) {
