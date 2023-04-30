@@ -89,27 +89,12 @@
   <!-- Page Content -->
   <div class="container mt-4">
     <center><img src="images/day5.png" width="30%"></center>
-
-
-
-    <img id="schedule" src="" width="100%">
+    <center><h3 id="schedulecaption"></h3>
+      <img id="schedule" src="" width="100%"></center>
+      <script>
+        chooseschedule(5);
+      </script>
 
 
 
   </div>
-
-<script>
-  function getCookie(name) {
-  let matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-var g=getCookie("group");
-
-// unhide based by group in cookie here
-
-</script>
-<script>
-  chooseschedule(5);
-</script>

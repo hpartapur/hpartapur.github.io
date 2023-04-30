@@ -18,5 +18,6 @@ function chooseschedule (day){
     if (group != undefined){
         var imgname ="schedules/"+group+"_"+day+".png";
         document.getElementById("schedule").src=imgname;
+        document.getElementById("schedulecaption").innerHTML="Day"+day+" Schedule for " + group;
     }
 }
