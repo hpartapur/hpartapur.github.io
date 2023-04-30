@@ -5,14 +5,9 @@ add info to buildings.html
 fix maskan mawaid copyrighted text
 add multiple images for each builiding
 
-make scrollable on every page
 
 create new feedback modal and
 make feedback modal appear at bottom right of page
-
-
-
-
 
 
 current day should blink https://www.geeksforgeeks.org/how-to-shake-an-image-using-css-keyframe/
