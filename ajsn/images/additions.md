@@ -13,5 +13,6 @@ asbaq venues tab
 
 gallery
 
+replace schedule images with images that will be provided by hadiashar
 
 add analytics
