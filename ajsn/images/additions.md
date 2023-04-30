@@ -15,4 +15,8 @@ gallery
 
 replace schedule images with images that will be provided by hadiashar
 
-add analytics
+add analytics to all pages
+create events for filling out forms/etc etc etc
+
+add a help button to navbar which when clicked, creates an error event in GA, and provides email to contact for help
+
