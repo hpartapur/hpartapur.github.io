@@ -1,10 +1,7 @@
 create a script.js and move as many scripts as possible
 
-add images and text from edu email
-add info to buildings.html
-fix maskan mawaid copyrighted text
-add multiple images for each builiding
-
+add text for maktabat and admin
+create link to saahat
 
 create new feedback modal and
 make feedback modal appear at bottom right of page
@@ -16,6 +13,5 @@ asbaq venues tab
 
 gallery
 
-compress maktabat and academic images
 
 add analytics
