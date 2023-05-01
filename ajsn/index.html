@@ -196,8 +196,8 @@ function trr(){
     alert("Welcome! \n Your Orientation group is "+group+". \n Kindly check your daily schedule from the menu bar.")
     document.cookie="group="+groupdata[tr]
     document.cookie="tr="+tr;
-    gtag('event', 'TR_Entered', {
-      'tr':tr});
+    gtag('event', 'TR_Entered', {'tr':tr});
+    navigator.vibrate(253);
   }else{
     alert("Not a valid TR Number. Please try again.")
   }
