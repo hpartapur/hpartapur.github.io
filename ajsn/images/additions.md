@@ -33,3 +33,5 @@ improve alert message
 create multiple modals
 
 add event for TR entered
+
+change groupdata to add names as well
