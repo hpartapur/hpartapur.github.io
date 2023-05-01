@@ -31,3 +31,5 @@ add catch for undefined tr
 improve alert message
 
 create multiple modals
+
+add event for TR entered
