@@ -2,6 +2,8 @@
 add text for maktabat and admin
 create link to saahat
 
+FIX BUILDINGS HTML GTAG ERROR
+
 create new feedback modal and
 make feedback modal appear at bottom right of page
 
@@ -32,4 +34,11 @@ improve alert message
 
 create multiple modals
 
-add event for TR entered
+
+change groupdata to add names as well
+
+move pages to navbar even on big screen
+
+add favicon
+
+improve fonts
