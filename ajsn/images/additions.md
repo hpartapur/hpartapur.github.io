@@ -1,4 +1,3 @@
-create a script.js and move as many scripts as possible
 
 add text for maktabat and admin
 create link to saahat
@@ -20,3 +19,15 @@ create events for filling out forms/etc etc etc
 
 add a help button to navbar which when clicked, creates an error event in GA, and provides email to contact for help
 
+create new html for modal, or try to simplify modal
+
+improve cookie experience
+
+move trr to script.js
+move gtag to scriptjs
+
+add catch for undefined tr
+
+improve alert message
+
+create multiple modals
