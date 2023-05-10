@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Image Renaming Tool</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Image Renaming Tool</h1>
+  <form id="image-form">
+    <div>
+      <label for="images">Select images:</label>
+      <input type="file" id="images" name="images" accept="image/*" multiple>
+    </div>
+    <div>
+      <label for="capture">Capture Photo:</label>
+      <button type="button" id="capture" onclick="capturePhoto()">Capture</button>
+    </div>
+    <div>
+      <label for="region">Region:</label>
+      <select id="region" name="region" onchange="populateCities()">
+        <option value="">Select a region</option>
+        <option value="usa">USA</option>
+        <option value="uk">UK</option>
+        <option value="ea">East Africa</option>
+      </select>
+    </div>
+    <div>
+      <label for="city">City:</label>
+      <select id="city" name="city"></select>
+    </div>
+    <div>
+      <label for="option3">Option 3:</label>
+      <select id="option3" name="option3">
+        <option value="option3-1">Option 3-1</option>
+        <option value="option3-2">Option 3-2</option>
+        <option value="option3-3">Option 3-3</option>
+      </select>
+    </div>
+    <div>
+      <button type="button" onclick="renameImages()">Rename Images</button>
+    </div>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>
