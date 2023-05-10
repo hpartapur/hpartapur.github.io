@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Image Renaming Tool</title>
+  <script type="text/javascript" src="script.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/jpg" href="/assets/kawakibcreations.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   <!-- jQuery, Popper, and Bootstrap JS -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <body>
+    
+  <center><button class="btn btn-info" style="pointer-events: none;"><h1>Image Renaming Tool</h1>
+  <h4 class="text-center mb-4" style="font-style: oblique;">For Nairobi Followup Office Use Only</h4>
+  </button>
+  </center>
+    <form id="image-form">
+    <div>
+      <label for="images">Select images:</label>
+      <input type="file" id="images" name="images" accept="image/*" multiple>
+    </div>
+
+    <div>
+      <label for="region">Jamiat:</label>
+      <select id="region" name="region" onchange="populateCities()">
+        <option value="">Select a Jamiat</option>
+        <option value="usa">USA</option>
+        <option value="uk">UK</option>
+        <option value="ea">East Africa</option>
+      </select>
+    </div>
+    <div>
+      <label for="city">Mauze:</label>
+      <select id="city" name="city"></select>
+    </div>
+    <div>
+      <label for="image-tag">Image Tag:</label>
+      <select id="image-tag" name="image-tag">
+        <option value="tag1">Tag 1</option>
+        <option value="tag2">Tag 2</option>
+        <option value="tag3">Tag 3</option>
+      </select>
+    </div>
+    <br><br>
+    <div>
+      <button type="button" class="btn btn-success" onclick="renameImages()">Download Renamed Images</button>
+    </div>
+  </form>
+<center><br><br>
+  <button class="btn btn-danger" onclick="helper()">Help?</button>
+</center>
+<script>
+  function helper(){
+    alert("This tool has been created to allow followup khidmat guzars to rename the photos they receive from mawaze in a consistent manner. \n It is an easy way to rename photos, so they can be easily uploaded to Google Drive, and easily found. \n \n To start, press 'Choose Files'. \n Then, select the Jamiat and Mauze from which the photos were sent. \n You MUST select Jamiat first to get list of mawaze in that Jamiat. \n If your mauze is not present in the list after selecting the Jamiat, contact the developer. \n Then, choose the Image Tag, which allows you to select which category of amal the image falls under. \n \n To add a category, contact the developer. \n Then, click 'Download Renamed Images'. \n If your browser asks you to allow multiple downloads, click ALLOW. \n Success! Your photos have been downloaded with new names, and are ready to be uploaded to the drive. \n \n Developed by Kawakib Creations. Contact Hatim Partapurwala- 24653- Nairobi Jame ")
+  }
+</script>
+</body>
+</html>

@@ -25,15 +25,19 @@ body {
     margin-bottom: 10px;
   }
   
-  button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-  }
-  
+
+/*   
   button:hover {
     background-color: #45a049;
-  }
-  
+  } */
+
+  body {
+    background-image: url("./bg.jpg");
+    background-repeat: repeat;
+    background-size: 12%;
+}
+/* if mobile, change background size to 30% */
+@media only screen and (max-width: 600px) {
+  body {
+    background-size: 20%;
+  }}
