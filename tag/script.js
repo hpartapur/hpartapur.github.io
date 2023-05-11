@@ -28,7 +28,7 @@ const cityOptions = {
     const files = document.getElementById('images').files;
     const region = document.getElementById('region').value;
     const city = document.getElementById('city').value;
-    const option3 = document.getElementById('option3').value;
+    const option3 = document.getElementById('image-tag').value;
   
     // Check if any files are selected
     if (files.length === 0) {
