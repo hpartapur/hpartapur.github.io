@@ -1,6 +1,5 @@
 import pandas as pd
-import arabic_reshaper
-from bidi.algorithm import get_display
+# x
 # Read the Excel file
 data = pd.read_excel('zeroscanned.xlsx')
 
@@ -54,5 +53,5 @@ html_content = '''
 '''.format(image_base64)
 
 # Write the HTML content to a file
-with open('clustered_bar_chart.html', 'w',encoding='utf-8') as file:
+with open('index.html', 'w',encoding='utf-8') as file:
     file.write(html_content)
