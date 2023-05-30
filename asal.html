@@ -8,14 +8,14 @@
       <meta charset="UTF-8" />
         <title>Asal Word Builder</title>
         <link rel="stylesheet" href = "asal.css">
-        <link rel="preload" as="font" href="assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous">
-        <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
-        <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Roboto+Slab:300,400,500,600,700&display=swap" rel="stylesheet"> -->
+        <link rel="preload" as="font" href="Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous">
+        <script src="jquery.min.js"></script>
+        <script src="jquery-ui.min.js"></script>
     </head>
     <body onload="get_valid_words()" onkeydown="input_from_keyboard(event)">
-        <h1> Asal Word Builder</h1>
+
+        <!-- <h1> Asal</h1> -->
+        <img src="logo1.png" style=" height: 16em; width:50%; align-self:center; margin-top: 10%;">
 
         <!-- NOTIFICATIONS -->
         <div class="container" style="height:50px; align-items:center;">
@@ -29,39 +29,38 @@
             <p id="invalid-word" class="notifications">Invalid Word</p>
             <p id="miss-center" class="notifications">Missing Center Letter</p>
           </div>
-
+        
         </div>
 
         <!-- INPUT WORD -->
         <div class="cursor">
             <p id="inputword" style="display:flex;"> <span id="testword"></span><span id="cursor">|</span></p>
         </div>
-        <!-- <div class="cursor" style="height:40px; text-align:center; display:flex-inline; justify-content:center; margin-bottom:360px;"> -->
-
+        
         <!-- HEXAGON GRID -->
-          <div style="display:flex; flex-direction:column; align-items:center;">
+          <div style="display:flex; flex-direction:column; align-items:center; height:fit-content; width: auto; ;">
             <ul id="hexGrid"></ul>
-
+          <center>
             <div class="button_container">
               <button id="submit_button" type="button" class="button" onclick="submitWord()">Enter</button>
               <button id="shuffle_button" type="button" class="button" onclick="shuffleLetters()">
                 <img src="shuffle_icon.png" style="width:1.2em">
-
+              
               </button>
               <button id="delete_button" type="button" class="button" onclick="deleteLetter()">Delete</button>
                 <!--<i style="align-self:center;"></i>-->
-
-            </div>
+              
+            </div></center>
         </div>
-        <div class="container" style="height:100px; justify-content:normal;" id="scoreboard">
+        <div class="container" style="height:200px; justify-content:normal;" id="scoreboard">
               <div class="scoreText" style="margin-bottom:8px;">You have found <span id="numfound">0</span> word(s).</div>
               <div class="scoreText" style="margin-bottom:8px;">Score: <span id="score">0</span>/<span id="maxscore">0</span>.</div>
-              <div id="wordsdiscovered" style=" font-family: 'Open Sans', sans-serif; align-self:center; font-size: 15px; font-style:bold;  text-decoration: underline;">Words Discovered</div>
+              <div class="scoreText" style=" font-family: 'Open Sans', sans-serif; align-self:center; font-style:bold;  text-decoration: underline;">Words Discovered</div>
               <div id="discoveredText" >
               </div>
-        </div>
-
+        </div>         
     </body>
 </html>
+
 
 <script type="text/javascript" src="asal.js"></script>
