@@ -54,6 +54,9 @@ setInterval(() => { //toggle cursor every 600ms
 function get_valid_words(){
   letters=["م","ل","ب","ن","ت","ج","ع"]
   validWords=["بن","لبن","نمل","جمن","نجم","نعل","بنت","جلن","نجل","تن","تجنب","لن","جن","جنم","جنت","من","منن","منعم","منع","منجم","منبع","ممتنع","نعم","نت","نعت"]
+  
+  // letters=['ق', 'ص', 'د', 'ك', 'ر', 'ن', 'ا', 'ر']
+
   maxscore=validWords.length;
   initialize_score();
   initialize_letters();
@@ -113,8 +116,6 @@ function shuffleLetters() {
     }
     initialize_letters()
 }
-
-
 //shuffle function dependency
 Array.prototype.shuffle = function() {
   let input = this;
@@ -181,7 +182,6 @@ function showPoints(pts){
 function submitWord(){
   var tryword = document.getElementById('testword');
   var centerLetter = document.getElementById('center-letter').firstChild.innerHTML;
-
   let score = 0;
   var isPangram = false;
 
