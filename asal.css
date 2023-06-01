@@ -2,6 +2,10 @@
   margin: 0;
   padding: 0;
 }
+@font-face {
+  font-family: KM;
+  src: url(Kanz-al-Marjaan.ttf);
+}
 body {
   align-content:center;
   vertical-align:center;
@@ -102,7 +106,7 @@ input[type="text"]
   font-weight: 800;
   font-size:2.53em;
   color:black;
-  font-family: 'Kanz-al-Marjaan','Open Sans', sans-serif;
+  font-family: KM,'Open Sans', sans-serif;
   
 }
 /*** HEX HOVER *****************************************************************/
@@ -134,7 +138,7 @@ input[type="text"]
   
   height:50px; 
   text-align: center;  
-  font-family: 'Kanz-al-Marjaan','Open Sans', sans-serif;
+  font-family: KM,'Open Sans', sans-serif;
   font-size: 6rem;
   padding-top:3px;
   padding-bottom: 5rem;
@@ -177,7 +181,7 @@ text-align: center;
 }
 
 #discoveredText {
-font-family: 'Kanz-al-Marjaan','Open Sans',  sans-serif;
+font-family: KM,'Open Sans',  sans-serif;
 font-size: 5rem;
 align-self:center;
 display:flex;
