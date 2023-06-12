@@ -22,21 +22,21 @@ function get_valid_words(){
   letters=['ق', 'و', 'ف', 'ر', 'ث', 'ك', 'ل']      
   validWords=['كرف', 'فرق', 'رق', 'رو', 'فقر', 'رفرف', 'كوثر', 'كرورو', 'كثر', 'روكو', 'رووف', 'كرو', 'ر', 'رفق', 'رقك', 'فكر', 'كروو', 'فكرو', 'كرووو', 'رورو', 'كور', 'روو', 'لرو', 'روكرو', 'وفكر', 'قر', 'رفو', 'ورو', 'قفر', 'روكوو', 'وكثر', 'ورق', 'لر', 'وورث', 'ركو', 'لكرو', 'لكر', 'روف', 'ور', 'رووو', 'كرور', 'كر', 'فر', 'كورو', 'كروور', 'وكفر', 'كفر', 'روك', 'وفور', 'ثر']
   
-  // maxscore=validWords.length;
-  // initialize_score();
-  initialize_letters();
-  var jss= JSON.parse(`{"words":
-  [
-          {"letters": ["ط", "خ", "ء", "ك", "ٹ", "ث", "ج"], "validWords": ["ك", "ٹك", "كج"]},
-          {"letters": ["چ", "ا", "و", "خ","ي", "ف", "ط"], "validWords": ["چيخي", "خطايا", "خفي", "خف", "خوا", "اخط", "خط", "اخاف", "خطاو", "خياط", "اخا", "خ", "اخو", "خفيف", "خا", "خوف", "اخي", "يخط", "خو", "خطوط", "خفا", "وخفيا"]},
-          {"letters": ["چ", "ف", "س", "ك", "ا", "ض", "ص"], "validWords": ["ك", "سكا", "چكا", "كاكا", "كاف", "چك", "چاك", "سفك", "كا", "كسا", "كاس", "فك", "كف", "اك", "اسك", "فكاك", "كس"]}
-          
-      
-      
-      
-      ]
-  }`)
-  console.log(jss)
+  fetch('./words.json')
+  .then((response) => response.json())
+  .then((json) => {
+    data2 = json;  // Assign the parsed JSON data to the global variable data2
+    console.log(data2); // Log the data2 variable to the console
+    
+    // Any other code that relies on data2 can be placed here
+    var random = Math.round(Math.random() * (data2["words"].length-1  - 0 ) +0)
+    console.log(data2["words"][random])
+    letters=data2["words"][random]["letters"]
+    validWords=data2["words"][random]["validWords"]
+    initialize_letters();
+    console.log(validWords)
+    console.log(letters)
+  });
 }
 
 
