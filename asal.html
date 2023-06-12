@@ -12,11 +12,14 @@
         <script src="jquery.min.js"></script>
         <script src="jquery-ui.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    </head>
+        <!-- Bootstrap CSS -->
+        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+      </head>
     <body onload="get_valid_words()" onkeydown="input_from_keyboard(event)">
 
         <!-- <h1> Asal</h1> -->
         <img src="logo1.png" style=" height: 15em; width:50%; align-self:center; margin-top: 10%;">
+        <button type="button" class="button" style=" margin-top:-15%; margin-right: 3%; font-size: 1.72 em; color: red;" onclick="modal.style.display='block'">?</button>
 
         <!-- NOTIFICATIONS -->
         <div class="container" style="height:1em; align-items:center;">
@@ -32,7 +35,30 @@
           </div>
         
         </div>
+        
+<!-- Trigger/Open The Modal -->
+<div id="myModal" class="modal">
 
+  <!-- Modal content -->
+   <div class="modal-content">
+    <div id = "ModalHeaderDiv" class="modal-header">
+      <span class="close">&times;</span>
+      <h2 id="Modal Header" dir ="ltr">Welcome to <strong>Asal</strong></h2></div>
+    <div class="modal-body">
+      <p id="Modal Body 1">This game was designed as a fun way to practice Lisanudawat.</p><br>
+      <p id="Modal Body 2">
+        Practice using the 7 letters in the hexagons to make words in Lisanudawat. <br> <br>Every word <b>must</b> use the letter in the center.
+        <br>Make 5 words to win!
+      </p>
+         <a id=whatsappshare href="whatsapp://send?text=GFG Example for whatsapp sharing"
+           data-action="share/whatsapp/share"target="_blank"></a>
+    </div>
+    <div id = "ModalFooterDiv" class="modal-footer">
+      <h3 id="Modal Footer">Brought to you by <a style="color: purple;" href="https:kawakibcreations.net" >Kawakib Creations</a></h3>
+        <a id="refresh"href="."></a>
+    </div>
+  </div>
+</div>
         <!-- INPUT WORD -->
         <div class="cursor">
             <p id="inputword" style="display:flex;"> <span id="testword"></span><span id="cursor">|</span></p>
@@ -43,7 +69,7 @@
             <ul id="hexGrid"></ul>
           <center>
             <div class="button_container">
-              <button id="submit_button" type="button" class="button" onclick="submitWord()">Enter</button>
+              <button id="submit_button" type="button" class="button" onclick="submitWord()">Enter</button><br>
               <button id="shuffle_button" type="button" class="button" onclick="shuffleLetters()">
                 <img src="shuffle_icon.png" style="width:1.2em">
               
@@ -65,3 +91,4 @@
 
 
 <script type="text/javascript" src="asal.js"></script>
+

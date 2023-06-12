@@ -2,6 +2,88 @@
   margin: 0;
   padding: 0;
 }
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 5em; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: scroll; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.53); /* Black w/ opacity */
+  font-family: KM;
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 0.7em;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: rgb(215, 156, 8);
+    color: white;
+    text-align: center;
+    font-size: 5em;
+}
+strong{
+  color: yellow;
+  text-decoration: underline;
+}
+.modal-body {
+    padding: 2px 16px;
+    text-align: center;
+    font-size: 4em;
+}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: goldenrod;
+  color: white;
+  text-align: center;
+  font-size: 3em;
+}
 @font-face {
   font-family: KM;
   src: url(Kanz-al-Marjaan.ttf);
@@ -198,15 +280,15 @@ padding:0
 
 /*** BUTTONS *******************************************************************/
 #shuffle_button {
-padding: 10px 10px;
+padding: 10%;
 }
 
 .button_container {
 display:-webkit-inline-flex; 
 margin-bottom:5vh; 
-width: 300px;
+width: 100%;
 height: 10%;
-
+align-items: center;
 }
 .button {
 background-color: white; 
@@ -217,7 +299,7 @@ padding: 2.5rem 1em;
 text-align: center;
 text-decoration: none;
 display: inline-block;
-font-size: 2em;
+font-size: 2.21em;
 border-radius:3rem;
 cursor: pointer;
 }
