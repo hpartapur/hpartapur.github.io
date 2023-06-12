@@ -17,12 +17,26 @@ setInterval(() => { //toggle cursor every 600ms
   }
 }, 600);
 
+
 function get_valid_words(){
-  letters=['ك', 'ي', 'ط', 'د', 'ه', 'ح', 'و']
-  validWords=['ديووو', 'د', 'ديدو', 'حد', 'ده', 'ديوو', 'يدود', 'يهدي', 'دوه', 'كود', 'دهكو', 'ويد', 'كهودوي', 'كهودي', 'يديك', 'دوو', 'ديد', 'دهو', 'ديكهوو', 'دهوكو', 'دوكه', 'ديوي', 'يديه', 'يده', 'كيد', 'ودهي', 'ديده', 'ديو', 'دكه', 'هديه', 'دوي', 'كيدي', 'ديوه', 'ود', 'دكهي', 'يدي', 'دوده', 'دهوكه', 'يد', 'وحدك', 'دو', 'ديكهوكه', 'هود', 'ديكهو', 'كهودوو', 'حدودو', 'ديهكي', 'يهودي', 'ديكهي', 'يهود', 'كودي', 'حديد', 'ديكه', 'كهودو', 'دي', 'وحده', 'ديكهويه', 'كيدوكه', 'وحد', 'ديكهوي', 'دهكي', 'ديدي', 'يهديه', 'حدود', 'وحيد', 'كودو', 'دهي', 'دوحد', 'كيدو', 'حيد', 'كهدو']
+  letters=['ق', 'و', 'ف', 'ر', 'ث', 'ك', 'ل']      
+  validWords=['كرف', 'فرق', 'رق', 'رو', 'فقر', 'رفرف', 'كوثر', 'كرورو', 'كثر', 'روكو', 'رووف', 'كرو', 'ر', 'رفق', 'رقك', 'فكر', 'كروو', 'فكرو', 'كرووو', 'رورو', 'كور', 'روو', 'لرو', 'روكرو', 'وفكر', 'قر', 'رفو', 'ورو', 'قفر', 'روكوو', 'وكثر', 'ورق', 'لر', 'وورث', 'ركو', 'لكرو', 'لكر', 'روف', 'ور', 'رووو', 'كرور', 'كر', 'فر', 'كورو', 'كروور', 'وكفر', 'كفر', 'روك', 'وفور', 'ثر']
+  
   // maxscore=validWords.length;
   // initialize_score();
   initialize_letters();
+  var jss= JSON.parse(`{"words":
+  [
+          {"letters": ["ط", "خ", "ء", "ك", "ٹ", "ث", "ج"], "validWords": ["ك", "ٹك", "كج"]},
+          {"letters": ["چ", "ا", "و", "خ","ي", "ف", "ط"], "validWords": ["چيخي", "خطايا", "خفي", "خف", "خوا", "اخط", "خط", "اخاف", "خطاو", "خياط", "اخا", "خ", "اخو", "خفيف", "خا", "خوف", "اخي", "يخط", "خو", "خطوط", "خفا", "وخفيا"]},
+          {"letters": ["چ", "ف", "س", "ك", "ا", "ض", "ص"], "validWords": ["ك", "سكا", "چكا", "كاكا", "كاف", "چك", "چاك", "سفك", "كا", "كسا", "كاس", "فك", "كف", "اك", "اسك", "فكاك", "كس"]}
+          
+      
+      
+      
+      ]
+  }`)
+  console.log(jss)
 }
 
 
@@ -241,7 +255,9 @@ function showDiscoveredWord(input){
      modal should say, you have won. press here to try to find more words and achieve a high score
       */
     if (numFound>=5){
-      alert("You win! You can try to make more words again"); //TODO: change popup to modal
+      //TODO: change popup to modal
+      var modal = document.getElementById("myModal");
+      modal.style.display = "block";
     }
 }
 
@@ -314,3 +330,20 @@ function input_from_keyboard(event) {
     }
   }
 }
+
+
+ // Get the modal
+ var modal = document.getElementById("myModal");
+ // Get the <span> element that closes the modal
+ var span = document.getElementsByClassName("close")[0];//close modal when x clicked
+ span.onclick = function() {
+   modal.style.display = "none";
+//     firsthint()
+ }
+ // When the user clicks anywhere outside of the modal, close it
+ window.onclick = function(event) {
+   if (event.target == modal) {
+     modal.style.display = "none";
+//    firsthint()
+   }
+ }

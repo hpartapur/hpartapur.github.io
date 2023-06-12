@@ -2,6 +2,7 @@ with open('iqjaw.txt', 'r') as f:
     words = f.read().splitlines()
 
 from tqdm import tqdm
+import json
 
 wordstr = ' '.join(words)
 
@@ -100,11 +101,23 @@ validWords={}
 """.format(letters, validwords)
 print(x)
 
-# data={letters[validwords]}
+data={}
+data["letters"]=letters;
+data["validWords"]=validwords;
 
-# import json
+data=json.dumps(data, ensure_ascii=False)
+
+print(","+data)
+
 # with open("words.json","r+",encoding="utf-8") as f:
 #     datas=json.load(f)
-#     datas.append(data)
 #     print(datas)
-#     json.dump(data,f,ensure_ascii=False,indent=4)
+#     datas["words"].append(data)
+#     print(datas)
+#     print()
+#     print()
+#     print(validwords)
+#     print()
+#     print()
+#     print()
+#     json.dump(datas,f,ensure_ascii=False,indent=4)
