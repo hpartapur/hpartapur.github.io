@@ -4,22 +4,44 @@
 
 
 <html>
-    <head>
-      <meta charset="UTF-8" />
-        <title>Asal Word Builder</title>
-        <link rel="stylesheet" href = "asal.css">
-        <link rel="preload" as="font" href="Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous">
-        <script src="jquery.min.js"></script>
-        <script src="jquery-ui.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <!-- Bootstrap CSS -->
-        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
-      </head>
+<head>
+  <meta charset="UTF-8" />
+    <title>Asal Word Builder</title>
+    <link rel="stylesheet" href = "asal.css">
+    <link rel="preload" as="font" href="Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous">
+    <script src="jquery.min.js"></script>
+    <script src="jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+</head>
+
+
     <body onload="get_valid_words()" onkeydown="input_from_keyboard(event)">
 
+<!-- <div id="navbar-placeholder"></div>
+<script>
+// Check if the navbar HTML is stored in localStorage
+var navbarHTML = localStorage.getItem('navbarHTML');
+
+if (navbarHTML) {
+// If the navbar HTML exists in localStorage, use it
+document.getElementById('navbar-placeholder').innerHTML = navbarHTML;
+} else {
+// If the navbar HTML doesn't exist in localStorage, fetch it and store it
+fetch('navbar.html')
+.then(response => response.text())
+.then(html => {
+document.getElementById('navbar-placeholder').innerHTML = html;
+localStorage.setItem('navbarHTML', html);
+});
+}
+</script> -->
+
+
         <!-- <h1> Asal</h1> -->
-        <img src="logo1.png" style=" height: 15em; width:50%; align-self:center; margin-top: 10%;">
-        <button type="button" class="button" style=" margin-top:-15%; margin-right: 3%; font-size: 1.72 em; color: red;" onclick="modal.style.display='block'">?</button>
+        <img src="logo1.png" style=" height: 15em; width:23em; align-self:center; padding-top: 4em; padding-bottom: 1.53em;">
+        <button type="button" class="button" style=" font-family:Ravie; font-weight: 500; margin-top:-15%; margin-right: 3%; font-size: 3em; color: red;" onclick="modal.style.display='block'">?</button>
 
         <!-- NOTIFICATIONS -->
         <div class="container" style="height:1em; align-items:center;">
@@ -43,11 +65,11 @@
    <div class="modal-content">
     <div id = "ModalHeaderDiv" class="modal-header">
       <span class="close">&times;</span>
-      <h2 id="Modal Header" dir ="ltr">Welcome to <strong>Asal</strong></h2></div>
+      <h2 id="Modal Header" dir ="ltr" style="align-self: center;">Welcome to <strong>Asal</strong></h2></div>
     <div class="modal-body">
       <p id="Modal Body 1">This game was designed as a fun way to practice Lisanudawat.</p><br>
       <p id="Modal Body 2">
-        Practice using the 7 letters in the hexagons to make words in Lisanudawat. <br> <br>Every word <b>must</b> use the letter in the center.
+        Practice using the 7 letters in the hexagons to make words in Lisanudawat. <br> <br>Every word <b>must</b> use the letter in the center hexagon.
         <br>Make 5 words to win!
       </p>
          <a id=whatsappshare href="whatsapp://send?text=GFG Example for whatsapp sharing"

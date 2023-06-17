@@ -258,6 +258,11 @@ function showDiscoveredWord(input){
       //TODO: change popup to modal
       var modal = document.getElementById("myModal");
       modal.style.display = "block";
+      document.getElementById("Modal Header").innerHTML = "Great Job!"
+			document.getElementById("Modal Body 1").innerHTML = `You win!`
+      document.getElementById("Modal Body 2").innerHTML = `<button type="button" class="button" style="font-size:1em; background-color:#e7e7e7;"><a href="">Play Again</a></button>`;
+			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
+			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
     }
 }
 
