@@ -131,19 +131,42 @@ function deleteLetter(){
 
 //if input is invalid, fades out and shakes the input box and clears the input
 function wrongInput(selector){
+  wrong.play();
   $(selector).fadeIn(1000);
+  $("#bee2").fadeIn(1000).fadeOut(500);
   $(selector).fadeOut(500);
   $("#cursor").hide();
   $( "#testword" ).effect("shake", {times:2.5}, 450, function(){
       clearInput(); //TODO if you want to not remove guess, comment this line
       $("#cursor").show();
+    
     } );
+    
 
 }
+
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
+}
+point = new sound("points.mp3");
+wrong = new sound("wrong.mp3");
 
 //word fades in and then out
 function rightInput(selector){
   $(selector).fadeIn(1500).delay(700).fadeOut(1500);
+  $("#bee").fadeIn(1500).delay(700).fadeOut(1500);
+  point.play();
   clearInput();
 }
 
