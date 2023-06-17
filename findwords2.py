@@ -56,9 +56,8 @@ print(len(words))
 
 
 huroof=['ث','ں','ة','ء', 'ا', 'و', 'م', 'ز', 'پ', 'خ', 'ح', 'چ', 'ر', 'ت', 'ے', 'ط', 'ظ', 'ه', 'ض', 'د', 'ج', 'ع', 'ل', 'ك', 'گ', 'ن', 'ش', 'ص', 'غ', 'ب', 'ق', 'ف', 'ي', 'ٹ', 'ذ', 'س']
-# letters=list("جرزيفست")
 validwords=[]
-while len(validwords)<30:
+while len(validwords)<10:
     letters=random.sample(huroof, 7)
     words=set(words)
 
@@ -79,11 +78,14 @@ while len(validwords)<30:
     for word in tqdm(words):
         if word not in invalidwords and letters[3] in word:
             validwords.append(word) 
+    
+    if "ا" in letters:
+        validwords=[]
+        
+    print("Found "+str(len(validwords))+ " words")
 
-    for word in validwords:
-        print(word)
-
-
+for word in validwords:
+    print(word)
 
 x="""
 letters={}

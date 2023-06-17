@@ -117,12 +117,13 @@ body {
   display: grid;
   grid-gap:1%;
   grid-template-columns: repeat(4,fr);
-  width: 80%;
+  width: 23em;
   height: auto;
   margin: 0 auto;
   font-size:2.53em;
   list-style-type: none;
   overflow:hidden;
+  margin-top: 3em;
   
 }
 
@@ -185,7 +186,7 @@ input[type="text"]
   padding: 38%;
   box-sizing:border-box;
   /* background-color:inherit; */
-  font-weight: 800;
+  font-weight: 500;
   font-size:2.53em;
   color:black;
   font-family: KM,'Open Sans', sans-serif;
