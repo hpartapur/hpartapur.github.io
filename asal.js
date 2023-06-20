@@ -116,6 +116,8 @@ var clickLetter = function(letter){
   return function curried_func(e){
     var tryword = document.getElementById("testword");
     tryword.innerHTML = tryword.innerHTML + letter;
+    // TODO: lettersound = new sound(letter+".mp3");
+    // lettersound.play();
   }
 }
 
@@ -216,21 +218,23 @@ function submitWord(){
     var wordlength = tryword.innerHTML.length;
     if(isPangram){
       rightInput("#pangram");
-      showPoints(17);
+      // showPoints(17);
     }else if(wordlength < 5){
       rightInput("#good");
-      showPoints(1);
+      // showPoints(1);
     }else if(wordlength<7){
       rightInput("#great");
-      showPoints(wordlength);
+      // showPoints(wordlength);
     }else{
       rightInput("#amazing");
-      showPoints(l);
+      // showPoints(l);
     }
-
+    showPoints(score)
   }else{
     wrongInput("#invalid-word");
   }
+
+
 }
 
 //if word was valid, display it below the grid
@@ -250,7 +254,7 @@ function showDiscoveredWord(input){
     for(var c=0; c<numCol; c++){
       var list = document.createElement("UL");
       list.id= "discovered-words"+c;
-      list.style.cssText = "padding:5px 10px; font-weight:100; ";
+      // list.style.cssText = "padding:5px 10px; font-weight:800; ";
       discText.appendChild(list);
       var n = 6; 
       if(c == numCol-1){
@@ -327,13 +331,20 @@ function checkPangram(input) {
 
 //checks if "input" contains any letters that are not in the hexagon
 function checkIncorrectLetters(input) {
-  for(i = 0; i < input.length; i++) {
-    if(!letters.includes(input[i])) {
+  var tryword = document.getElementById("testword");
+  tryword=tryword.innerHTML;
+  console.log(tryword)
+  for (i=0; i<tryword.length;i++){
+    if (!letters.includes(tryword[i])){
+      
+
       return true;
+      
     }
   }
   return false;
 }
+
 
 //takes keyboard event from user and determines what should be done
 function input_from_keyboard(event) {
@@ -349,14 +360,15 @@ function input_from_keyboard(event) {
 
 
   
-  //validation for just alphabet letters input
+  // //validation for just alphabet letters input
   if(event.keyCode >= 97 && event.keyCode <= 122 ||
     event.keyCode >=65 && event.keyCode <=90) {
-    tryword.innerHTML = tryword.innerHTML+ String.fromCharCode(event.keyCode).toLowerCase();
     if(checkIncorrectLetters(tryword.innerHTML)) {
-      tryword.style.color = 'red';
+      tryword.style.color = 'grey';
     }
   }
+    
+
 }
 
 
@@ -375,3 +387,62 @@ function input_from_keyboard(event) {
 //    firsthint()
    }
  }
+ document.addEventListener("keyup", (e) => {
+  console.log(e)
+  
+
+
+  let pressedKey = String(e.key)
+  // if (pressedKey === "Backspace" && nextLetter !== 0) {
+  //     deleteLetter()
+  //     return
+  // }
+  console.log(e.keyCode)
+
+  var tryword = document.getElementById("testword");
+  if (HUROOF[e.keyCode]!=undefined){
+  tryword.innerHTML = tryword.innerHTML+HUROOF[e.keyCode]};
+
+
+  // var found=HUROOF.indexOf(pressedKey)
+  // console.log(found)
+  // if (found != -1){
+  //     insertLetter(pressedKey)
+  // } else {
+  //     return
+  // }
+})
+const HUROOF={72:'ا',
+70:'ب',
+74:'ت',
+69:'ث',
+219:'ج',
+80: 'ح',
+79: 'خ',
+221:'د',
+192:'ذ',
+86:'ر',
+190:'ز',
+83:'س',
+65:'ش',
+87: 'ص',
+81:'ض',
+222: 'ط',
+191:'ظ',
+85:'ع',
+89: 'غ',
+84:'ف',
+82:'ق',
+186:'ك',
+71:'ل',
+76: 'م',
+75:'ن',
+188: 'و',
+73: 'ه',
+68: 'ي',
+78: 'ى',
+67: 'ئ',
+88: 'ء',
+90: 'ؤ',
+77: 'ة',
+}
