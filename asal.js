@@ -19,16 +19,11 @@ setInterval(() => { //toggle cursor every 600ms
 
 
 function get_valid_words(){
-  letters=['ق', 'و', 'ف', 'ر', 'ث', 'ك', 'ل']      
-  validWords=['كرف', 'فرق', 'رق', 'رو', 'فقر', 'رفرف', 'كوثر', 'كرورو', 'كثر', 'روكو', 'رووف', 'كرو', 'ر', 'رفق', 'رقك', 'فكر', 'كروو', 'فكرو', 'كرووو', 'رورو', 'كور', 'روو', 'لرو', 'روكرو', 'وفكر', 'قر', 'رفو', 'ورو', 'قفر', 'روكوو', 'وكثر', 'ورق', 'لر', 'وورث', 'ركو', 'لكرو', 'لكر', 'روف', 'ور', 'رووو', 'كرور', 'كر', 'فر', 'كورو', 'كروور', 'وكفر', 'كفر', 'روك', 'وفور', 'ثر']
-  
   fetch('./words.json')
   .then((response) => response.json())
   .then((json) => {
     data2 = json;  // Assign the parsed JSON data to the global variable data2
     console.log(data2); // Log the data2 variable to the console
-    
-    // Any other code that relies on data2 can be placed here
     var random = Math.round(Math.random() * (data2["words"].length-1  - 0 ) +0)
     console.log(data2["words"][random])
     letters=data2["words"][random]["letters"]
@@ -254,7 +249,6 @@ function showDiscoveredWord(input){
     for(var c=0; c<numCol; c++){
       var list = document.createElement("UL");
       list.id= "discovered-words"+c;
-      // list.style.cssText = "padding:5px 10px; font-weight:800; ";
       discText.appendChild(list);
       var n = 6; 
       if(c == numCol-1){
@@ -282,12 +276,33 @@ function showDiscoveredWord(input){
      modal should say, you have won. press here to try to find more words and achieve a high score
       */
     if (numFound>=5){
-      //TODO: change popup to modal
+      gtag('event', 'ًWin', {
+        'event_label': "rightGuessString",
+        'event_category': 'Win',
+        'non_interaction': true,
+        'value':discoveredWords
+        });
+        
+        // create a list element of all validwords
+        var list = document.createElement("UL");
+        list.id= "discovered-words";
+        discText.appendChild(list);
+        for(var i=0; i<validWords.length; i++){
+          var listword = document.createElement("LI");
+          var pword = document.createElement("P");
+          pword.innerHTML = validWords[i];
+          listword.appendChild(pword);
+          list.appendChild(listword);
+        }
+        // make Modal Body 2 the list of all valid words
+        document.getElementById("Modal Body 2").innerHTML = `List of all valid words:`
+        document.getElementById("Modal Body 2").appendChild(list);
+
       var modal = document.getElementById("myModal");
       modal.style.display = "block";
-      document.getElementById("Modal Header").innerHTML = "Great Job!"
-			document.getElementById("Modal Body 1").innerHTML = `You win!`
-      document.getElementById("Modal Body 2").innerHTML = `<button type="button" class="button" style="font-size:1em; background-color:#e7e7e7;"><a href="">Play Again</a></button>`;
+      document.getElementById("Modal Header").innerHTML = "You win!"
+			document.getElementById("Modal Body 1").innerHTML =  `<button type="button" class="button" style="font-size:1em; background-color:goldenrod; width:100%"><a href="">🐝Play Again</a></button><button type="button" class="button" style="font-size:1em; background-color:forestgreen;"><a href="whatsapp://send?text=I scored ${totalScore} on today's Asal🍯">🔔Share to Whatsapp</a></button>`;
+      // document.getElementById("Modal Body 2").innerHTML = 
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
     }
@@ -387,62 +402,3 @@ function input_from_keyboard(event) {
 //    firsthint()
    }
  }
- document.addEventListener("keyup", (e) => {
-  console.log(e)
-  
-
-
-  let pressedKey = String(e.key)
-  // if (pressedKey === "Backspace" && nextLetter !== 0) {
-  //     deleteLetter()
-  //     return
-  // }
-  console.log(e.keyCode)
-
-  var tryword = document.getElementById("testword");
-  if (HUROOF[e.keyCode]!=undefined){
-  tryword.innerHTML = tryword.innerHTML+HUROOF[e.keyCode]};
-
-
-  // var found=HUROOF.indexOf(pressedKey)
-  // console.log(found)
-  // if (found != -1){
-  //     insertLetter(pressedKey)
-  // } else {
-  //     return
-  // }
-})
-const HUROOF={72:'ا',
-70:'ب',
-74:'ت',
-69:'ث',
-219:'ج',
-80: 'ح',
-79: 'خ',
-221:'د',
-192:'ذ',
-86:'ر',
-190:'ز',
-83:'س',
-65:'ش',
-87: 'ص',
-81:'ض',
-222: 'ط',
-191:'ظ',
-85:'ع',
-89: 'غ',
-84:'ف',
-82:'ق',
-186:'ك',
-71:'ل',
-76: 'م',
-75:'ن',
-188: 'و',
-73: 'ه',
-68: 'ي',
-78: 'ى',
-67: 'ئ',
-88: 'ء',
-90: 'ؤ',
-77: 'ة',
-}
