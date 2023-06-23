@@ -7,7 +7,10 @@
 <head>
   <meta charset="UTF-8" />
     <title>Asal Word Builder</title>
+    <link rel="icon" type="image/jpg" href="/asal_assets/bee.png">
     <link rel="stylesheet" href = "asal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="preload" as="font" href="Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous">
     <script src="jquery.min.js"></script>
     <script src="jquery-ui.min.js"></script>
@@ -28,31 +31,34 @@
 
     <body onload="get_valid_words()" onkeydown="input_from_keyboard(event)">
 
-<!-- <div id="navbar-placeholder"></div>
-<script>
-// Check if the navbar HTML is stored in localStorage
-var navbarHTML = localStorage.getItem('navbarHTML');
-
-if (navbarHTML) {
-// If the navbar HTML exists in localStorage, use it
-document.getElementById('navbar-placeholder').innerHTML = navbarHTML;
-} else {
-// If the navbar HTML doesn't exist in localStorage, fetch it and store it
-fetch('navbar.html')
-.then(response => response.text())
-.then(html => {
-document.getElementById('navbar-placeholder').innerHTML = html;
-localStorage.setItem('navbarHTML', html);
-});
-}
-</script> -->
+      <div class="topnav" id="myTopnav">
+        <a href="index.html">Home</a>
+        <div class="dropdown">
+          <button class="dropbtn">Waaz Day List
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="./archives/Waaz1.html">Waaz 1</a>
+            <a href="./archives/Waaz2.html">Waaz 2</a>
+            <a href="./archives/Waaz3.html">Waaz 3</a>
+            <a href="./archives/Waaz4.html">Waaz 4</a>
+            <a href="./archives/Waaz5.html">Waaz 5</a>
+            <a href="./archives/Waaz6.html">Waaz 6</a>
+            <a href="./archives/Waaz7.html">Waaz 7</a>
+            <a href="./archives/Waaz8.html">Waaz 8</a>
+          </div>
+        </div>
+        <a href="./asal.html" class="active">Asal<i class="material-icons"style="font-size:1.21em;color:yellow">fiber_new</i></a>
+        <a href="./help.html">About</a>
+        <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+      </div>
 
 
         <!-- <h1> Asal</h1> -->
         <img src="logo1.png" style=" height: 15em; width:23em; align-self:center; padding-top: 4em; padding-bottom: 1.53em;">
         <button type="button" class="button" style=" font-family:Ravie; font-weight: 500; margin-top:-15%; margin-right: 3%; font-size: 3em; color: red;" onclick="modal.style.display='block'">?</button>
-        
-
+<!--         
+        <img id="thon" src="thon1.png" style=" height: 10em; align-self:center;"> -->
 
         <!-- NOTIFICATIONS -->
         <div class="container" style="height:1em; align-items:center;">
@@ -65,10 +71,9 @@ localStorage.setItem('navbarHTML', html);
             <p id="already-found" class="notifications">Already Found</p>
             <p id="invalid-word" class="notifications">Invalid Word</p>
             <p id="miss-center" class="notifications">Missing Center Letter</p>
-            <img id="bee" src="bee.png" hidden style="z-index: 300; width: 12em;">
-            <img id="bee2" src="bee2.png" hidden style="z-index: 300; width: 5em; margin-left: 50%; margin-right: 50%;">
+            <img id="bee" src="/asal_assets/bee.png" hidden style="z-index: 300; width: 12em;">
+            <img id="bee2" src="/asal_assets/bee2.png" hidden style="z-index: 300; width: 5em; margin-left: 50%; margin-right: 50%;">
           </div>
-        <audio id="point" src="point.mp3"></audio>
         </div>
         
 <!-- Trigger/Open The Modal -->
@@ -126,5 +131,3 @@ localStorage.setItem('navbarHTML', html);
 
 
 <script type="text/javascript" src="asal.js"></script>
-
-
