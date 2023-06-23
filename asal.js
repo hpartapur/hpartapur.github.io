@@ -111,8 +111,9 @@ var clickLetter = function(letter){
   return function curried_func(e){
     var tryword = document.getElementById("testword");
     tryword.innerHTML = tryword.innerHTML + letter;
-    // TODO: lettersound = new sound(letter+".mp3");
-    // lettersound.play();
+
+    lettersound = new sound("/huroofs/"+letter+".wav");
+    lettersound.play();
   }
 }
 
@@ -156,8 +157,8 @@ function sound(src) {
     this.sound.pause();
   }
 }
-point = new sound("points.mp3");
-wrong = new sound("wrong.mp3");
+point = new sound("/asal_assets/points.mp3");
+wrong = new sound("/asal_assets/wrong.mp3");
 
 //word fades in and then out
 function rightInput(selector){
@@ -301,7 +302,17 @@ function showDiscoveredWord(input){
       var modal = document.getElementById("myModal");
       modal.style.display = "block";
       document.getElementById("Modal Header").innerHTML = "You win!"
-			document.getElementById("Modal Body 1").innerHTML =  `<button type="button" class="button" style="font-size:1em; background-color:goldenrod; width:100%"><a href="">🐝Play Again</a></button><button type="button" class="button" style="font-size:1em; background-color:forestgreen;"><a href="whatsapp://send?text=I scored ${totalScore} on today's Asal🍯">🔔Share to Whatsapp</a></button>`;
+			document.getElementById("Modal Body 1").innerHTML =  
+      `<button type="button" class="button" style="font-size:1em; background-color:goldenrod; width:100%">
+      <a href=""><i class="material-icons" style="color:white;font-size:1.21em">autorenew</i>
+      Play Again</a>
+      </button>
+
+      <button type="button" class="button" style="font-size:1em; background-color:forestgreen;">
+      <a href="whatsapp://send?text=I scored ${totalScore} on today's 🍯Asal🍯 https://khardal.net/asal.html">
+      <i class="fa fa-whatsapp" style="color:white;font-size:1.21em"></i>
+      Share to Whatsapp</a>
+      </button>`;
       // document.getElementById("Modal Body 2").innerHTML = 
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
