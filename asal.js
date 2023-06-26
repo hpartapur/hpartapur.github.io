@@ -54,8 +54,8 @@ function initialize_letters(){
         aElement.className = "hexLink";
         aElement.href = "#";
         aElement.appendChild(pElement);
-        aElement.addEventListener('click', clickLetter(char), false);
         aElement.addEventListener('click', handleButtonClick);
+        aElement.addEventListener('click', clickLetter(char), false);
         function handleButtonClick(event){
           event.preventDefault();
         }
