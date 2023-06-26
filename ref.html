@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>CheatSheet</title>
+  <link rel="stylesheet" href="asal.css">
+  <link rel="preload" as="font" href="Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous">
+  <script src="jquery.min.js"></script>
+  <script src="jquery-ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<style>
+@font-face {
+  font-family: KM;
+  src: url(Kanz-al-Marjaan.ttf);
+}
+body {
+  font-family: KM;
+}
+.harf{
+  font-size: 1.80em;
+  text-align: center;
+  /* underline and make bold and blue */
+  /* text-decoration: underline; */
+  font-weight: 200;
+}
+</style>
+<body>
+  <img src="logo1.png" style="height: 15em; width:23em; align-self:center; padding-top: 4em; padding-bottom: 1.53em;">
+  
+  <h1 class="display-1 lead">Click a letter to hear its sound</h1>
+  
+  <div class="container">
+    <table class="table table-bordered table-condensed" style="font-size: 4em; text-align: center;">
+      <thead class="thead-light">
+        <tr>
+          <th>Arabic Letter</th>
+          <th>English Name</th>
+        </tr>
+        <tr>
+         
+      </thead>
+      <tbody class="table-success">
+        <tr>
+          <td class="harf" onclick="playSound('ا')">ا</td>
+          <td>Alif</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ب')">ب</td>
+          <td>Ba</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ت')">ت</td>
+          <td>Ta</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ث')">ث</td>
+          <td>Tha</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ج')">ج</td>
+          <td>Jeem</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ح')">ح</td>
+          <td>Haa</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('خ')">خ</td>
+          <td>Khah</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('د')">د</td>
+          <td>Dal</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ذ')">ذ</td>
+          <td>Thal</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ر')">ر</td>
+          <td>Ra</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ز')">ز</td>
+          <td>Zay</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('س')">س</td>
+          <td>Seen</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ش')">ش</td>
+          <td>Sheen</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ص')">ص</td>
+          <td>Saad</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ض')">ض</td>
+          <td>Daad</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ط')">ط</td>
+          <td>Taa</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ظ')">ظ</td>
+          <td>Zaa</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ع')">ع</td>
+          <td>Ain</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('غ')">غ</td>
+          <td>Ghain</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ف')">ف</td>
+          <td>Fa</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ق')">ق</td>
+          <td>Qaf</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ك')">ك</td>
+          <td>Kaf</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ل')">ل</td>
+          <td>Lam</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('م')">م</td>
+          <td>Meem</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ن')">ن</td>
+          <td>Noon</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ه')">ه</td>
+          <td>Ha</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('و')">و</td>
+          <td>Waw</td>
+        </tr>
+        <tr>
+          <td class="harf" class="harf" onclick="playSound('ي')">ي</td>
+          <td>Ya</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function playSound(letter) {
+      var audio = new Audio("/huroofs/"+letter + ".wav");
+      audio.play();
+    }
+  </script>
+</body>
+</html>
