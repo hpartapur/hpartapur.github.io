@@ -1,7 +1,6 @@
 // بسم الله الرحمن الرحيم
-// import { WORDS } from "./words.js";
-import { WORDS1 } from "./alldays.js";
-import { WORDSDEF } from "./alldays.js";
+import { WORDS1 } from "./day1.js";
+import { WORDSDEF } from "./day1.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -34,13 +33,13 @@ if(urlParams.has("score")){
  var span = document.getElementsByClassName("close")[0];//close modal when x clicked
  span.onclick = function() {
    modal.style.display = "none";
-//     firsthint()
+    firsthint()
  }
  // When the user clicks anywhere outside of the modal, close it
  window.onclick = function(event) {
    if (event.target == modal) {
      modal.style.display = "none";
-//    firsthint()
+   firsthint()
    }
  }
 
@@ -360,7 +359,7 @@ function modalgenerator(category){
 			document.getElementById("refresh").href +="?score="+score_n
 			document.getElementById("refresh").innerHTML = "!Next round"
 			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Khardal Score: "+score_n+"%0a"+"www.khardal.net";
+			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Day 1 Khardal Score: "+score_n+"%0a"+"www.khardal.net";
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 			buttonize()
