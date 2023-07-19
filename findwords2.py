@@ -57,7 +57,7 @@ print(len(words))
 
 huroof=['ث','ں','ة','ء', 'ا', 'و', 'م', 'ز', 'پ', 'خ', 'ح', 'چ', 'ر', 'ت', 'ے', 'ط', 'ظ', 'ه', 'ض', 'د', 'ج', 'ع', 'ل', 'ك', 'گ', 'ن', 'ش', 'ص', 'غ', 'ب', 'ق', 'ف', 'ي', 'ٹ', 'ذ', 'س']
 validwords=[]
-while len(validwords)<21:
+while len(validwords)<5:
     letters=random.sample(huroof, 7)
     words=set(words)
 
@@ -70,9 +70,9 @@ while len(validwords)<21:
             if w not in letters:
                 invalidwords.append(word)
 
-    #if there is not at least one string in the validwords array with a length greater than 4, then continue
-    if not any(len(word) > 4 for word in validwords):
-        continue
+    # #if there is not at least one string in the validwords array with a length greater than 4, then continue
+    # if not any(len(word) > 4 for word in validwords):
+    #     continue
 
 
 
@@ -84,8 +84,8 @@ while len(validwords)<21:
         if word not in invalidwords and letters[3] in word:
             validwords.append(word) 
     
-    if "ا" or "ي" or "و" in letters:
-        continue
+    # if "ا" or "ي" or "و" in letters:
+    #     continue
         
     print("Found "+str(len(validwords))+ " words")
 
