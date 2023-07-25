@@ -1,6 +1,6 @@
 // بسم الله الرحمن الرحيم
-import { WORDS1 } from "./day3.js";
-import { WORDSDEF } from "./day3.js";
+import { WORDS1 } from "./day7.js";
+import { WORDSDEF } from "./day7.js";
 import { HUROOF} from "./huroof.js";
 
 const NUMBER_OF_GUESSES = 6;
@@ -359,7 +359,7 @@ function modalgenerator(category){
 			document.getElementById("refresh").href +="?score="+score_n
 			document.getElementById("refresh").innerHTML = "!Next round"
 			document.getElementById("whatsappshare").innerHTML = `Share on Whatsapp`
-			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Day 3 Khardal Score: "+score_n+"%0a"+"www.khardal.net";
+			document.getElementById("whatsappshare").href="whatsapp://send?text="+scoreboard+"%0a"+"Day 7 Khardal Score: "+score_n+"%0a"+"www.khardal.net";
 			document.getElementById("ModalHeaderDiv").style.backgroundColor="forestgreen"
 			document.getElementById("ModalFooterDiv").style.backgroundColor="forestgreen"
 			buttonize()
