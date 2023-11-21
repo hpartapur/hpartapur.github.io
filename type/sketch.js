@@ -3,7 +3,7 @@ var playing=false;
 var lives=3;
 
 var huroof = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 
-'ل', 'م', 'ن', 'و', 'ه', 'ي']
+'ل', 'م', 'ن', 'و', 'ه', 'ي',"ء","ئ","ى","ة"]
 var a = new Audio("otl.mp3")
 function setup() {
     createCanvas(windowWidth*0.9, windowHeight*0.9);
@@ -53,6 +53,7 @@ function draw() {
     }
 
     if (lives<=0){
+        GAevent()
         a.pause();
         playing=false;
         score=0;
@@ -62,7 +63,13 @@ function draw() {
 
 
 }
-
+function GAevent (){
+    gtag('event', 'ًGame Played', {
+        'event_label': 'Game Played',
+        'event_category': 'Game Played',
+        // 'non_interaction': true,
+        'value':score
+        });}
 // if(mouseX)
 function keyPressed(){
     console.log(keyCode)
