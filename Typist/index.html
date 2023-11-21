@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>graphicsProgramming - Coursera</title>
+    <title>Khardal Typist</title>
     <script src="libraries/p5.min.js" type="text/javascript"></script>
     <script src="libraries/p5.sound.min.js" type="text/javascript"></script>
     
@@ -32,5 +32,17 @@ function muteButton(){
         a.volume = 1
     }
 }
+
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode == 32) {
+        pauseButton();
+    }
+});
+
+
   </script>
-</html>
+
+
+
+
+  </html>
