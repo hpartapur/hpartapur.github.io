@@ -6,7 +6,7 @@ var huroof = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 
 'ل', 'م', 'ن', 'و', 'ه', 'ي']
 var a = new Audio("otl.mp3")
 function setup() {
-    createCanvas(1000, 600);
+    createCanvas(windowWidth*0.9, windowHeight*0.9);
     if(playing){a.play()}
     a.loop=true;
     a.volume=1;
