@@ -31,7 +31,7 @@ function draw() {
 
     if(playing==false){
         textSize(50)
-        text("Press play or space to begin", width/3, height/2)
+        text("Press space to begin", width/3, height/2)
     }
     if (playing==true){
     a.play()
