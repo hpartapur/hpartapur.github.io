@@ -1,12 +1,17 @@
 var score = 0;
 var playing=false;
+var hinting=false;
 var lives=3;
 
 var huroof = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 
 'ل', 'م', 'ن', 'و', 'ه', 'ي',"ء","ئ","ى","ة"]
+
+var hints = {'ا':"h", 'ب':"f", 'ت':"j", 'ث':"e", 'ج':"[", 'ح':"p", 'خ':"o", 'د':"]", 'ذ':"`", 'ر':"v", 'ز':".", 'س':"s", 'ش':"a", 'ص':"w", 'ض':"q", 'ط':"'", 'ظ':"/",
+ 'ع':"u", 'غ':"y", 'ف':"t", 'ق':"r", 'ك':";",'ل':"g", 'م':"l", 'ن':"k", 'و':",", 'ه':"i", 'ي':"d","ء":"x","ئ":"z","ى":"n","ة":"m"}
 var a = new Audio("otl.mp3")
 function setup() {
     createCanvas(windowWidth*0.9, windowHeight*0.9);
+    alert("Type the arabic letters on the screen.\nDon't let the keys fall!\nSwitch to Arabic Keyboard before playing.\nThis game is still in development.")
     if(playing){a.play()}
     a.loop=true;
     a.volume=1;
@@ -52,8 +57,16 @@ function draw() {
         z = new harf();
     }
 
+    if(z.y>=height*0.5 && hinting==true){
+        textSize(50)
+        text("Press " + hints[z.randomLetter] + "!", width/2, height*0.3)
+        console.log(hints[z.randomLetter])
+    }
+
+
     if (lives<=0){
         GAevent()
+        alert("You scored "+score)
         a.pause();
         playing=false;
         score=0;
@@ -74,12 +87,12 @@ function GAevent (){
 function keyPressed(){
     console.log(keyCode)
     if(key=="AudioVolumeMute"){playing=false}
-    if (key == z.randomLetter && playing==true){
+    if ((key == z.randomLetter || key==hints[z.randomLetter]) && playing==true){
         score+=1;
         z = new harf();
         if (score%28==0){lives++}
     }
-    if(key =! z.randomLetter && playing==true){
+    if(key =! z.randomLetter && key==hints[z.randomLetter] && playing==true){
         score-=1
     }
     // if(playing==false&&keyCode==32){
@@ -104,14 +117,14 @@ class harf{
         // rect(this.x, this.y*0.7, this.size, this.size)
         // ellipse(this.x*1.04, this.y,this.size*1.75,this.size*1.75)
         textSize(this.size);
-        fill(255*(z.y/height),0,0)
+        fill(500*(z.y/height),0,0)
         text(this.randomLetter, this.x, this.y);
         fill(0);
     }
     move(){
-        this.size=this.size*(1.02+(score/800));
+        this.size=this.size*(1.02+(score/3000));
         // this.y=this.y*1.02;
-        this.y=this.y*(1.02+(score/800));
+        this.y=this.y*(1.02+(score/3000));
     }
 }
 
