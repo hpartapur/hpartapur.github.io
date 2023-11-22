@@ -22,9 +22,19 @@ gtag('config', 'G-ZJM8TVT5H6');
     
   </head>
   <body>
+    <!-- Add Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- Add the switch right after the "Mode" button -->
+<div class="custom-control custom-switch" style="font-size: 2rem;">
+  <input type="checkbox" class="custom-control-input" id="customSwitch1">
+  <label class="custom-control-label" for="customSwitch1"></label>
+</div>
     <center>
+
     <button hidden id = "pauser" style="font-family: Arial; border-radius:1rem ;font-size: 4rem; background-color: lime; size: 3rem;" onclick="pauseButton()">▶</button>
     <button id="muter" style=" font-family: Arial; border-radius:1rem; font-size: 2rem; background-color: blue; size: 3rem;" onclick="muteButton()"></button>
+    <button id="hinter" style=" font-family: Arial; border-radius:1rem; font-size: 2rem; background-color: greenyellow; size: 3rem;" onclick="hintsButton()">Mode</button>
   </center>
   </body>
   <script>
@@ -41,6 +51,11 @@ function muteButton(){
     }else if (a.volume==0){
         a.volume = 1
     }
+}
+function hintsButton(){
+  if(hinting){document.getElementById("hinter").innerHTML="Easy"; hinting=false;}
+  else{document.getElementById("hinter").innerHTML="Hard";hinting=true;}
+
 }
 
 document.addEventListener('keydown', function(event) {
