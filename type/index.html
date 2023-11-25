@@ -34,8 +34,7 @@ gtag('config', 'G-ZJM8TVT5H6');
     <center>
 
     <button hidden id = "pauser" style="font-family: Arial; border-radius:1rem ;font-size: 4rem; background-color: lime; size: 3rem;" onclick="pauseButton()">▶</button>
-    <button hidden id="muter" style=" font-family: Arial; border-radius:1rem; font-size: 2rem; background-color: blue; size: 3rem;" onclick="muteButton()"></button>
-    <button hidden id="hinter" style=" font-family: Arial; border-radius:1rem; font-size: 2rem; background-color: greenyellow; size: 3rem;" onclick="hintsButton()">Mode</button>
+    
   </center>
   </body>
   <script>
@@ -49,13 +48,15 @@ function pauseButton(){
 function muteButton(){
     if (a.volume==1){
         a.volume=0
+        document.getElementById("muter").innerHTML="🔊"
     }else if (a.volume==0){
         a.volume = 1
+        document.getElementById("muter").innerHTML="🔈"
     }
 }
 function hintsButton(){
-  if(hinting){document.getElementById("hinter").innerHTML="Easy"; hinting=false;}
-  else{document.getElementById("hinter").innerHTML="Hard";hinting=true;}
+  if(hinting){document.getElementById("hinter").innerHTML="Hinting On"; hinting=false;}
+  else{document.getElementById("hinter").innerHTML="Hinting Off";hinting=true;}
 
 }
 
@@ -131,7 +132,9 @@ document.addEventListener('keydown', function(event) {
     
   </div>
 </div>
-
+<button class="key" style="position:relative; left: 0;" onclick="document.getElementById('keyboard').hidden = !document.getElementById('keyboard').hidden">Toggle Keyboard ⌨</button>
+<button id="muter" class="key" onclick="muteButton()" style="position: relative; left: 0;"></button>
+<button class="key" id="hinter" onclick="hintsButton()">Easy</button>
 <style>
   #keyboard {
     display: flex;
