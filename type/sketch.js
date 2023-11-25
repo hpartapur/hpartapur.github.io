@@ -8,7 +8,16 @@ const hints = {'ا':"h", 'ب':"f", 'ت':"j", 'ث':"e", 'ج':"[", 'ح':"p", 'خ':
  'ع':"u", 'غ':"y", 'ف':"t", 'ق':"r", 'ك':";",'ل':"g", 'م':"l", 'ن':"k", 'و':",", 'ه':"i", 'ي':"d","ء":"x","ئ":"z","ى":"n","ة":"m"}
 var a = new Audio("otl.mp3")
 let wrongfx = new Audio("wrong.mp3")
+var highscore = getCookie("highscore");
+if (highscore==undefined){highscore=0}
 
+
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
 
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight*0.7);
@@ -65,7 +74,8 @@ function draw() {
 
     if (lives<=0){
         GAevent()
-        alert("You scored "+score)
+        alert("You scored "+score+"\nHigh Score: "+highscore)
+        if (score>highscore){document.cookie = "highscore="+score; alert("New highscore!")}
         a.pause();
         playing=false;
         score=0;
