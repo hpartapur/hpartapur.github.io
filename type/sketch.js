@@ -24,15 +24,9 @@ function setup() {
 }
 
 function draw() {
-    // background(200,200,250);
     background("#A7C7E7")
     stroke(255);
     strokeWeight(4);
-    // line(400, 0,200, 600);
-    // line(600, 0, 800, 600);
-
-    // line(400,0,400,600)
-    // line(600,0,600,600)
     strokeWeight(0);
 
     updateButtons()
@@ -96,14 +90,6 @@ function keyPressed(){
         z = new harf();
         if (score%28==0){lives++}
     }
-    // if(key =! z.randomLetter && key != hints[z.randomLetter] && playing==true){
-    //     score-=1
-    // }
-    // if(playing==false&&keyCode==32){
-    //     playing=true;
-    //     a.play()
-    //     a.loop=true;
-    // }
 }
 
 
@@ -112,8 +98,6 @@ class harf{
     constructor(){
         // this.x is random value between 0.2 and 0.8
         this.x = (Math.random() * 0.6 + 0.2)*width;
-        // this.x=width*0.4;
-        // this.y=50;
         this.y=height*0.05;
         this.size=height*0.03;
         this.randomLetter = huroof[Math.floor(Math.random() * huroof.length)];
@@ -128,7 +112,6 @@ class harf{
     }
     move(){
         this.size=this.size*(1.01+(score/1500));
-        // this.y=this.y*1.02;
         this.y=this.y*(1.01+(score/1500));
         // Get all the buttons with class "key"
         var keys = document.getElementsByClassName("key");
