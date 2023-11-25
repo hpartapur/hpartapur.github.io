@@ -10,7 +10,8 @@ var hints = {'ا':"h", 'ب':"f", 'ت':"j", 'ث':"e", 'ج':"[", 'ح':"p", 'خ':"o
  'ع':"u", 'غ':"y", 'ف':"t", 'ق':"r", 'ك':";",'ل':"g", 'م':"l", 'ن':"k", 'و':",", 'ه':"i", 'ي':"d","ء":"x","ئ":"z","ى":"n","ة":"m"}
 var a = new Audio("otl.mp3")
 function setup() {
-    createCanvas(windowWidth*0.9, windowHeight*0.9);
+    var canvas = createCanvas(windowWidth, windowHeight*0.7);
+    canvas.parent("canvas-container")
     alert("Type the arabic letters on the screen.\nDon't let the keys fall!\nSwitch to Arabic Keyboard before playing.\nThis game is still in development.")
     if(playing){a.play()}
     a.loop=true;
@@ -86,15 +87,14 @@ function GAevent (){
 // if(mouseX)
 function keyPressed(){
     console.log(keyCode)
-    if(key=="AudioVolumeMute"){playing=false}
     if ((key == z.randomLetter || key==hints[z.randomLetter]) && playing==true){
         score+=1;
         z = new harf();
         if (score%28==0){lives++}
     }
-    if(key =! z.randomLetter && key==hints[z.randomLetter] && playing==true){
-        score-=1
-    }
+    // if(key =! z.randomLetter && key != hints[z.randomLetter] && playing==true){
+    //     score-=1
+    // }
     // if(playing==false&&keyCode==32){
     //     playing=true;
     //     a.play()
@@ -109,12 +109,13 @@ class harf{
         // this.x is random value between 0.2 and 0.8
         this.x = (Math.random() * 0.6 + 0.2)*width;
         // this.x=width*0.4;
-        this.y=50;
-        this.size=20;
+        // this.y=50;
+        this.y=height*0.05;
+        this.size=height*0.03;
         this.randomLetter = huroof[Math.floor(Math.random() * huroof.length)];
     }
     show(){
-        // rect(this.x, this.y*0.7, this.size, this.size)
+        // rect(this.x, this.y, this.size, this.size)
         // ellipse(this.x*1.04, this.y,this.size*1.75,this.size*1.75)
         textSize(this.size);
         fill(500*(z.y/height),0,0)
@@ -122,9 +123,20 @@ class harf{
         fill(0);
     }
     move(){
-        this.size=this.size*(1.02+(score/3000));
+        this.size=this.size*(1.01+(score/1500));
         // this.y=this.y*1.02;
-        this.y=this.y*(1.02+(score/3000));
+        this.y=this.y*(1.01+(score/1500));
+        // Get all the buttons with class "key"
+        var keys = document.getElementsByClassName("key");
+        // Loop through all the buttons
+        for (var i = 0; i < keys.length; i++) {
+        // If the button's innerHTML is equal to the random letter
+        if (keys[i].innerHTML == this.randomLetter) {
+            // Change the button's color to red
+            keys[i].style.backgroundColor = "red";
+        }else{
+            keys[i].style.backgroundColor = "DarkGray";}
+        }
     }
 }
 
