@@ -8,8 +8,10 @@ const hints = {'ا':"h", 'ب':"f", 'ت':"j", 'ث':"e", 'ج':"[", 'ح':"p", 'خ':
  'ع':"u", 'غ':"y", 'ف':"t", 'ق':"r", 'ك':";",'ل':"g", 'م':"l", 'ن':"k", 'و':",", 'ه':"i", 'ي':"d","ء":"x","ئ":"z","ى":"n","ة":"m"}
 var a = new Audio("otl.mp3")
 let wrongfx = new Audio("wrong.mp3")
+let rightfx = new Audio ("/asal_assets/points.mp3")
 var highscore = getCookie("highscore");
-if (highscore==undefined){highscore=0}
+if (highscore==undefined){highscore=0;}
+
 
 
 function getCookie(name) {
@@ -22,20 +24,17 @@ function getCookie(name) {
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight*0.7);
     canvas.parent("canvas-container")
-    alert("Type the arabic letters on the screen.\nDon't let the keys fall!\nSwitch to Arabic Keyboard before playing.\nThis game is still in development.")
+    // alert("Type the arabic letters on the screen.\nDon't let the keys fall!\nSwitch to Arabic Keyboard before playing.\nThis game is still in development.")
     if(playing){a.play()}
     a.loop=true;
     a.volume=1;
     textFont("Kanz-al-Marjaan")
-    sizee=20;
-    vert=50;
     z = new harf();
 }
 
 function draw() {
     background("#A7C7E7")
     stroke(255);
-    strokeWeight(4);
     strokeWeight(0);
 
     updateButtons()
@@ -96,6 +95,7 @@ function GAevent (){
 function keyPressed(){
     console.log(keyCode)
     if ((key == z.randomLetter || key==hints[z.randomLetter]) && playing==true){
+        rightfx.play()
         score+=1;
         z = new harf();
         if (score%28==0){lives++}
@@ -142,6 +142,7 @@ function updateButtons(){
         document.getElementById("muter").innerHTML="🔈"
     }else{document.getElementById("muter").innerHTML="🔊"}
 
-    if(playing){document.getElementById("pauser").innerHTML="⏸"
-    }else{document.getElementById("pauser").innerHTML="▶"}
+    // if(playing){document.getElementById("pauser").innerHTML="⏸"
+    // }else{document.getElementById("pauser").innerHTML="▶"}
 }
+
