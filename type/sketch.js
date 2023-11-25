@@ -2,14 +2,14 @@ let score = 0;
 let playing=false;
 let hinting=false;
 let lives=3;
-
 const huroof = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 
 'ل', 'م', 'ن', 'و', 'ه', 'ي',"ء","ئ","ى","ة"]
-
 const hints = {'ا':"h", 'ب':"f", 'ت':"j", 'ث':"e", 'ج':"[", 'ح':"p", 'خ':"o", 'د':"]", 'ذ':"`", 'ر':"v", 'ز':".", 'س':"s", 'ش':"a", 'ص':"w", 'ض':"q", 'ط':"'", 'ظ':"/",
  'ع':"u", 'غ':"y", 'ف':"t", 'ق':"r", 'ك':";",'ل':"g", 'م':"l", 'ن':"k", 'و':",", 'ه':"i", 'ي':"d","ء":"x","ئ":"z","ى":"n","ة":"m"}
 var a = new Audio("otl.mp3")
 let wrongfx = new Audio("wrong.mp3")
+
+
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight*0.7);
     canvas.parent("canvas-container")
