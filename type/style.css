@@ -2,7 +2,7 @@ body {
     padding: 0;
     margin: 0;
     background-image: url("/asal_assets/bg-downsized.jpg");
-    background-size: 15%;
+    background-size: 3%;
     overflow-x: hidden;
 }
 canvas {
