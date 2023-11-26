@@ -14,12 +14,7 @@ if (highscore==undefined){highscore=0;}
 
 
 
-function getCookie(name) {
-    let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
+
 
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight*0.7);
@@ -49,14 +44,16 @@ function draw() {
     var heart="💛"
     text("Score: " + score, 10, 30)
     lives_h = ""
-    for (var i =0; i<lives; i++){lives_h+=heart}
+    for (var i=0; i<lives; i++){lives_h+=heart}
     text("Lives: " + lives_h, width-300,30)
 
 
 
-    harf.show()
-    if(harf.y<=height){
-        harf.move()
+    harf.draw()
+
+    //TODO: move following code to harf.draw()
+    if(harf.y <= height){ //if harf has not reached the bottom of the screen
+        harf.move() //move harf down and grow
     }else{
         lives--
         console.log("wrong")
@@ -64,7 +61,7 @@ function draw() {
         harf = new Harf();
     }
 
-    if(harf.y>=height*0.5 && hinting==true){
+    if(harf.y >= height*0.5 && hinting==true){
         textSize(50)
         text("Press " + hints[harf.randomLetter] + "!", width/2, height*0.3)
         console.log(hints[harf.randomLetter])
@@ -84,16 +81,9 @@ function draw() {
 
 
 }
-function GAevent (){
-    gtag('event', 'ًGame Played', {
-        'event_label': 'Game Played',
-        'event_category': 'Game Played',
-        // 'non_interaction': true,
-        'value':score
-        });}
-// if(mouseX)
+
+
 function keyPressed(){
-    console.log(keyCode)
     if ((key == harf.randomLetter || key==hints[harf.randomLetter]) && playing==true){
         rightfx.play()
         score+=1;
@@ -112,7 +102,7 @@ class Harf{
         this.size=height*0.03;
         this.randomLetter = huroof[Math.floor(Math.random() * huroof.length)];
     }
-    show(){
+    draw(){
         // rect(this.x, this.y, this.size, this.size)
         // ellipse(this.x*1.04, this.y,this.size*1.75,this.size*1.75)
         textSize(this.size);
@@ -123,6 +113,8 @@ class Harf{
     move(){
         this.size=this.size*(1.01+(score/1500));
         this.y=this.y*(1.01+(score/1500));
+
+        // TODO: move below code to draw()
         // Get all the buttons with class "key"
         var keys = document.getElementsByClassName("key");
         // Loop through all the buttons
@@ -160,3 +152,17 @@ function updateButtons(){
     }else{document.getElementById("pauser").innerHTML="▶"}
 }
 
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function GAevent (){
+    gtag('event', 'ًGame Played', {
+        'event_label': 'Game Played',
+        'event_category': 'Game Played',
+        // 'non_interaction': true,
+        'value':score
+});}
