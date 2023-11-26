@@ -132,7 +132,7 @@ class harf{
             // Change the button's color to red
             keys[i].style.backgroundColor = "red";
         }else{
-            keys[i].style.backgroundColor = "DarkGray";}
+            keys[i].style.backgroundColor = "buttonface";}
         }
     }
 }
