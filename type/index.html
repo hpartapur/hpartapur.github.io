@@ -40,17 +40,24 @@ function pauseButton(){
 function muteButton(){
     if (a.volume==1){
         a.volume=0
-        document.getElementById("muter").innerHTML="🔊"
     }else if (a.volume==0){
         a.volume = 1
-        document.getElementById("muter").innerHTML="🔈"
     }
 }
-function hintsButton(){
-  if(hinting){document.getElementById("hinter").innerHTML="Hinting On"; hinting=false;}
-  else{document.getElementById("hinter").innerHTML="Hinting Off";hinting=true;}
-
+function fxmuteButton(){
+    if (rightfx.volume==1 || wrongfx.volume==1){
+        rightfx.volume=0
+        wrongfx.volume=0
+    }else if (rightfx.volume==0 || wrongfx.volume==0){
+        rightfx.volume=1
+        wrongfx.volume=1
+    }
 }
+
+function hintsButton(){
+  if(hinting){hinting=false;}else{hinting=true;}
+}
+
 document.addEventListener('keydown', function(event) {
     if (event.keyCode == 32) {
         pauseButton();
@@ -123,10 +130,14 @@ document.addEventListener('keydown', function(event) {
     
   </div>
 </div>
+<div>
+<button class="key" style="display: inline;" onclick="modal.style.display='block';">❓</button>
+<button id="pauser" class="key" style="display: inline;" onclick="pauseButton(); keyPressed()"></button>
+<button id="fxmuter" class="key" onclick="fxmuteButton()" style="display: inline;"></button>
+<button id="muter" class="key" onclick="muteButton()" style="display: inline;"></button>
 <button class="key" style="position:relative; left: 0;" onclick="document.getElementById('keyboard').hidden = !document.getElementById('keyboard').hidden">Toggle Keyboard ⌨</button>
-<button id="muter" class="key" onclick="muteButton()" style="position: relative; left: 0;"></button>
 <button class="key" id="hinter" onclick="hintsButton()">Hinting On</button>
-<button class="key" onclick="modal.style.display='block';">❓</button>
+</div>
 
         
 <!-- Trigger/Open The Modal -->
