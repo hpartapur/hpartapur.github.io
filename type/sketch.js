@@ -139,10 +139,24 @@ class harf{
 
 function updateButtons(){
     if (a.volume==1){
-        document.getElementById("muter").innerHTML="🔈"
-    }else{document.getElementById("muter").innerHTML="🔊"}
+        document.getElementById("muter").innerHTML="🎵🔈"
+    }else{document.getElementById("muter").innerHTML="🎵🔊"}
 
-    // if(playing){document.getElementById("pauser").innerHTML="⏸"
-    // }else{document.getElementById("pauser").innerHTML="▶"}
+    if (rightfx.volume==1 || wrongfx.volume==1){
+        document.getElementById("fxmuter").innerHTML="FX🔈"
+    }else if (rightfx.volume==0 || wrongfx.volume==0){
+        document.getElementById("fxmuter").innerHTML="FX🔊"
+    }
+
+    if(hinting){
+        document.getElementById("hinter").innerHTML="Hints On";
+        document.getElementById("hinter").style.textDecoration="none"
+    }else{
+        document.getElementById("hinter").innerHTML="Hints Off";
+        document.getElementById("hinter").style.textDecoration="line-through"
+    }
+
+    if(playing){document.getElementById("pauser").innerHTML="⏸"
+    }else{document.getElementById("pauser").innerHTML="▶"}
 }
 
