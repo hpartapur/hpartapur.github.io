@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!-- TODO: Figure out how to trigger opening of keyboard on mobile devices -->
+<!-- TODO: Figure out how to set a timer -->
 <html>
   <head>
     <meta charset="UTF-8">
@@ -38,10 +39,10 @@ function pauseButton(){
     }
 }
 function muteButton(){
-    if (a.volume==1){
-        a.volume=0
-    }else if (a.volume==0){
-        a.volume = 1
+    if (bgMusic.volume==1){
+        bgMusic.volume=0
+    }else if (bgMusic.volume==0){
+        bgMusic.volume = 1
     }
 }
 function fxmuteButton(){
@@ -136,7 +137,7 @@ document.addEventListener('keydown', function(event) {
 <button id="fxmuter" class="key" onclick="fxmuteButton()" style="display: inline;"></button>
 <button id="muter" class="key" onclick="muteButton()" style="display: inline;"></button>
 <button class="key" style="position:relative; left: 0;" onclick="document.getElementById('keyboard').hidden = !document.getElementById('keyboard').hidden">Toggle Keyboard ⌨</button>
-<button class="key" id="hinter" onclick="hintsButton()">Hinting On</button>
+<button class="key" style="display: inline;" id="hinter" onclick="hintsButton()">Hinting On</button>
 </div>
 
         
