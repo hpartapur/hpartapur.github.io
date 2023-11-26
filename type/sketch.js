@@ -19,7 +19,6 @@ if (highscore==undefined){highscore=0;}
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight*0.7);
     canvas.parent("canvas-container")
-    // alert("Type the arabic letters on the screen.\nDon't let the keys fall!\nSwitch to Arabic Keyboard before playing.\nThis game is still in development.")
     if(playing){bgMusic.play()}
     bgMusic.loop=true;
     bgMusic.volume=1;
@@ -70,6 +69,7 @@ function draw() {
 
     if (lives<=0){
         GAevent()
+        // TODO: replace alert with modals
         alert("You scored "+score+"\nHigh Score: "+highscore)
         if (score>highscore){document.cookie = "highscore="+score; alert("New highscore!")}
         bgMusic.pause();
@@ -166,3 +166,30 @@ function GAevent (){
         // 'non_interaction': true,
         'value':score
 });}
+//TODO: create settings class-incorporate all button functions, updatebuttons, and settings variables
+function pauseButton(){
+    if(playing){
+      playing=false;
+    }else{
+      playing=true;
+    }
+}
+function muteButton(){
+    if (bgMusic.volume==1){
+        bgMusic.volume=0
+    }else if (bgMusic.volume==0){
+        bgMusic.volume = 1
+    }
+}
+function fxmuteButton(){
+    if (rightfx.volume==1 || wrongfx.volume==1){
+        rightfx.volume=0
+        wrongfx.volume=0
+    }else if (rightfx.volume==0 || wrongfx.volume==0){
+        rightfx.volume=1
+        wrongfx.volume=1
+    }
+}
+function hintsButton(){
+  if(hinting){hinting=false;}else{hinting=true;}
+}
