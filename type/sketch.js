@@ -69,6 +69,7 @@ function draw() {
 
     if (lives<=0){
         GAevent()
+        writeUserData(score)
         // TODO: replace alert with modals
         alert("You scored "+score+"\nHigh Score: "+highscore)
         if (score>highscore){document.cookie = "highscore="+score; alert("New highscore!")}
