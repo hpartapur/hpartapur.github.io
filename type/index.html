@@ -71,9 +71,11 @@ function pullData(){
   onValue(dbRef, (snapshot) => {
     const data = snapshot.val();
     console.log(data);
+    console.log(data['users'][0]);
   });
 }
 
+pullData()
 </script>
 
 
