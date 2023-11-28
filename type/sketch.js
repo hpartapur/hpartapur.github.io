@@ -69,10 +69,15 @@ function draw() {
 
     if (lives<=0){
         GAevent()
-        writeUserData(score, harf.randomLetter)
+        writeSessionData()
         // TODO: replace alert with modals
         alert("You scored "+score+"\nHigh Score: "+highscore)
-        if (score>highscore){document.cookie = "highscore="+score; alert("New highscore!")}
+        if (score>highscore){
+            highscore=score;
+            updateHighscore();
+            document.cookie = "highscore="+highscore;
+            alert("New highscore!"); 
+        }
         bgMusic.pause();
         playing=false;
         score=0;

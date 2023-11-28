@@ -33,7 +33,7 @@
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-      import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+      import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
       // TODO: Add SDKs for Firebase products that you want to use
       // https://firebase.google.com/docs/web/setup#available-libraries
     
@@ -57,13 +57,41 @@
       window.database = getDatabase(app);
 
 
-      function writeUserData(score, harf) {
-  push(ref(database, 'sessions/'), {
-    score: score,
-    harf:harf,
-  });
+
+    function writeUserData() {
+      set(ref(database, 'users/'+name), {
+        highscore: highscore,
+        dateJoined: Date()
+      });
+    }
+    function writeSessionData (){
+      if (badName()){name="anonymous"}
+      push(ref(database, 'sessions/'), {
+        name: name,
+        score:score,
+        datePlayed: Date()
+      });      
+    }
+
+function updateHighscore() {
+  if (badName()){name="anonymous"}
+  const userRef = ref(database, 'users/' + name);
+  // Use the update function to update the highscore property
+  set(userRef, {
+    highscore: highscore
+  }, { merge: true });
 }
-window.writeUserData = writeUserData;
+
+window.writeSessionData = writeSessionData;
+window.updateHighscore = updateHighscore;
+
+function badName(){
+  if (getCookie('name')==undefined || getCookie('name')=='' || getCookie('name')=='null'){
+    return true
+  }else{return false}
+}
+
+
 
 function pullData(){
   // read data from firebase database
@@ -72,13 +100,47 @@ function pullData(){
     const data = snapshot.val();
     var zz = Object.values(data)[0]
     zz = Object.values(zz)
-    
-    console.log(zz[1]['harf'])
+    // console.log(Object.values(data['sessions'])[0])
+    console.log(Object.entries(data['users']))
+    var userdata = Object.entries(data['users'])
+
     // document.getElementById("Modal Footer").innerHTML= zz[1]['harf'];
   });
 }
 
-pullData()
+// pullData()
+
+// function printHighscores() {
+//   const usersRef = ref(database, 'users');
+//   const snapshot = get(usersRef);
+
+
+//     const usersData = snapshot.val();
+
+//     // Convert the usersData object to an array of [name, data] pairs
+//     const usersArray = Object.entries(usersData);
+
+//     // Map the array to include only the name and highscore properties
+//     const resultArray = usersArray.map(([name, data]) => [name, { highscore: data.highscore }]);
+
+//     // Print the resultArray
+//     console.log(resultArray);
+//   }
+
+
+// Example of how to call the function
+// printHighscores();
+
+// printHighscores()
+
+if (badName()){
+  name=prompt("Enter your name \nThis name cannot be changed!")
+  document.cookie = "name="+name
+
+  if (badName()==false){
+    writeUserData()
+  }
+}
 </script>
 
 
@@ -160,7 +222,7 @@ pullData()
   </div>
 </div>
 <div id="settings">
-  <button class="key" style="display: inline;" onclick="modal.style.display='block'; console.log(score); writeUserData(score, harf.randomLetter);">❓</button>
+  <button class="key" style="display: inline;" onclick="modal.style.display='block'; console.log(score);">❓</button>
   <button id="pauser" class="key" style="display: inline;" onclick="pauseButton(); keyPressed()"></button>
   <button id="fxmuter" class="key" onclick="fxmuteButton()" style="display: inline;"></button>
   <button id="muter" class="key" onclick="muteButton()" style="display: inline;"></button>
