@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- TODO: Figure out how to trigger opening of keyboard on mobile devices -->
 <!-- TODO: Figure out how to set a timer -->
-<!-- bg, switches, ratios-keyboard  -->
+<!-- bg, ratios-keyboard  -->
 <html>
   <head>
     <meta charset="UTF-8">
@@ -103,35 +103,39 @@ function pullData(){
     // console.log(Object.values(data['sessions'])[0])
     console.log(Object.entries(data['users']))
     var userdata = Object.entries(data['users'])
+    console.log(data['users'])
 
-    // document.getElementById("Modal Footer").innerHTML= zz[1]['harf'];
+    // Convert the data object to an array of objects
+    const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
+
+    // Sort the array based on highscores
+    dataArray.sort((a, b) => b.highscore - a.highscore);
+
+    // Get the leaderboard div
+    const leaderboard = document.getElementById('leaderboard');
+    // Iterate over the sorted array and add elements to the modal footer
+    dataArray.forEach(item => {
+        const { name, highscore } = item;
+        
+        // Create a new paragraph element
+        const paragraph = document.createElement('p');
+        
+        // Set the text content of the paragraph
+        paragraph.textContent = `Name: ${name} Highscore: ${highscore}`;
+        
+        // Append the paragraph to the leaderboard
+        leaderboard.appendChild(paragraph);
+    });
+
   });
 }
 
-// pullData()
-
-// function printHighscores() {
-//   const usersRef = ref(database, 'users');
-//   const snapshot = get(usersRef);
+pullData()
 
 
-//     const usersData = snapshot.val();
-
-//     // Convert the usersData object to an array of [name, data] pairs
-//     const usersArray = Object.entries(usersData);
-
-//     // Map the array to include only the name and highscore properties
-//     const resultArray = usersArray.map(([name, data]) => [name, { highscore: data.highscore }]);
-
-//     // Print the resultArray
-//     console.log(resultArray);
-//   }
 
 
-// Example of how to call the function
-// printHighscores();
 
-// printHighscores()
 
 if (badName()){
   name=prompt("Enter your name \nThis name cannot be changed!")
@@ -221,14 +225,41 @@ if (badName()){
     <button class="key">Shift</button>
   </div>
 </div>
-<div id="settings">
-  <button class="key" style="display: inline;" onclick="modal.style.display='block'; console.log(score);">❓</button>
-  <button id="pauser" class="key" style="display: inline;" onclick="pauseButton(); keyPressed()"></button>
-  <button id="fxmuter" class="key" onclick="fxmuteButton()" style="display: inline;"></button>
-  <button id="muter" class="key" onclick="muteButton()" style="display: inline;"></button>
-  <button id="keyboarder" class="key" style="position:relative; left: 0;" onclick="document.getElementById('keyboard').hidden = !document.getElementById('keyboard').hidden;"> Keyboard ⌨</button>
-  <button class="key" style="display: inline;" id="hinter" onclick="hintsButton()">Hinting On</button>
+
+<button class="key" style="font-family: Arial, Helvetica, sans-serif;" onclick="document.getElementById('settingsmodal').style.display='block'">⚙</button>
+<button class="key" style="display: inline;" onclick="modal.style.display='block'; console.log(score);">❓</button>
+<button id="pauser" class="key" style="display: inline;" onclick="pauseButton(); keyPressed()"></button>
+<button class="key" onclick="document.getElementById('leaderboardmodal').style.display='block'">📊</button>
+
+
+
+<div id="leaderboardmodal" class="modal">
+  <div class="modal-content" style="width: 75%;">
+    <div class="modal-header">
+      <center><h2 style='align-self: center;'>Leaderboard</h2></center>
+      <span style="cursor:pointer; position: absolute; right: 0; padding: 0.5rem;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
+  <div class="modal-body" id="leaderboard">
+
+  </div>
 </div>
+</div>
+
+<div id="settingsmodal" class="modal">
+  <div class="modal-content" style="width: 75%;">
+<div>
+  <span style="cursor:pointer; padding: 0.5rem;" onclick="document.getElementById('settingsmodal').style.display='none'">&times;</span>
+</div>
+  <div class="modal-body">
+    <div id="settings"><center>
+      <button id="fxmuter" class="key" onclick="fxmuteButton()" style="display: inline;"></button>
+      <button id="muter" class="key" onclick="muteButton()" style="display: inline;"></button>
+      <button id="keyboarder" class="key" style="display: inline;" onclick="document.getElementById('keyboard').hidden = !document.getElementById('keyboard').hidden;"> Keyboard ⌨</button>
+      <button class="key" style="display: inline;" id="hinter" onclick="hintsButton()">Hinting On</button></center>
+    </div>
+  </div>
+</div>
+</div>
+
 
 <!-- Trigger/Open The Modal -->
 <div id="myModal" class="modal">
@@ -268,7 +299,6 @@ if (badName()){
   window.onclick = function(event) {
     if (event.target == modal) {
       modal.style.display = "none";
- //    firsthint()
     }
   }
   modal.style.display="block"
