@@ -58,7 +58,7 @@
 
 
       function writeUserData(score, harf) {
-  push(ref(database, 'users/'), {
+  push(ref(database, 'sessions/'), {
     score: score,
     harf:harf,
   });
@@ -70,8 +70,11 @@ function pullData(){
   const dbRef = ref(database);
   onValue(dbRef, (snapshot) => {
     const data = snapshot.val();
-    console.log(data);
-    console.log(data['users'][0]);
+    var zz = Object.values(data)[0]
+    zz = Object.values(zz)
+    
+    console.log(zz[1]['harf'])
+    // document.getElementById("Modal Footer").innerHTML= zz[1]['harf'];
   });
 }
 
@@ -177,6 +180,7 @@ pullData()
       <li>English keyboard can also be used with most keyboard layouts</li>
       <li>Use space to pause and resume</li>
       <li>Users with different keyboard layouts should switch to Arabic keyboard for best results</li>
+      <li>This site uses cookies and other methods to collect data to optimize your user experience</li>
       <li>This game is still in development</li>
     </div>
     <div id = "ModalFooterDiv" class="modal-footer">

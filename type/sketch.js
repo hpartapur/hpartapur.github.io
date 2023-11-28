@@ -69,7 +69,7 @@ function draw() {
 
     if (lives<=0){
         GAevent()
-        writeUserData(score)
+        writeUserData(score, harf.randomLetter)
         // TODO: replace alert with modals
         alert("You scored "+score+"\nHigh Score: "+highscore)
         if (score>highscore){document.cookie = "highscore="+score; alert("New highscore!")}
@@ -194,3 +194,4 @@ function fxmuteButton(){
 function hintsButton(){
   if(hinting){hinting=false;}else{hinting=true;}
 }
+
