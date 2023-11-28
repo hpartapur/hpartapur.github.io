@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- TODO: Figure out how to trigger opening of keyboard on mobile devices -->
+<!-- TODO: Make leaderboard entries rows -->
 <!-- TODO: Figure out how to set a timer -->
 <!-- bg, ratios-keyboard  -->
 <html>
@@ -22,12 +22,7 @@
       gtag('config', 'G-ZJM8TVT5H6');
     </script>
   </head>
-  <script>
-    //detect if mobile screen to open keyboard
-    if (window.matchMedia("(max-width: 600px)").matches) {
-      prompt()
-    }
-  </script>
+
   <body>
     <script type="module">
       // Import the functions you need from the SDKs you need
@@ -53,88 +48,58 @@
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
-
       window.database = getDatabase(app);
 
-
-
-    function writeUserData() {
-      set(ref(database, 'users/'+name), {
-        highscore: highscore,
-        dateJoined: Date()
-      });
-    }
-    function writeSessionData (){
-      if (badName()){name="anonymous"}
-      push(ref(database, 'sessions/'), {
-        name: name,
-        score:score,
-        datePlayed: Date()
-      });      
-    }
-
-function updateHighscore() {
-  if (badName()){name="anonymous"}
-  const userRef = ref(database, 'users/' + name);
-  // Use the update function to update the highscore property
-  set(userRef, {
-    highscore: highscore
-  }, { merge: true });
-}
+      function writeUserData() {
+        set(ref(database, 'users/'+name), {
+          highscore: highscore,
+          dateJoined: Date()
+        });
+      }
+      function writeSessionData (){
+        if (badName()){name="anonymous"}
+        push(ref(database, 'sessions/'), {
+          name: name,
+          score:score,
+          datePlayed: Date()
+        });
+      }
+      function updateHighscore() {
+        if (badName()){name="anonymous"}
+        const userRef = ref(database, 'users/' + name);
+        // Use the update function to update the highscore property
+        set(userRef, {
+          highscore: highscore
+        }, { merge: true });
+      }
 
 window.writeSessionData = writeSessionData;
 window.updateHighscore = updateHighscore;
 
-function badName(){
-  if (getCookie('name')==undefined || getCookie('name')=='' || getCookie('name')=='null'){
-    return true
-  }else{return false}
-}
-
-
-
 function pullData(){
-  // read data from firebase database
   const dbRef = ref(database);
   onValue(dbRef, (snapshot) => {
     const data = snapshot.val();
-    var zz = Object.values(data)[0]
-    zz = Object.values(zz)
-    // console.log(Object.values(data['sessions'])[0])
-    console.log(Object.entries(data['users']))
-    var userdata = Object.entries(data['users'])
     console.log(data['users'])
-
     // Convert the data object to an array of objects
     const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
-
     // Sort the array based on highscores
     dataArray.sort((a, b) => b.highscore - a.highscore);
-
     // Get the leaderboard div
     const leaderboard = document.getElementById('leaderboard');
     // Iterate over the sorted array and add elements to the modal footer
     dataArray.forEach(item => {
         const { name, highscore } = item;
-        
         // Create a new paragraph element
         const paragraph = document.createElement('p');
-        
         // Set the text content of the paragraph
         paragraph.textContent = `Name: ${name} Highscore: ${highscore}`;
-        
         // Append the paragraph to the leaderboard
         leaderboard.appendChild(paragraph);
     });
-
   });
 }
-
 pullData()
-
-
-
-
 
 
 if (badName()){
@@ -146,16 +111,6 @@ if (badName()){
   }
 }
 </script>
-
-
-
-<!-- Add the switch right after the "Mode" button -->
-<!-- <div class="custom-control custom-switch" style="font-size: 2rem;">
-  <input type="checkbox" class="custom-control-input" id="customSwitch1">
-  <label class="custom-control-label" for="customSwitch1"></label>
-</div> -->
-
-  
 
   <center id="p5canvas"><div id="canvas-container" style="border:0.1rem solid #000000;"></div></center>
 
@@ -226,10 +181,10 @@ if (badName()){
   </div>
 </div>
 
-<button class="key" style="font-family: Arial, Helvetica, sans-serif;" onclick="document.getElementById('settingsmodal').style.display='block'">⚙</button>
-<button class="key" style="display: inline;" onclick="modal.style.display='block'; console.log(score);">❓</button>
-<button id="pauser" class="key" style="display: inline;" onclick="pauseButton(); keyPressed()"></button>
-<button class="key" onclick="document.getElementById('leaderboardmodal').style.display='block'">📊</button>
+<button class="key" style="display: inline; float: inline-start;" onclick="document.getElementById('settingsmodal').style.display='block'">⚙</button>
+<button class="key" style="display: inline; float: inline-end;" onclick="modal.style.display='block'; console.log(score);">❓</button>
+<button class="key" style="display: inline; float: inline-start;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
+<button class="key" style="display: inline; float: inline-end;" onclick="document.getElementById('leaderboardmodal').style.display='block'">📊</button>
 
 
 
@@ -237,10 +192,8 @@ if (badName()){
   <div class="modal-content" style="width: 75%;">
     <div class="modal-header">
       <center><h2 style='align-self: center;'>Leaderboard</h2></center>
-      <span style="cursor:pointer; position: absolute; right: 0; padding: 0.5rem;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
-  <div class="modal-body" id="leaderboard">
-
-  </div>
+      <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
+  <div class="modal-body" id="leaderboard"></div>
 </div>
 </div>
 

@@ -200,3 +200,8 @@ function hintsButton(){
   if(hinting){hinting=false;}else{hinting=true;}
 }
 
+function badName(){
+    if (getCookie('name')==undefined || getCookie('name')=='' || getCookie('name')=='null'){
+      return true
+    }else{return false}
+  }
