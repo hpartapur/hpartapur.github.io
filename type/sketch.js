@@ -11,7 +11,7 @@ let wrongfx = new Audio("/asal_assets/wrong.mp3")
 let rightfx = new Audio ("/asal_assets/points.mp3")
 var highscore = getCookie("highscore");
 if (highscore==undefined){highscore=0;}
-
+var bgimg
 
 
 
@@ -28,6 +28,9 @@ function setup() {
 
 function draw() {
     background("#A7C7E7")
+    
+    // background("#F1C688")
+
     stroke(255);
     strokeWeight(0);
 
@@ -35,17 +38,20 @@ function draw() {
 
     if(playing==false){
         textSize(50)
+        textFont("Audiowide")
         text("Press space to begin", width/3, height/2)
+        textFont("Kanz-al-Marjaan")
     }
     if (playing==true){
     bgMusic.play()
     textSize(30)
+    textFont("Audiowide")
     var heart="💛"
     text("Score: " + score, 10, 30)
     lives_h = ""
     for (var i=0; i<lives; i++){lives_h+=heart}
     text("Lives: " + lives_h, width-300,30)
-
+    textFont("Kanz-al-Marjaan")
 
 
     harf.draw()
@@ -71,12 +77,15 @@ function draw() {
         GAevent()
         writeSessionData()
         // TODO: replace alert with modals
-        alert("You scored "+score+"\nHigh Score: "+highscore)
+        document.getElementById('gameovermodal').style.display='block'
+        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore
+        // alert("You scored "+score+"\nHigh Score: "+highscore)
         if (score>highscore){
             highscore=score;
             updateHighscore();
             document.cookie = "highscore="+highscore;
-            alert("New highscore!"); 
+            // alert("New highscore!"); 
+            document.getElementById('gameoverbody').innerText+="\nNew highscore!"
         }
         bgMusic.pause();
         playing=false;
