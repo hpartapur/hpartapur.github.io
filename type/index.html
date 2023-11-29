@@ -4,6 +4,7 @@
 <!-- bg, ratios-keyboard  -->
 <html>
   <head>
+    <meta name="google-adsense-account" content="ca-pub-7620239072665997">
     <meta charset="UTF-8">
     <title>Khardal Typist</title>
     <script src="libraries/p5.min.js" type="text/javascript"></script>
@@ -12,6 +13,7 @@
     <!-- <script src="sketch.js" type="text/javascript"></script> -->
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
@@ -109,6 +111,7 @@ table.appendChild(thead);
 
 // Create the table body
 const tbody = document.createElement('tbody');
+tbody.classList.add('text-success');
 
 // Iterate over the sorted array and add rows to the table body
 dataArray.forEach((item, index) => {
@@ -120,9 +123,9 @@ dataArray.forEach((item, index) => {
     const rankingCol = document.createElement('td');
     rankingCol.classList.add('font-weight-bold');
     rankingCol.textContent = index + 1;
-    if (index === 0) {rankingCol.innerHTML += ' 🥇';}
-    if (index === 1) {rankingCol.innerHTML += ' 🥈';}
-    if (index === 2) {rankingCol.innerHTML += ' 🥉';}
+    if (index === 0) {rankingCol.innerHTML += ' 🏆';}
+    if (index === 1) {rankingCol.innerHTML += '🥈';}
+    if (index === 2) {rankingCol.innerHTML += '🥉';}
 
     const nameCol = document.createElement('td');
     nameCol.textContent = name;
@@ -234,12 +237,21 @@ if (badName()){
 
 
 
-<div id="leaderboardmodal" class="modal" style="overflow-y: auto;">
-  <div class="modal-content" style="width: 75%;">
+<div id="leaderboardmodal" class="modal" style="overflow-y: auto; font-family: 'Audiowide';">
+  <div class="modal-content" style="width: 75%; background-image: url('/asal_assets/bg-downsized.jpg'); background-size: 10%;">
     <div class="modal-header">
       <center><h2 style='align-self: center;'>Leaderboard</h2></center>
       <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
   <div class="modal-body" id="leaderboard"></div>
+</div>
+</div>
+
+<div id="gameovermodal" class="modal" >
+  <div class="modal-content" style="width: 45%; font-family: 'Audiowide';">
+    <div class="modal-header">
+      <h2 style='align-self: center;'><center>Game Over</center></h2>
+      <span style="cursor:pointer;" onclick="document.getElementById('gameovermodal').style.display='none'">&times;</span></div>
+  <div class="modal-body" id="gameoverbody"></div>
 </div>
 </div>
 
