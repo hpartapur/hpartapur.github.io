@@ -87,17 +87,59 @@ function pullData(){
     dataArray.sort((a, b) => b.highscore - a.highscore);
     // Get the leaderboard div
     const leaderboard = document.getElementById('leaderboard');
-    // Iterate over the sorted array and add elements to the modal footer
-    dataArray.forEach(item => {
-        const { name, highscore } = item;
-        // Create a new paragraph element
-        const paragraph = document.createElement('p');
-        // Set the text content of the paragraph
-        paragraph.textContent = `Name: ${name} Highscore: ${highscore}`;
-        // Append the paragraph to the leaderboard
-        leaderboard.appendChild(paragraph);
-    });
-  });
+// Create a table element with Bootstrap classes
+const table = document.createElement('table');
+table.classList.add('table', 'table-striped', 'table-hover', 'table-primary');
+
+// Create the table header row
+const thead = document.createElement('thead');
+thead.classList.add('thead-dark');
+const headerRow = document.createElement('tr');
+const headers = ['Ranking', 'Name', 'Highscore'];
+
+headers.forEach(headerText => {
+    const th = document.createElement('th');
+    th.textContent = headerText;
+    headerRow.appendChild(th);
+});
+
+thead.appendChild(headerRow);
+table.appendChild(thead);
+
+// Create the table body
+const tbody = document.createElement('tbody');
+
+// Iterate over the sorted array and add rows to the table body
+dataArray.forEach((item, index) => {
+    const { name, highscore } = item;
+
+    const row = document.createElement('tr');
+
+    // Create columns for ranking, name, and highscore
+    const rankingCol = document.createElement('td');
+    rankingCol.classList.add('font-weight-bold');
+    rankingCol.textContent = index + 1;
+
+    const nameCol = document.createElement('td');
+    nameCol.textContent = name;
+
+    const highscoreCol = document.createElement('td');
+    highscoreCol.textContent = highscore;
+
+    // Append columns to the row
+    row.appendChild(rankingCol);
+    row.appendChild(nameCol);
+    row.appendChild(highscoreCol);
+
+    // Append the row to the table body
+    tbody.appendChild(row);
+});
+
+table.appendChild(tbody);
+
+// Append the table to the modal footer
+leaderboard.appendChild(table);
+});
 }
 pullData()
 
@@ -188,7 +230,7 @@ if (badName()){
 
 
 
-<div id="leaderboardmodal" class="modal">
+<div id="leaderboardmodal" class="modal" style="overflow-y: auto;">
   <div class="modal-content" style="width: 75%;">
     <div class="modal-header">
       <center><h2 style='align-self: center;'>Leaderboard</h2></center>
