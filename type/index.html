@@ -119,6 +119,9 @@ dataArray.forEach((item, index) => {
     const rankingCol = document.createElement('td');
     rankingCol.classList.add('font-weight-bold');
     rankingCol.textContent = index + 1;
+    if (index === 0) {rankingCol.innerHTML += ' 🥇';}
+    if (index === 1) {rankingCol.innerHTML += ' 🥈';}
+    if (index === 2) {rankingCol.innerHTML += ' 🥉';}
 
     const nameCol = document.createElement('td');
     nameCol.textContent = name;
@@ -226,7 +229,7 @@ if (badName()){
 <button class="key" style="display: inline; float: inline-start;" onclick="document.getElementById('settingsmodal').style.display='block'">⚙</button>
 <button class="key" style="display: inline; float: inline-end;" onclick="modal.style.display='block'; console.log(score);">❓</button>
 <button class="key" style="display: inline; float: inline-start;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
-<button class="key" style="display: inline; float: inline-end;" onclick="document.getElementById('leaderboardmodal').style.display='block'">📊</button>
+<button class="key" style="display: inline; float: inline-end;" onclick="document.getElementById('leaderboardmodal').style.display='block'">🏆</button>
 
 
 
