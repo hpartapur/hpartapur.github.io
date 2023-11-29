@@ -147,11 +147,11 @@ function updateButtons(){
     }
 
     if(hinting){
-        document.getElementById("hinter").innerHTML="Hints Off";
-        document.getElementById("hinter").style.textDecoration="line-through"
-    }else{
         document.getElementById("hinter").innerHTML="Hints On";
         document.getElementById("hinter").style.textDecoration="none"
+    }else{
+        document.getElementById("hinter").innerHTML="Hints Off";
+        document.getElementById("hinter").style.textDecoration="line-through"
     }
 
     if(playing){document.getElementById("pauser").innerHTML="⏸"
