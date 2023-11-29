@@ -181,6 +181,7 @@ function GAevent (){
         // 'non_interaction': true,
         'value':score
 });}
+
 //TODO: create settings class-incorporate all button functions, updatebuttons, and settings variables
 function pauseButton(){
     if(playing){
@@ -210,7 +211,7 @@ function hintsButton(){
 }
 
 function badName(){
-    if (getCookie('name')==undefined || getCookie('name')=='' || getCookie('name')=='null'){
+    if (getCookie('name')==undefined || getCookie('name')=='' || getCookie('name')=='null' || getCookie('name')=="" || getCookie('name').length<2){
       return true
     }else{return false}
   }
