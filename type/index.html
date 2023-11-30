@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- TODO: Make leaderboard entries rows -->
 <!-- TODO: Figure out how to set a timer -->
-<!-- bg, ratios-keyboard  -->
+<!-- ratios-keyboard  -->
+<!-- put profile between rank and name -->
 <html>
   <head>
     <meta name="google-adsense-account" content="ca-pub-7620239072665997">
@@ -52,14 +52,16 @@
       const analytics = getAnalytics(app);
       window.database = getDatabase(app);
 
+
       function writeUserData() {
+        if (badName()){name="Guest"}
         set(ref(database, 'users/'+name), {
           highscore: highscore,
           dateJoined: Date()
         });
       }
       function writeSessionData (){
-        if (badName()){name="anonymous"}
+        if (badName()){name="Guest"}
         push(ref(database, 'sessions/'), {
           name: name,
           score:score,
@@ -67,8 +69,8 @@
         });
       }
       function updateHighscore() {
-        if (badName()){name="anonymous"}
-        const userRef = ref(database, 'users/' + name);
+        if (badName()){name="Guest"}
+        const userRef = ref(database, 'users/' + getCookie('name'));
         // Use the update function to update the highscore property
         set(userRef, {
           highscore: highscore
@@ -78,76 +80,84 @@
 window.writeSessionData = writeSessionData;
 window.updateHighscore = updateHighscore;
 
-function pullData(){
+function pullData() {
   const dbRef = ref(database);
   onValue(dbRef, (snapshot) => {
     const data = snapshot.val();
     console.log(data['users'])
+
     // Convert the data object to an array of objects
     const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
     // Sort the array based on highscores
     dataArray.sort((a, b) => b.highscore - a.highscore);
+
     // Get the leaderboard div
     const leaderboard = document.getElementById('leaderboard');
     leaderboard.innerHTML = '';
-// Create a table element with Bootstrap classes
-const table = document.createElement('table');
-table.classList.add('table', 'table-striped', 'table-hover', 'table-primary');
 
-// Create the table header row
-const thead = document.createElement('thead');
-thead.classList.add('thead-dark');
-const headerRow = document.createElement('tr');
-const headers = ['Ranking', 'Name', 'Highscore'];
+    // Create a table element with Bootstrap classes
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-striped', 'table-hover', 'table-primary');
 
-headers.forEach(headerText => {
-    const th = document.createElement('th');
-    th.textContent = headerText;
-    headerRow.appendChild(th);
-});
+    // Create the table header row
+    const thead = document.createElement('thead');
+    thead.classList.add('thead-dark');
+    const headerRow = document.createElement('tr');
+    const headers = ['Ranking', 'Name', 'Highscore'];
 
-thead.appendChild(headerRow);
-table.appendChild(thead);
+    headers.forEach(headerText => {
+      const th = document.createElement('th');
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+    });
 
-// Create the table body
-const tbody = document.createElement('tbody');
-tbody.classList.add('text-success');
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
-// Iterate over the sorted array and add rows to the table body
-dataArray.forEach((item, index) => {
-    const { name, highscore } = item;
+    // Create the table body
+    const tbody = document.createElement('tbody');
+    tbody.classList.add('text-success');
 
-    const row = document.createElement('tr');
+    // Iterate over the sorted array and add rows to the table body
+    dataArray.forEach((item, index) => {
+      const { name, highscore } = item;
 
-    // Create columns for ranking, name, and highscore
-    const rankingCol = document.createElement('td');
-    rankingCol.classList.add('font-weight-bold');
-    rankingCol.textContent = index + 1;
-    if (index === 0) {rankingCol.innerHTML += ' 🏆';}
-    if (index === 1) {rankingCol.innerHTML += '🥈';}
-    if (index === 2) {rankingCol.innerHTML += '🥉';}
+      const row = document.createElement('tr');
 
-    const nameCol = document.createElement('td');
-    nameCol.textContent = name;
+      // Create columns for ranking, name, and highscore
+      const rankingCol = document.createElement('td');
+      rankingCol.classList.add('font-weight-bold');
+      rankingCol.textContent = index + 1;
+      if (index === 0) {rankingCol.innerHTML += ' 🏆';}
+      if (index === 1) {rankingCol.innerHTML += '🥈';}
+      if (index === 2) {rankingCol.innerHTML += '🥉';}
 
-    const highscoreCol = document.createElement('td');
-    highscoreCol.textContent = highscore;
+      const nameCol = document.createElement('td');
+      nameCol.textContent = name;
+      
+      const highscoreCol = document.createElement('td');
+      highscoreCol.textContent = highscore;
 
-    // Append columns to the row
-    row.appendChild(rankingCol);
-    row.appendChild(nameCol);
-    row.appendChild(highscoreCol);
+      if (nameCol.innerText == getCookie("name")) {
+        row.classList.add('table-info');
+      }
 
-    // Append the row to the table body
-    tbody.appendChild(row);
-});
+      // Append columns to the row
+      row.appendChild(rankingCol);
+      row.appendChild(nameCol);
+      row.appendChild(highscoreCol);
 
-table.appendChild(tbody);
+      // Append the row to the table body
+      tbody.appendChild(row);
+    });
 
-// Append the table to the modal footer
-leaderboard.appendChild(table);
-});
+    table.appendChild(tbody);
+
+    // Append the table to the modal footer
+    leaderboard.appendChild(table);
+  });
 }
+
 pullData()
 
 
