@@ -61,7 +61,7 @@
         });
       }
       function writeSessionData (){
-        if (badName()){name="Guest"}
+        if (badName()){name="Guest"}else{name=getCookie("name")}
         push(ref(database, 'sessions/'), {
           name: name,
           score:score,
