@@ -22,7 +22,7 @@ function setup() {
     if(playing){bgMusic.play()}
     bgMusic.loop=true;
     bgMusic.volume=1;
-    textFont("AL-KANZ")
+    textFont("Kanz-al-Marjaan")
     harf = new Harf();
 }
 
@@ -121,7 +121,6 @@ class Harf{
     draw(){
         // rect(this.x, this.y, this.size, this.size)
         // ellipse(this.x*1.04, this.y,this.size*1.75,this.size*1.75)
-        textFont("AL-KANZ")
         textSize(this.size);
         fill(500*(harf.y/height),0,0)
         text(this.randomLetter, this.x, this.y);
