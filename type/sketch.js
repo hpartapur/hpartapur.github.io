@@ -22,7 +22,7 @@ function setup() {
     if(playing){bgMusic.play()}
     bgMusic.loop=true;
     bgMusic.volume=1;
-    textFont("Kanz-al-Marjaan")
+    textFont("AL-KANZ")
     harf = new Harf();
 }
 
@@ -111,6 +111,7 @@ function keyPressed(){
 
 class Harf{
     constructor(){
+        
         // this.x is random value between 0.2 and 0.8
         this.x = (Math.random() * 0.6 + 0.2)*width;
         this.y=height*0.05;
@@ -120,14 +121,15 @@ class Harf{
     draw(){
         // rect(this.x, this.y, this.size, this.size)
         // ellipse(this.x*1.04, this.y,this.size*1.75,this.size*1.75)
+        textFont("AL-KANZ")
         textSize(this.size);
         fill(500*(harf.y/height),0,0)
         text(this.randomLetter, this.x, this.y);
         fill(0);
     }
     move(){
-        this.size=this.size*(1.01+(score/1500));
-        this.y=this.y*(1.01+(score/1500));
+        this.size=this.size*(1.0053+(score/2000));
+        this.y=this.y*(1.0053+(score/2000));
 
         // TODO: move below code to draw()
         // Get all the buttons with class "key"
