@@ -73,7 +73,7 @@
           highscore: highscore
         }, { merge: true });
         userRef.push({
-          games:firebase.database.ServerValue.increment(1)
+          games:database.ServerValue.increment(1)
         });
 
 
