@@ -67,6 +67,16 @@
           score:score,
           datePlayed: Date()
         });
+        
+        const userRef = ref(database, 'users/' + name);
+        set(userRef, {
+          highscore: highscore
+        }, { merge: true });
+        userRef.push({
+          games:firebase.database.ServerValue.increment(1)
+        });
+
+
       }
       function updateHighscore() {
         if (badName()){name="Guest"}
@@ -140,6 +150,8 @@ function pullData() {
 
       if (nameCol.innerText == getCookie("name")) {
         row.classList.add('table-info');
+
+        document.getElementById('lbtitle2').innerText='You are ranked #'+rankingCol.innerText
       }
 
       // Append columns to the row
@@ -244,7 +256,7 @@ if (badName()){
 <button class="key" style="display: inline; float: inline-start;" onclick="document.getElementById('settingsmodal').style.display='block'"><img src="settings.png" style="width: 3vh;"></button>
 <button class="key" style="display: inline; float: inline-end;" onclick="modal.style.display='block'; console.log(score);">❓</button>
 <button class="key" style="display: inline; float: inline-start;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
-<button class="key" style="display: inline; float: inline-end;" onclick="document.getElementById('leaderboardmodal').style.display='block'">🏆</button>
+<button class="key" style="display: inline; float: inline-end;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}">🏆</button>
 
 
 
@@ -252,6 +264,7 @@ if (badName()){
   <div class="modal-content" style="width: 75%; background-image: url('/asal_assets/bg-downsized.jpg'); background-size: 10%;">
     <div class="modal-header">
       <center><h2 style='align-self: center;'>Leaderboard</h2></center>
+      <h3 id="lbtitle2"></h3>
       <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
   <div class="modal-body" id="leaderboard"></div>
 </div>
