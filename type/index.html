@@ -70,7 +70,7 @@
       }
       function updateHighscore() {
         if (badName()){name="Guest"}
-        const userRef = ref(database, 'users/' + getCookie('name'));
+        const userRef = ref(database, 'users/' + name);
         // Use the update function to update the highscore property
         set(userRef, {
           highscore: highscore
@@ -162,8 +162,9 @@ pullData()
 
 
 if (badName()){
-  name=prompt("Enter your name \nThis name cannot be changed!")
+  name=prompt("Enter your FULL name \nThis name cannot be changed!\nThis name will be used for the leaderboard")
   document.cookie = "name="+name
+  if (badName()){document.cookie = "name=Guest"}
 
   if (badName()==false){
     writeUserData()
