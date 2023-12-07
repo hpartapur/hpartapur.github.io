@@ -170,7 +170,7 @@ pullData()
 if (badName()){
   name=prompt("Enter your FULL name \nThis name cannot be changed!\nThis name will be used for the leaderboard")
   document.cookie = "name="+name
-  if (badName()){document.cookie = "name=Guest"}
+  if (badName()){document.cookie = "name=Guest"; name="Guest"}
 
   if (badName()==false){
     writeUserData()
