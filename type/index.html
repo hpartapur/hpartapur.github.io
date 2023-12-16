@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <!-- TODO: Figure out how to set a timer -->
 <!-- ratios-keyboard  -->
-<!-- put profile between rank and name -->
+<!-- add google auth and anon auth -->
+<!-- changing background with colors -->
+<!-- friend challenges -->
+<!-- make leaderboard popup when new highscore -->
+<!-- Do not let user play until login -->
+<!-- Phase out cookies and replace with firebase pulled data -->
+<!-- simplify pulldata -->
 <html>
   <head>
     <meta name="google-adsense-account" content="ca-pub-7620239072665997">
     <meta charset="UTF-8">
-    <title>Khardal Typist</title>
+    <meta name="description" content="Type-Righter is a game that helps you learn to type in Arabic.">
+    <link rel="icon" type="image/jpg" href="logo.png">
+    <title>Type-Righter</title>
     <script src="libraries/p5.min.js" type="text/javascript"></script>
     <script src="libraries/p5.sound.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href = "style.css">
-    <!-- <script src="sketch.js" type="text/javascript"></script> -->
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
@@ -32,9 +39,7 @@
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
       import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
       import { getFirestore, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-    
+
       // Your web app's Firebase configuration
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
@@ -68,14 +73,12 @@
           score:score,
           datePlayed: Date()
         });
-      
-
-
       }
       function updateHighscore() {
         if (badName()){name="Guest"}
         const userRef = ref(database, 'users/' + name);
         // Use the update function to update the highscore property
+        // TODO replace set with update
         set(userRef, {
           highscore: highscore
         }, { merge: true });
@@ -95,7 +98,6 @@ function pullData() {
     // Sort the array based on highscores
     dataArray.sort((a, b) => b.highscore - a.highscore);
 
-    // Get the leaderboard div
     const leaderboard = document.getElementById('leaderboard');
     leaderboard.innerHTML = '';
 
@@ -135,30 +137,22 @@ function pullData() {
       if (index === 0) {rankingCol.innerHTML += ' 🏆';}
       if (index === 1) {rankingCol.innerHTML += '🥈';}
       if (index === 2) {rankingCol.innerHTML += '🥉';}
+      const nameCol = document.createElement('td'); nameCol.textContent = name;
+      const highscoreCol = document.createElement('td'); highscoreCol.textContent = highscore;
 
-      const nameCol = document.createElement('td');
-      nameCol.textContent = name;
-      
-      const highscoreCol = document.createElement('td');
-      highscoreCol.textContent = highscore;
-
+      // For the player's name, highlight in green, and add "You are ranked #" msg
       if (nameCol.innerText == getCookie("name")) {
         row.classList.add('table-info');
-
         document.getElementById('lbtitle2').innerText='You are ranked #'+rankingCol.innerText
       }
-
       // Append columns to the row
       row.appendChild(rankingCol);
       row.appendChild(nameCol);
       row.appendChild(highscoreCol);
-
       // Append the row to the table body
       tbody.appendChild(row);
     });
-
     table.appendChild(tbody);
-
     // Append the table to the modal footer
     leaderboard.appendChild(table);
   });
@@ -178,8 +172,25 @@ if (badName()){
 }
 </script>
 
-  <center id="p5canvas"><div id="canvas-container" style="border:0.1rem solid #000000;"></div></center>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color: white;"><img src="logo.png" style="height: 8vh; padding: 2vh;" >Type-Righter</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <!-- <li class="nav-item">
+        <button id="login" class="nav-link btn-primary"  style="color: white; border-radius: 2vh;"><img src="g.png" style="height: 4vh; ">Sign in with Google</button>
+      </li> -->
+<button class="btn-light" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem; padding: 1vh;" onclick="document.getElementById('settingsmodal').style.display='block'"><img src="settings.png" style="width: 3vh;"></button>
+<button class="btn-info" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;;" onclick="modal.style.display='block'; console.log(score);">❓</button>
+<button class="btn-success" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
+<button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}">🏆</button>
+</ul></div></nav>
 
+
+
+  <center id="p5canvas"><div id="canvas-container" style="border:0.1rem solid #000000;"></div></center>
 <div id="keyboard">
   <div class="row">
     <button class="key">ذ</button>
@@ -247,12 +258,6 @@ if (badName()){
   </div>
 </div>
 
-<button class="key" style="display: inline; float: inline-start;" onclick="document.getElementById('settingsmodal').style.display='block'"><img src="settings.png" style="width: 3vh;"></button>
-<button class="key" style="display: inline; float: inline-end;" onclick="modal.style.display='block'; console.log(score);">❓</button>
-<button class="key" style="display: inline; float: inline-start;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
-<button class="key" style="display: inline; float: inline-end;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}">🏆</button>
-
-
 
 <div id="leaderboardmodal" class="modal" style="overflow-y: auto; font-family: 'Audiowide';">
   <div class="modal-content" style="width: 75%; background-image: url('/asal_assets/bg-downsized.jpg'); background-size: 10%;">
@@ -288,7 +293,6 @@ if (badName()){
   </div>
 </div>
 </div>
-
 
 <!-- Trigger/Open The Modal -->
 <div id="myModal" class="modal">
@@ -338,5 +342,4 @@ if (badName()){
       }
   });
   </script>
-
 </html>
