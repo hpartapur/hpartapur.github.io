@@ -12,7 +12,10 @@ let wrongfx = new Audio("/asal_assets/wrong.mp3")
 let rightfx = new Audio ("/asal_assets/points.mp3")
 var highscore = getCookie("highscore");
 if (highscore==undefined){highscore=0;}
-
+var times =[]
+var lettercount = 0
+var averages = []
+var sum = 0;
 
 
 
@@ -79,7 +82,7 @@ function draw() {
         writeSessionData()
         // TODO: replace alert with modals
         document.getElementById('gameovermodal').style.display='block'
-        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore
+        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore + "\nAverage Typing Speed: " + (sum/averages.length).toFixed(3) + " seconds per Letter"
         // alert("You scored "+score+"\nHigh Score: "+highscore)
         if (score>highscore){
             confetti.start(4000)
@@ -120,6 +123,19 @@ class Harf{
         this.y=height*0.05;
         this.size=height*0.03;
         this.randomLetter = huroof[Math.floor(Math.random() * huroof.length)];
+		if (playing){
+			this.starttime = new Date()
+			times.push(this.starttime)
+			console.log(times[times.length-1] - times[times.length-2])
+			averages.push((times[times.length-1] - times[times.length-2])/1000)
+			if (isNaN(averages[0])){averages.splice(0,1)}
+			sum=0
+			for (let i = 0; i < averages.length; i++ ) {
+				sum += averages[i];
+			}
+			console.log(sum/averages.length)
+		}
+
     }
     draw(){
         // rect(this.x, this.y, this.size, this.size)
@@ -132,8 +148,8 @@ class Harf{
         fill(0);
     }
     move(){
-        this.size=this.size*(1.01+(score/2000));
-        this.y=this.y*(1.01+(score/2000));
+        this.size=this.size*(1.02+(score/2000));
+        this.y=this.y*(1.02+(score/2000));
 
         // TODO: move below code to draw()
         // Get all the buttons with class "key"
