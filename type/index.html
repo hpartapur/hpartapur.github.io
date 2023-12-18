@@ -154,7 +154,7 @@
         const userRef = ref(database, 'users/' + user.uid);
         // Use the update function to update the highscore property
         // TODO replace set with update
-        set(userRef, {
+        update(userRef, {
           highscore: highscore
         }, { merge: true });
       }
