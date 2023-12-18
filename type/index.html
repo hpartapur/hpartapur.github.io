@@ -154,9 +154,11 @@
         const userRef = ref(database, 'users/' + user.uid);
         // Use the update function to update the highscore property
         // TODO replace set with update
+        if (score > user.highscore){
         update(userRef, {
           highscore: highscore
         }, { merge: true });
+      }
       }
 
 window.writeSessionData = writeSessionData;
@@ -341,6 +343,15 @@ pullData()
       <h3 id="lbtitle2"></h3>
       <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
   <div class="modal-body" id="leaderboard"></div>
+</div>
+</div>
+
+<div id="profilemodal" class="modal" >
+  <div class="modal-content" style="width: 45%; font-family: 'Audiowide';">
+    <div class="modal-header">
+      <h2 style='align-self: center;'><center>Game Over</center></h2>
+      <span style="cursor:pointer;" onclick="document.getElementById('profile').style.display='none'">&times;</span></div>
+  <div class="modal-body" id="profile"><img src=""></div>
 </div>
 </div>
 
