@@ -23,6 +23,8 @@
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
@@ -39,7 +41,7 @@
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-      import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+      import { getDatabase, ref, push, onValue, set, get, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
       import { getFirestore, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
       import { getAuth, signInWithPopup,GoogleAuthProvider, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
@@ -157,8 +159,11 @@
         // TODO replace set with update
         if (score > user.highscore){
         update(userRef, {
-          highscore: highscore
+          highscore: score
         }, { merge: true });
+
+        setTimeout(() => {document.getElementById("gameovermodal").style.display='none';document.getElementById("leaderboardmodal").style.display='block'}, 5253);
+        confetti.start(4000)
       }
       }
 
@@ -249,11 +254,71 @@ function pullData() {
 pullData()
 window.profiler=profiler;
 function profiler(){
-    document.getElementById('profilebody').innerHTML=`<table class='table table-hover table-responsive table-info'>
-      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th></tr></thead>
-      <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td></tr></tbody>
+  console.log(data['sessions'])
+  // check which sessions in data['sessions'] have uid same as user.uid and output to console
+  var previousSessions = Object.fromEntries(
+  Object.entries(data.sessions).filter(
+    ([sessionId, sessionData]) => sessionData.uid == user.uid));
+  console.log(previousSessions);
+  var SessionsCount = Object.keys(previousSessions).length;
+
+  document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
+      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th></tr></thead>
+      <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td></tr></tbody>
       </table>`
-  
+
+      // Get the HTML table element
+      const tableElement = document.getElementById("sessionTable");
+      // Create a table header
+      const tableHeader = `<tr><th>Date</th><th>Score</th><th>Average Letter Speed</th></tr>`;
+
+      // Create rows for each session
+      const tableRows = Object.entries(previousSessions).map(([sessionId, sessionData]) => {
+        return `<tr><td>${sessionData.datePlayed}</td><td>${sessionData.score}</td><td>${sessionData.averageLetterSpeed}</td></tr>`;
+      });
+
+      // Set the HTML content of the table
+      tableElement.innerHTML = tableHeader + tableRows.join("");
+
+// const dates = Object.values(previousSessions).map(session => session.datePlayed);
+// const scores = Object.values(previousSessions).map(session => session.score);
+
+// // Get the canvas element
+// const canvas = document.getElementById("sessionChart");
+
+// // Create a line chart with the date-fns adapter
+// const ctx = canvas.getContext("2d");
+// const sessionChart = new Chart(ctx, {
+//   type: 'line',
+//   data: {
+//     labels: dates,
+//     datasets: [{
+//       label: 'Score',
+//       borderColor: 'rgb(75, 192, 192)',
+//       data: scores,
+//     }]
+//   },
+//   options: {
+//     scales: {
+//       x: {
+//         type: 'time',
+//         time: {
+//           unit: 'day',
+//           displayFormats: {
+//             day: 'MMM D YYYY HH:mm:ss',
+//           },
+//         },
+//       },
+//       y: {
+//         beginAtZero: true,
+//       }
+//     },
+//   },
+//   plugins: [ChartDataLabels],
+// });
+
+
+
 
   // document.getElementById('profilebody').innerHTML+= "<h3>Games Played: "+gamesPlayed+"</h3>"
   // document.getElementById('profilebody').innerHTML+= "<h3>Average Letter Speed: "+(sum/averages.length).toFixed(3)+" letters per second</h3>"
@@ -359,13 +424,17 @@ function profiler(){
 </div>
 
 <div id="profilemodal" class="modal" >
-  <div class="modal-content" style="width: 85%; font-family: 'Audiowide';">
+  <div class="modal-content modal-responsive" style="width: 85%; height: 95%; font-family: 'Audiowide'; overflow-y: scroll;" >
     
     <div class="modal-header">
       <h2 style='align-self: center;'><center>Your Profile</center></h2>
       <span style="cursor:pointer;" onclick="document.getElementById('profilemodal').style.display='none'">&times;</span></div>
   <div class="modal-body" id="profilebody">
     <img id='profilepic' src="">
+    <div id="profiletable"></div>
+    <!-- <canvas id="sessionChart" width="400" height="200"></canvas> -->
+    <center><h5>Previous Sessions</h5></center>
+    <table id = 'sessionTable' class="table table-secondary table-responsive table-striped table-hover" style="max-height: 40vh;"></table>
   </div>
   <div id = "profilefooter" class="modal-footer">
     <button id="logout" class="btn btn-danger" onclick="signout()">Sign Out</button>
