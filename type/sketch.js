@@ -16,6 +16,7 @@ var times =[]
 var lettercount = 0
 var averages = []
 var sum = 0;
+var average =0;
 
 
 
@@ -80,6 +81,7 @@ function draw() {
     if (lives<=0){
         GAevent()
         writeSessionData()
+		updateHighscore()
         // TODO: replace alert with modals
         document.getElementById('gameovermodal').style.display='block'
         document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore + "\nAverage Typing Speed: " + (sum/averages.length).toFixed(3) + " seconds per Letter"
@@ -110,6 +112,7 @@ function keyPressed(){
         score+=1;
         harf = new Harf();
         if (score%28==0){lives++}
+		if (score>50){document.getElementById('keyboard').hidden='true'}
     }
 }
 
@@ -133,7 +136,8 @@ class Harf{
 			for (let i = 0; i < averages.length; i++ ) {
 				sum += averages[i];
 			}
-			console.log(sum/averages.length)
+			average = 60/(sum/averages.length)
+			console.log(average+"Letters per Minute")
 		}
 
     }
@@ -231,12 +235,6 @@ function fxmuteButton(){
 function hintsButton(){
   if(hinting){hinting=false;}else{hinting=true;}
 }
-
-function badName(){
-    if (getCookie('name')==undefined || getCookie('name')=='' || getCookie('name')=='null' || getCookie('name')=="" || getCookie('name').length<2){
-      return true
-    }else{return false}
-  }
 
 // CONFETTI FILE
 var confetti = {
