@@ -9,6 +9,7 @@
 <!-- Phase out cookies and replace with firebase pulled data -->
 <!-- simplify pulldata -->
 <!-- add profile modal that also functions as login modal -->
+<!-- Add charts and sessions to profilemodal -->
 <html>
   <head>
     <meta name="google-adsense-account" content="ca-pub-7620239072665997">
@@ -165,11 +166,14 @@ window.writeSessionData = writeSessionData;
 window.updateHighscore = updateHighscore;
 
 
+
 function pullData() {
   const dbRef = ref(database);
   onValue(dbRef, (snapshot) => { 
     const data = snapshot.val();
     console.log(data['users'])
+    window.data = data;
+    user.highscore = data['users'][user.uid].highscore
 
 
     //TODO: change so that name is 
@@ -243,8 +247,17 @@ function pullData() {
 }
 
 pullData()
+window.profiler=profiler;
+function profiler(){
+    document.getElementById('profilebody').innerHTML=`<table class='table table-hover table-responsive table-info'>
+      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th></tr></thead>
+      <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td></tr></tbody>
+      </table>`
+  
 
-
+  // document.getElementById('profilebody').innerHTML+= "<h3>Games Played: "+gamesPlayed+"</h3>"
+  // document.getElementById('profilebody').innerHTML+= "<h3>Average Letter Speed: "+(sum/averages.length).toFixed(3)+" letters per second</h3>"
+}
 
 </script>
 
@@ -260,9 +273,8 @@ pullData()
 <button class="btn-success" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
 <button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}">🏆</button>
 <li>
-  <h6 id="profile" style="color: white; background-color: green; border-radius: 2vh; padding: 1vh;"></h6>
+  <button id="profile" class="btn btn-success" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
 </li>
-<button id="logout" class="btn btn-danger" onclick="signout()">Sign Out</button>
 </ul></div></nav>
 
 
@@ -342,16 +354,22 @@ pullData()
       <center><h2 style='align-self: center;'>Leaderboard</h2></center>
       <h3 id="lbtitle2"></h3>
       <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
-  <div class="modal-body" id="leaderboard"></div>
+  <div class="modal-body" id="leaderboard" style="overflow-y: scroll;"></div>
 </div>
 </div>
 
 <div id="profilemodal" class="modal" >
-  <div class="modal-content" style="width: 45%; font-family: 'Audiowide';">
+  <div class="modal-content" style="width: 85%; font-family: 'Audiowide';">
+    
     <div class="modal-header">
-      <h2 style='align-self: center;'><center>Game Over</center></h2>
-      <span style="cursor:pointer;" onclick="document.getElementById('profile').style.display='none'">&times;</span></div>
-  <div class="modal-body" id="profile"><img src=""></div>
+      <h2 style='align-self: center;'><center>Your Profile</center></h2>
+      <span style="cursor:pointer;" onclick="document.getElementById('profilemodal').style.display='none'">&times;</span></div>
+  <div class="modal-body" id="profilebody">
+    <img id='profilepic' src="">
+  </div>
+  <div id = "profilefooter" class="modal-footer">
+    <button id="logout" class="btn btn-danger" onclick="signout()">Sign Out</button>
+ </div>
 </div>
 </div>
 
@@ -368,7 +386,8 @@ pullData()
   <div class="modal-content" style="width: 45%;">
     <div class="modal-header">
       <h2 style='align-self: center;'><center>You must log in to play this game</center></h2>
-      <span style="cursor:pointer;" onclick="document.getElementById('loginmodal').style.display='none'">&times;</span></div>
+      <h4>This game will not work as intended without a login</h4>
+      </div>
   <div class="modal-body" id="loginbody">
     <center>
       <button id="login" class="nav-link btn-primary"  style="color: white; border-radius: 2vh;"  onclick="glogin()"><img src="g.png" style="height: 4vh; ">Sign in with Google</button>
