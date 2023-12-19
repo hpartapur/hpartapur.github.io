@@ -336,7 +336,7 @@ function profiler(){
 <button class="btn-light" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem; padding: 1vh;" onclick="document.getElementById('settingsmodal').style.display='block'"><img src="settings.png" style="width: 3vh;"></button>
 <button class="btn-info" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;;" onclick="modal.style.display='block'; console.log(score);">❓</button>
 <button class="btn-success" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
-<button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}">🏆</button>
+<button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}else{document.getElementsByClassName('table-info')[0].scrollIntoView();}">🏆</button>
 <li>
   <button id="profile" class="btn btn-success" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
 </li>
@@ -497,7 +497,7 @@ function profiler(){
       <li>This game is still in development</li>
     </div>
     <div id = "ModalFooterDiv" class="modal-footer">
-      <h3 id="Modal Footer">Brought to you by <a style="color: purple;" href="https:kawakibcreations.net" >Kawakib Creations</a></h3>
+      <h3 id="Modal Footer">Brought to you by <a style="color: purple;" href="https:kawakib.net" >Kawakib Creations</a></h3>
     </div>
   </div>
 </div>
