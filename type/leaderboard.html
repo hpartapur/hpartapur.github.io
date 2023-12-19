@@ -51,18 +51,25 @@
       const app = initializeApp(firebaseConfig);
       window.database = getDatabase(app);
 
-function pullData() {
+      function pullData() {
   const dbRef = ref(database);
-  onValue(dbRef, (snapshot) => {
+  onValue(dbRef, (snapshot) => { 
     const data = snapshot.val();
     console.log(data['users'])
+    window.data = data;
 
+
+
+    //TODO: change so that name is 
     // Convert the data object to an array of objects
-    const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
+    // const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
+    const dataArray = Object.entries(data['users']).map(([id, values]) => ({ id, name: values.name, photo: values.photo, highscore: values.highscore }));
+    console.log(dataArray)
+
+    console.log("PULLED DATA")  
     // Sort the array based on highscores
     dataArray.sort((a, b) => b.highscore - a.highscore);
 
-    // Get the leaderboard div
     const leaderboard = document.getElementById('leaderboard');
     leaderboard.innerHTML = '';
 
@@ -74,7 +81,7 @@ function pullData() {
     const thead = document.createElement('thead');
     thead.classList.add('thead-dark');
     const headerRow = document.createElement('tr');
-    const headers = ['Ranking', 'Name', 'Highscore'];
+    const headers = ['Ranking', "Player", 'Highscore'];
 
     headers.forEach(headerText => {
       const th = document.createElement('th');
@@ -91,7 +98,7 @@ function pullData() {
 
     // Iterate over the sorted array and add rows to the table body
     dataArray.forEach((item, index) => {
-      const { name, highscore } = item;
+      const { name, highscore, photo } = item;
 
       const row = document.createElement('tr');
 
@@ -102,28 +109,17 @@ function pullData() {
       if (index === 0) {rankingCol.innerHTML += ' 🏆';}
       if (index === 1) {rankingCol.innerHTML += '🥈';}
       if (index === 2) {rankingCol.innerHTML += '🥉';}
-
-      const nameCol = document.createElement('td');
-      nameCol.textContent = name;
-      
-      const highscoreCol = document.createElement('td');
-      highscoreCol.textContent = highscore;
-
-      if (nameCol.innerText == getCookie("name")) {
-        row.classList.add('table-info');
-      }
+      const nameCol = document.createElement('td'); nameCol.innerHTML = "<img src='"+photo+"' style='height: 5vh; border-radius: 50% '> "+name;
+      const highscoreCol = document.createElement('td'); highscoreCol.textContent = highscore;
 
       // Append columns to the row
       row.appendChild(rankingCol);
       row.appendChild(nameCol);
       row.appendChild(highscoreCol);
-
       // Append the row to the table body
       tbody.appendChild(row);
     });
-
     table.appendChild(tbody);
-
     // Append the table to the modal footer
     leaderboard.appendChild(table);
   });
@@ -132,21 +128,6 @@ function pullData() {
 pullData()
 
 
-if (badName()){
-  name=prompt("Enter your name \nThis name cannot be changed!")
-  document.cookie = "name="+name
-
-  if (badName()==false){
-    writeUserData()
-  }
-}
-
-function getCookie(name) {
-    let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
 </script>
 
 
