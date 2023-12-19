@@ -264,9 +264,16 @@ function profiler(){
   console.log(previousSessions);
   var SessionsCount = Object.keys(previousSessions).length;
 
+  const dates = Object.keys(previousSessions).map(sessionId => new Date(previousSessions[sessionId].datePlayed));
+  const scores = Object.values(previousSessions).map(session => session.score);
+  const speed = Object.values(previousSessions).map(session => 60/(session.averageLetterSpeed));
+  var average_score = scores.reduce((a, b) => a + b, 0) / scores.length;
+  var full_average_speed = speed.reduce((a, b) => a + b, 0) / speed.length;
+
+
   document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
-      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th></tr></thead>
-      <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td></tr></tbody>
+      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Speed</th></tr></thead>
+      <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td><td>`+average_score.toFixed(0)+`</td><td>`+full_average_speed.toFixed(2)+`</td></tr></tbody>
       </table>`
 
       // Get the HTML table element
@@ -282,9 +289,7 @@ function profiler(){
       // Set the HTML content of the table
       tableElement.innerHTML = tableHeader + tableRows.join("");
 
-const dates = Object.keys(previousSessions).map(sessionId => new Date(previousSessions[sessionId].datePlayed));
-const scores = Object.values(previousSessions).map(session => session.score);
-const speed = Object.values(previousSessions).map(session => 60/(session.averageLetterSpeed));
+
 
 console.log(dates)
 console.log(scores)
