@@ -84,7 +84,7 @@ function draw() {
 		updateHighscore()
         // TODO: replace alert with modals
         document.getElementById('gameovermodal').style.display='block'
-        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore + "\nAverage Typing Speed: " + (sum/averages.length).toFixed(3) + " seconds per Letter\n" + (60(sum/averages.length)).toFixed(3)+" Letters per Minute"
+        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore + "\nAverage Typing Speed: " + (sum/averages.length).toFixed(3) + " seconds per Letter\n" + (60/(sum/averages.length)).toFixed(3)+" Letters per Minute"
         if (score>highscore){
             highscore=score;
             updateHighscore();
