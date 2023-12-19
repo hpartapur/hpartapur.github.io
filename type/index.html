@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
@@ -280,44 +282,54 @@ function profiler(){
       // Set the HTML content of the table
       tableElement.innerHTML = tableHeader + tableRows.join("");
 
-// const dates = Object.values(previousSessions).map(session => session.datePlayed);
-// const scores = Object.values(previousSessions).map(session => session.score);
+const dates = Object.keys(previousSessions).map(sessionId => new Date(previousSessions[sessionId].datePlayed));
+const scores = Object.values(previousSessions).map(session => session.score);
+const speed = Object.values(previousSessions).map(session => 60/(session.averageLetterSpeed));
 
-// // Get the canvas element
-// const canvas = document.getElementById("sessionChart");
+console.log(dates)
+console.log(scores)
+console.log(speed)
 
-// // Create a line chart with the date-fns adapter
-// const ctx = canvas.getContext("2d");
-// const sessionChart = new Chart(ctx, {
-//   type: 'line',
-//   data: {
-//     labels: dates,
-//     datasets: [{
-//       label: 'Score',
-//       borderColor: 'rgb(75, 192, 192)',
-//       data: scores,
-//     }]
-//   },
-//   options: {
-//     scales: {
-//       x: {
-//         type: 'time',
-//         time: {
-//           unit: 'day',
-//           displayFormats: {
-//             day: 'MMM D YYYY HH:mm:ss',
-//           },
-//         },
-//       },
-//       y: {
-//         beginAtZero: true,
-//       }
-//     },
-//   },
-//   plugins: [ChartDataLabels],
-// });
+// Get the canvas element
+const canvas = document.getElementById("sessionChart");
 
-
+// Create a line chart with the date-fns adapter and DataLabels plugin
+const ctx = canvas.getContext("2d");
+const sessionChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [{
+      label: 'Letters per Minute',
+      borderColor: 'rgb(175, 192, 192)',
+      backgroundColor: 'rgb(17, 19, 192)',
+      data: speed,
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: 'MMM d yyyy HH:mm:ss', // Use 'yyyy' instead of 'YYYY'
+          },
+        },
+      },
+      y: {
+        beginAtZero: true,
+      }
+    },
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        formatter: (value, context) => value, // Adjust the formatter as needed
+      }
+    },
+  },
+});
 
 
   // document.getElementById('profilebody').innerHTML+= "<h3>Games Played: "+gamesPlayed+"</h3>"
@@ -432,7 +444,7 @@ function profiler(){
   <div class="modal-body" id="profilebody">
     <img id='profilepic' src="">
     <div id="profiletable"></div>
-    <!-- <canvas id="sessionChart" width="400" height="200"></canvas> -->
+    <canvas id="sessionChart" width="50%" height="25%"></canvas>
     <center><h5>Previous Sessions</h5></center>
     <table id = 'sessionTable' class="table table-secondary table-responsive table-striped table-hover" style="max-height: 40vh;"></table>
   </div>
