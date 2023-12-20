@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- TODO: Make leaderboard entries rows -->
+<!-- TODO: Figure out how to set a timer -->
+<!-- bg, ratios-keyboard  -->
+<!-- put profile between rank and name -->
+<html>
+  <head>
+    <meta name="google-adsense-account" content="ca-pub-7620239072665997">
+    <meta charset="UTF-8">
+    <title>Khardal Typist</title>
+    <script src="libraries/p5.min.js" type="text/javascript"></script>
+    <script src="libraries/p5.sound.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href = "style.css">
+    <!-- <script src="sketch.js" type="text/javascript"></script> -->
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ZJM8TVT5H6');
+    </script>
+  </head>
+
+  <body>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+      import { getDatabase, ref, onValue} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwcVRnXVs5M8EWEipwRgBREInAMgvj36s",
+        authDomain: "khardal-typist.firebaseapp.com",
+        databaseURL: "https://khardal-typist-default-rtdb.firebaseio.com",
+        projectId: "khardal-typist",
+        storageBucket: "khardal-typist.appspot.com",
+        messagingSenderId: "277127524840",
+        appId: "1:277127524840:web:c94fb2984ae4b694afb45d",
+        measurementId: "G-JK8X82LLSX"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      window.database = getDatabase(app);
+
+      function pullData() {
+  const dbRef = ref(database);
+  onValue(dbRef, (snapshot) => { 
+    const data = snapshot.val();
+    console.log(data['users'])
+    window.data = data;
+
+
+
+    //TODO: change so that name is 
+    // Convert the data object to an array of objects
+    // const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
+    const fullArray = Object.entries(data['users']).map(([id, values]) => ({ id, name: values.name, photo: values.photo, highscore: values.highscore, gender:values.gender }));
+    const dataArray = fullArray.filter(player => player.gender === 'Male');
+    console.log("PULLED DATA")  
+    // Sort the array based on highscores
+    dataArray.sort((a, b) => b.highscore - a.highscore);
+
+    const leaderboard = document.getElementById('leaderboard');
+    leaderboard.innerHTML = '';
+
+    // Create a table element with Bootstrap classes
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-striped', 'table-hover', 'table-primary');
+
+    // Create the table header row
+    const thead = document.createElement('thead');
+    thead.classList.add('thead-dark');
+    const headerRow = document.createElement('tr');
+    const headers = ['Ranking', "Player", 'Highscore'];
+
+    headers.forEach(headerText => {
+      const th = document.createElement('th');
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create the table body
+    const tbody = document.createElement('tbody');
+    tbody.classList.add('text-success');
+
+    // Iterate over the sorted array and add rows to the table body
+    dataArray.forEach((item, index) => {
+      const { name, highscore, photo } = item;
+
+      const row = document.createElement('tr');
+
+      // Create columns for ranking, name, and highscore
+      const rankingCol = document.createElement('td');
+      rankingCol.classList.add('font-weight-bold');
+      rankingCol.textContent = index + 1;
+      if (index === 0) {rankingCol.innerHTML += ' 🏆';}
+      if (index === 1) {rankingCol.innerHTML += '🥈';}
+      if (index === 2) {rankingCol.innerHTML += '🥉';}
+      const nameCol = document.createElement('td'); nameCol.innerHTML = "<img src='"+photo+"' style='height: 5vh; border-radius: 50% '> "+name;
+      const highscoreCol = document.createElement('td'); highscoreCol.textContent = highscore;
+
+      // Append columns to the row
+      row.appendChild(rankingCol);
+      row.appendChild(nameCol);
+      row.appendChild(highscoreCol);
+      // Append the row to the table body
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    // Append the table to the modal footer
+    leaderboard.appendChild(table);
+  });
+}
+
+pullData()
+
+
+</script>
+
+
+
+<div id="leaderboardmodal" class="modal" style="overflow-y: auto; font-family: 'Audiowide'; display: block;">
+  <div class="modal-content" style="width: 75%;">
+    <div class="modal-header">
+      <center><h2 style='align-self: center;'>Khardal Typing Game Leaderboard</h2></center>
+      <center><h6 style="align-self: center;">Brought to you by Kawakib Creations</h6></center>
+      <center><h4 style="align-self: center;">Go to <a href="https://khardal.net/type">khardal.net/type</a></h4></center>
+    </div>
+  <div id="leaderboard" class="modal-body"></div>
+</div>
+</div>
+
+
+
+
+
+</body>
+
+
+</html>
