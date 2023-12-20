@@ -168,8 +168,15 @@
 
 window.writeSessionData = writeSessionData;
 window.updateHighscore = updateHighscore;
-
-
+function addGender(gender){
+  // add gender to user in database in firebase database
+  const userRef = ref(database, 'users/' + user.uid);
+  update(userRef, {
+    gender: gender
+  });
+  document.getElementById('gendermodal').style.display='none';
+}
+window.addGender = addGender;
 
 function pullData() {
   const dbRef = ref(database);
@@ -178,13 +185,18 @@ function pullData() {
     console.log(data['users'])
     window.data = data;
     user.highscore = data['users'][user.uid].highscore
+    user.gender = data['users'][user.uid].gender
+    if (user.gender == undefined){
+      document.getElementById('gendermodal').style.display='block';
+    }
 
 
     //TODO: change so that name is 
     // Convert the data object to an array of objects
     // const dataArray = Object.entries(data['users']).map(([name, values]) => ({ name, highscore: values.highscore }));
-    const dataArray = Object.entries(data['users']).map(([id, values]) => ({ id, name: values.name, photo: values.photo, highscore: values.highscore }));
-    console.log(dataArray)
+    const fullArray = Object.entries(data['users']).map(([id, values]) => ({ id, name: values.name, photo: values.photo, highscore: values.highscore, gender:values.gender }));
+    const dataArray = fullArray.filter(player => player.gender === user.gender);
+
 
     console.log("PULLED DATA")  
     // Sort the array based on highscores
@@ -271,7 +283,7 @@ function profiler(){
 
 
   document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
-      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Speed</th></tr></thead>
+      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Letters per Minute</th></tr></thead>
       <tbody><tr><td><img style='border-radius: 50%' src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td><td>`+average_score.toFixed(0)+`</td><td>`+full_average_speed.toFixed(2)+`</td></tr></tbody>
       </table>`
 
@@ -495,6 +507,20 @@ window.reportError = reportError;
   </div>
 </div>
 </div> -->
+
+<div id="gendermodal" class="modal" >
+  <div class="modal-content" style="width: 65%; font-family: 'Audiowide';">
+    <div class="modal-header">
+      <h2 style='align-self: center;'><center>Select your Gender</center></h2>
+    </div>
+  <div class="modal-body" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
+    <center>
+      <button class ="btn btn-lg btn-primary" onclick="addGender('Male')">Male</button>
+      <button class ="btn btn-lg btn-secondary" onclick="addGender('Female')">Female</button>
+    </center>
+  </div>
+</div>
+</div>
 
 <div id="loginmodal" class="modal" >
   <div class="modal-content" style="width: 45%;">
