@@ -200,6 +200,8 @@ function pullData() {
     // Create the table header row
     const thead = document.createElement('thead');
     thead.classList.add('thead-dark');
+    thead.style.top='0';
+    thead.style.position='sticky';
     const headerRow = document.createElement('tr');
     const headers = ['Ranking', "Player", 'Highscore'];
 
@@ -276,7 +278,7 @@ function profiler(){
       // Get the HTML table element
       const tableElement = document.getElementById("sessionTable");
       // Create a table header
-      const tableHeader = `<tr><th>Date</th><th>Score</th><th>Average Letter Speed</th></tr>`;
+      const tableHeader = `<tr style="position: sticky; top:0; background-color:grey;"><th>Date</th><th>Score</th><th>Average Letter Speed</th></tr>`;
 
       // Create rows for each session
       const tableRows = Object.entries(previousSessions).map(([sessionId, sessionData]) => {
@@ -303,8 +305,8 @@ const sessionChart = new Chart(ctx, {
     labels: dates,
     datasets: [{
       label: 'Letters per Minute',
-      borderColor: 'rgb(175, 192, 192)',
-      backgroundColor: 'rgb(17, 19, 192)',
+      borderColor: 'rgb(12, 202, 92)',
+      backgroundColor: 'rgb(208, 19, 19)',
       data: speed,
     }]
   },
@@ -330,13 +332,29 @@ const sessionChart = new Chart(ctx, {
         formatter: (value, context) => value, // Adjust the formatter as needed
       }
     },
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
 });
-
-
-  // document.getElementById('profilebody').innerHTML+= "<h3>Games Played: "+gamesPlayed+"</h3>"
-  // document.getElementById('profilebody').innerHTML+= "<h3>Average Letter Speed: "+(sum/averages.length).toFixed(3)+" letters per second</h3>"
 }
+
+function reportError(){
+  var error = prompt("Please describe the error you encountered", "Error");
+  if (error != null) {
+
+    // add error to database
+    push(ref(database, 'errors/'), {
+      name: user.displayName,
+      email: user.email,
+      error: error,
+      dateReported: Date(),
+    });
+
+
+    alert("Thank you for your feedback! We will look into this issue as soon as possible.")
+  }
+}
+window.reportError = reportError;
+
 
 </script>
 
@@ -351,8 +369,9 @@ const sessionChart = new Chart(ctx, {
 <button class="btn-info" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;;" onclick="modal.style.display='block'; console.log(score);">❓</button>
 <button class="btn-success" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
 <button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}else{document.getElementsByClassName('table-info')[0].scrollIntoView();}">🏆</button>
+<button class = "btn btn-danger" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="reportError()">Report Error</button>
 <li>
-  <button id="profile" class="btn btn-success" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
+  <button id="profile" class="btn btn-success btn-lg" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
 </li>
 </ul></div></nav>
 
