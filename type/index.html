@@ -272,7 +272,7 @@ function profiler(){
 
   document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
       <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Speed</th></tr></thead>
-      <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td><td>`+average_score.toFixed(0)+`</td><td>`+full_average_speed.toFixed(2)+`</td></tr></tbody>
+      <tbody><tr><td><img style='border-radius: 50%' src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td><td>`+average_score.toFixed(0)+`</td><td>`+full_average_speed.toFixed(2)+`</td></tr></tbody>
       </table>`
 
       // Get the HTML table element
