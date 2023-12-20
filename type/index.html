@@ -369,6 +369,7 @@ window.reportError = reportError;
 <button class="btn-info" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;;" onclick="modal.style.display='block'; console.log(score);">❓</button>
 <button class="btn-success" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" id="pauser" onclick="pauseButton(); keyPressed()"></button>
 <button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}else{document.getElementsByClassName('table-info')[0].scrollIntoView();}">🏆</button>
+<!-- <button class="btn-success" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('sharemodal').style.display='block'">💬Challenge a Friend</button> -->
 <button class = "btn btn-danger" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="reportError()">Report Error</button>
 <li>
   <button id="profile" style="position: absolute; right: 2vh;" class="btn btn-success btn-lg" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
@@ -483,6 +484,17 @@ window.reportError = reportError;
   <div class="modal-body" id="gameoverbody" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"></div>
 </div>
 </div>
+
+<!-- <div id="sharemodal" class="modal" >
+  <div class="modal-content" style="width: 45%; font-family: 'Audiowide';">
+    <div class="modal-header">
+      <h2 style='align-self: center;'><center>Share a Challenge to a Friend!</center></h2>
+      <span style="cursor:pointer;" onclick="document.getElementById('sharemodal').style.display='none'">&times;</span></div>
+  <div class="modal-body" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
+  <button class="btn btn-lg btn-link"><a href="mailto:?cc=kawakibcreations@gmail.com&subject=⌨Type-Righter Challenge&body=I challenge you to beat my highscore of on the Khardal Type-Righter Arabic Game">📩Email</a></button>
+  </div>
+</div>
+</div> -->
 
 <div id="loginmodal" class="modal" >
   <div class="modal-content" style="width: 45%;">
