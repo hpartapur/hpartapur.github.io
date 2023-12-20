@@ -119,7 +119,7 @@
         document.getElementById("logout").style.display='block'
         document.getElementById("profile").style.hidden = 'block'
         document.getElementById('loginmodal').style.display='none';
-        document.getElementById("profile").innerHTML = "<img src='"+user.photoURL+"' style='height: 4vh; border-radius: 50% '> "+user.displayName
+        document.getElementById("profile").innerHTML = "<img src='"+user.photoURL+"' style='height: 5vh; border-radius: 50% '> "+user.displayName
 
 
         console.log(user)
@@ -271,7 +271,7 @@ function profiler(){
 
 
   document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
-      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Speed</th></tr></thead>
+      <thead class='thead-dark thead-responsive'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Speed</th></tr></thead>
       <tbody><tr><td><img src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td><td>`+average_score.toFixed(0)+`</td><td>`+full_average_speed.toFixed(2)+`</td></tr></tbody>
       </table>`
 
@@ -371,7 +371,7 @@ window.reportError = reportError;
 <button class="btn-warning" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="document.getElementById('leaderboardmodal').style.display='block'; if (document.getElementById('leaderboard').innerHTML==''){document.getElementById('lbtitle2').innerHTML='Please check your internet connection'}else{document.getElementsByClassName('table-info')[0].scrollIntoView();}">🏆</button>
 <button class = "btn btn-danger" style="margin: 0.1rem 0.2rem;border-radius: 0.2rem;" onclick="reportError()">Report Error</button>
 <li>
-  <button id="profile" class="btn btn-success btn-lg" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
+  <button id="profile" style="position: absolute; right: 2vh;" class="btn btn-success btn-lg" onclick="document.getElementById('profilemodal').style.display='block'; profiler()" ></button>
 </li>
 </ul></div></nav>
 
@@ -467,7 +467,7 @@ window.reportError = reportError;
     <div id="profiletable" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"></div>
     <canvas id="sessionChart" width="50%" height="25%"></canvas>
     <center><h5>Previous Sessions</h5></center>
-    <table id = 'sessionTable' class="table table-secondary table-responsive table-striped table-hover" style="max-height: 40vh; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"></table>
+    <table id = 'sessionTable' class="table table-secondary table-responsive-sm table-striped table-hover" style="max-height: 40vh; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"></table>
   </div>
   <div id = "profilefooter" class="modal-footer">
     <button id="logout" class="btn btn-danger" onclick="signout()">Sign Out</button>
