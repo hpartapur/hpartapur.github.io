@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<!-- add a speedometer -->
 <!-- ratios-keyboard  -->
-<!-- add google auth and anon auth -->
 <!-- changing background with colors -->
 <!-- friend challenges -->
-<!-- Do not let user play until login -->
 <!-- simplify pulldata -->
-<!-- Add charts and sessions to profilemodal -->
+<!-- Add sound effect for new highscore -->
+<!-- Add percent increase since beginning- (avg_speed/init_speed)-1= x%  -->
 <html>
   <head>
-    <meta name="google-adsense-account" content="ca-pub-7620239072665997">
     <meta charset="UTF-8">
     <meta name="description" content="Type-Righter is a game that helps you learn to type in Arabic.">
     <link rel="icon" type="image/jpg" href="logo.png">
@@ -23,6 +20,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7620239072665997"
+     crossorigin="anonymous"></script>
 </head>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -161,6 +160,8 @@
           highscore: score
         }, { merge: true });
 
+        document.getElementById('gameoverbody').innerText+="\nNew highscore!";
+        document.getElementById('gameoverbody').style.color="green";
         setTimeout(() => {document.getElementById("gameovermodal").style.display='none';document.getElementById("leaderboardmodal").style.display='block'}, 5253);
         confetti.start(4000)
       }
@@ -186,7 +187,7 @@ function pullData() {
     window.data = data;
     user.highscore = data['users'][user.uid].highscore
     user.gender = data['users'][user.uid].gender
-    if (user.gender == undefined){
+    if (user != undefined && user.gender == undefined){
       document.getElementById('gendermodal').style.display='block';
     }
 
@@ -272,7 +273,7 @@ function profiler(){
   var previousSessions = Object.fromEntries(
   Object.entries(data.sessions).filter(
     ([sessionId, sessionData]) => sessionData.uid == user.uid));
-  console.log(previousSessions);
+
   var SessionsCount = Object.keys(previousSessions).length;
 
   const dates = Object.keys(previousSessions).map(sessionId => new Date(previousSessions[sessionId].datePlayed));
@@ -282,10 +283,33 @@ function profiler(){
   var full_average_speed = speed.reduce((a, b) => a + b, 0) / speed.length;
 
 
-  document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
-      <thead class='thead-dark'><tr><th>Photo</th><th>Name</th><th>Email</th><th>Date Joined</th><th>Highscore</th><th>Games Played</th><th>Average Score</th><th>Average Letters per Minute</th></tr></thead>
-      <tbody><tr><td><img style='border-radius: 50%' src = '`+user.photoURL+`''></td><td>`+user.displayName+`</td><td>`+user.email+`</td><td>`+user.metadata.creationTime+`</td><td>`+user.highscore+`</td><td>`+SessionsCount+`</td><td>`+average_score.toFixed(0)+`</td><td>`+full_average_speed.toFixed(2)+`</td></tr></tbody>
-      </table>`
+document.getElementById('profiletable').innerHTML=`<table class='table table-hover table-responsive table-info'>
+      <thead class='thead-dark'>
+        <tr>
+          <th>Photo</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Date Joined</th>
+          <th>Highscore</th>
+          <th>Games Played</th>
+          <th>Average Score</th>
+          <th>Average Letters per Minute</th>
+          <th>Speed Improvement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><img style='border-radius: 50%' src = '`+user.photoURL+`''></td>
+          <td>`+user.displayName+`</td>
+          <td>`+user.email+`</td>
+          <td>`+user.metadata.creationTime+`</td>
+          <td>`+user.highscore+`</td>
+          <td>`+SessionsCount+`</td>
+          <td>`+average_score.toFixed(0)+`</td>
+          <td>`+full_average_speed.toFixed(2)+`</td>
+          <td>`+(((full_average_speed/speed[0])-1)*100).toFixed(2)+`%</td>
+        </tr>
+      </tbody></table>`
 
       // Get the HTML table element
       const tableElement = document.getElementById("sessionTable");
@@ -360,8 +384,6 @@ function reportError(){
       error: error,
       dateReported: Date(),
     });
-
-
     alert("Thank you for your feedback! We will look into this issue as soon as possible.")
   }
 }
