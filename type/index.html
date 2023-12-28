@@ -4,7 +4,7 @@
 <!-- friend challenges -->
 <!-- simplify pulldata -->
 <!-- Add sound effect for new highscore -->
-<!-- Add percent increase since beginning- (avg_speed/init_speed)-1= x%  -->
+<!-- add harfwise speed -->
 <html>
   <head>
     <meta charset="UTF-8">
@@ -155,6 +155,8 @@
         const userRef = ref(database, 'users/' + user.uid);
         // Use the update function to update the highscore property
         // TODO replace set with update
+
+        // FIXME
         if (score > user.highscore){
         update(userRef, {
           highscore: score
@@ -178,6 +180,18 @@ function addGender(gender){
   document.getElementById('gendermodal').style.display='none';
 }
 window.addGender = addGender;
+
+function addLetterData(data){
+  // push letter data to database in firebase under letters
+  const letterRef = ref(database, 'letterData/');
+  push(letterRef, {
+    keytimes:data,
+    uid: user.uid,
+    name: user.displayName,
+    datePlayed: Date(),
+  });
+}
+window.addLetterData = addLetterData;
 
 function pullData() {
   const dbRef = ref(database);
@@ -561,7 +575,7 @@ window.reportError = reportError;
 <div id="settingsmodal" class="modal">
   <div class="modal-content" style="width: 75%;">
 <div>
-  <span style="cursor:pointer; padding: 0.5rem;" onclick="document.getElementById('settingsmodal').style.display='none'">&times;</span>
+  <span style="cursor:pointer; padding: 0.5rem; position: absolute; right: 2vh;" onclick="document.getElementById('settingsmodal').style.display='none'">&times;</span>
 </div>
   <div class="modal-body">
     <div id="settings"><center>
