@@ -52,7 +52,8 @@
       const app = initializeApp(firebaseConfig);
       window.database = getDatabase(app);
 
-var progress=[]
+
+var leaderboardcontent;
 
 function pullData() {
   const dbRef = ref(database);
@@ -62,8 +63,9 @@ function pullData() {
     window.data = data;
     const sessions = Object.values(data['sessions']);
     const users = data['users'];
-
-    document.getElementById('leaderboard').innerHTML+=`    <table class = 'table table-dark'>
+    var progress=[]
+    document.getElementById("leaderboard").innerHTML = ''
+    leaderboardcontent=`    <table class = 'table table-dark'>
       <th>Name</th>
       <th>First Speed (Letters per Minute)</th>
       <th>Highest Speed </th>
@@ -101,16 +103,20 @@ function pullData() {
             progress.push(
                 `${users[user]['name']} started at ${round(60 / parseFloat(users[user]['sessions'][0]['averageLetterSpeed']), 2)} lpm and progressed ${round(percent, 2)}% to reach ${round(users[user]['highSpeed'], 2)} letters per minute`
             );
+            document.getElementById("leaderboard").innerHTML += "<br><br>" + users[user]['name'] + " started at " + round(60 / parseFloat(users[user]['sessions'][0]['averageLetterSpeed']), 2) + " lpm and progressed " + round(percent, 2) + "% to reach " + round(users[user]['highSpeed'], 2) + " letters per minute"
         }
-      for (var i = 0; i < progress.length; i++){
-      document.getElementById('leaderboard').innerHTML+="<tr><td>"+users[user]['name']
-      document.getElementById('leaderboard').innerHTML+="</td><td>"+round(60 / parseFloat(users[user]['sessions'][0]['averageLetterSpeed']), 2)
-      document.getElementById('leaderboard').innerHTML+="</td><td>"+round(users[user]['highSpeed'], 2)
-      document.getElementById('leaderboard').innerHTML+="</td><td>"+round(percent, 2)+"</tr>"
-    }
-    }
-    console.log(progress)
-});
+    //     console.log(users.length)
+    //   for (a in users){
+    //   leaderboardcontent+="<tr><td>"+users[a]['name']+"</td>"
+    //   leaderboardcontent+="<td>"+round(60 / parseFloat(users[a]['sessions'][0]['averageLetterSpeed']), 2)+"</td>"
+    //   leaderboardcontent+="<td>"+round(users[a]['highSpeed'], 2)+"</td>"
+    //   leaderboardcontent+="<td>"+round(percent, 2)+"</td></tr>"
+    // }
+    // }
+    // leaderboardcontent+="</tbody></table>"
+    // document.getElementById("leaderboard").innerHTML = leaderboardcontent;
+}
+  });
 }
 pullData()
 
