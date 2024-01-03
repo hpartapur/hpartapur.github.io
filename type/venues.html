@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!-- figure out how to make multiple columns in table for extra rows -->
+<!-- zooming into image -->
+<!-- try out with scanner -->
+
+<html>
+  <head>
+    <meta name="google-adsense-account" content="ca-pub-7620239072665997">
+    <meta charset="UTF-8">
+    <title>Khardal Typist</title>
+    <script src="libraries/p5.min.js" type="text/javascript"></script>
+    <script src="libraries/p5.sound.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href = "style.css">
+    <link rel="icon" href="podium.png" type="image/png">
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ZJM8TVT5H6');
+    </script> -->
+  </head>
+
+  <body>
+    <!-- <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+      import { getDatabase, ref, onValue} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwcVRnXVs5M8EWEipwRgBREInAMgvj36s",
+        authDomain: "khardal-typist.firebaseapp.com",
+        databaseURL: "https://khardal-typist-default-rtdb.firebaseio.com",
+        projectId: "khardal-typist",
+        storageBucket: "khardal-typist.appspot.com",
+        messagingSenderId: "277127524840",
+        appId: "1:277127524840:web:c94fb2984ae4b694afb45d",
+        measurementId: "G-JK8X82LLSX"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      window.database = getDatabase(app);
+
+
+
+
+
+
+
+</script> -->
+
+<script>
+//   setInterval(() => {
+//   if(document.getElementById('venueimg').src =="venues/MasjidBlank.JPG") { 
+//   }else {
+//     document.getElementById('cursor').style.opacity = 1;
+//     cursor = true;
+//   }
+// }, 600);
+</script>
+
+
+
+
+<div id="leaderboardmodal" class="modal" style="display: block;">
+  <div class="modal-content" style="width: 85%; height: auto;">
+    <!-- <div class="modal-header">
+
+    </div> -->
+  <div id="leaderboard" class="modal-body">
+    <img id="venueimg" src="venues/MasjidNW.JPG" style="width:60%;"></img>
+    <table  class = "table table-dark" style="font-family: Kanz-al-Marjaan; position: absolute; right: 0; top: 0; text-align: center; width: 40%; height: 90%; font-size:3rem">
+      <tr><td id = 'name' style="font-size: 3rem;">حاتم ثثرتاثثوروالا</td></tr>
+      <tr><td id="seat">1128</td></tr>
+      <tr><td id = 'venue'>الرمان - مسجد الزهراء</td></tr>
+    </table>
+</div>
+</div>
+</div>
+<br><br>
+<center><btn id="trslot" class = "btn btn-warning btn-lg" style="font-size: 30vh;"></btn></center>
+<script>
+
+data = {
+  'abcd':{
+    'name':'ملا حاتم الشيخ مرتضى بهائي ثثرتاثثوروالا',
+    'tr':24653,
+    'venue':'MasjidNW',
+    'seat':18
+  },
+  'ad':{
+    'name':'ملا طاهر الشيخ علي اصغر سعيد',
+    'tr':24453,
+    'venue':'IwanNW',
+    'seat':145
+  },
+  'and':{
+    'name':'ملا حسن الشيخ مرتضى بهائي شفانا',
+    'tr':24612,
+    'venue':'RadiantE',
+    'seat':145
+  }
+}
+venues = {
+  'MasjidNW':'النخل - مسجد الزهراء',
+  'IwanNW':'التفاح - الايوان البرهاني',
+  'RadiantE':'الزيتون - قاعة انوار الفنون'
+};
+// Select the elements
+let modal = document.getElementById('leaderboardmodal'); 
+let trslot = document.querySelector('#trslot'); 
+let tr;
+
+// // Add event listener for ANY key to set modal style display to none
+// document.addEventListener('keydown', function() {
+//     modal.style.display = 'none';
+// });
+
+// Add event listeners for digits to += to trslot
+for(let i = 0; i <= 9; i++) {
+    document.addEventListener('keydown', function(event) {
+        if(event.key == i.toString()) {
+          modal.style.display = 'none'
+            trslot.innerHTML += i.toString();
+        }
+    });
+}
+
+// Add event listener for enter to take innerHTML of trslot and make it var tr's innerHTML
+document.addEventListener('keydown', function(event) {
+    if(event.key == 'Enter') {
+        
+        for (d in data){
+          if (data[d]['tr']==trslot.innerHTML){
+            modal.style.display = 'block';
+            document.getElementById('name').innerText = data[d]['name']
+            document.getElementById('seat').innerText = data[d]['seat']
+            // document.getElementById('venue').innerText =
+            document.getElementById('venue').innerText = venues[data[d]['venue']]
+            document.getElementById('venueimg').src = 'venues/' + data[d]['venue'] + ".jpg"
+          }
+        }
+
+        trslot.innerHTML = '';
+    }
+});</script>
+<!-- add event listeners 
+add event listener for ANY key to set modalstyledisplay=none
+event listeners for digits to += to trslot
+event listener for enter to 1) take innerHTML of trslot and make it var tr's innerHTMlL
+get user and disp information
+-->
+
+<style>
+  .table-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+}
+</style>
+
+</html>
