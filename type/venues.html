@@ -147,7 +147,7 @@ document.addEventListener('keydown', function(event) {
             document.getElementById('seat').innerText = data[d]['seat']
             // document.getElementById('venue').innerText =
             document.getElementById('venue').innerText = venues[data[d]['venue']]
-            document.getElementById('venueimg').src = 'venues/' + data[d]['venue'] + ".jpg"
+            document.getElementById('venueimg').src = './venues/' + data[d]['venue'] + ".jpg"
           }
         }
 
