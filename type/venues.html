@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<!-- figure out how to make multiple columns in table for extra rows -->
-<!-- zooming into image -->
+<!-- flickering image -->
 <!-- try out with scanner -->
+<!-- add instructions Enter TR Number to see your roll number -->
+<!-- make roll number red and bigger -->
+<!-- create rnumber page which uses rnumber instead of tr -->
 
 <html>
   <head>
@@ -16,49 +18,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-ZJM8TVT5H6');
-    </script> -->
   </head>
 
   <body>
-    <!-- <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-      import { getDatabase, ref, onValue} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-    
-      // Your web app's Firebase configuration
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-      const firebaseConfig = {
-        apiKey: "AIzaSyCwcVRnXVs5M8EWEipwRgBREInAMgvj36s",
-        authDomain: "khardal-typist.firebaseapp.com",
-        databaseURL: "https://khardal-typist-default-rtdb.firebaseio.com",
-        projectId: "khardal-typist",
-        storageBucket: "khardal-typist.appspot.com",
-        messagingSenderId: "277127524840",
-        appId: "1:277127524840:web:c94fb2984ae4b694afb45d",
-        measurementId: "G-JK8X82LLSX"
-      };
-    
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      window.database = getDatabase(app);
-
-
-
-
-
-
-
-</script> -->
-
 <script>
 //   setInterval(() => {
 //   if(document.getElementById('venueimg').src =="venues/MasjidBlank.JPG") { 
@@ -67,6 +29,9 @@
 //     cursor = true;
 //   }
 // }, 600);
+</script>
+<script>
+
 </script>
 
 
@@ -78,7 +43,7 @@
 
     </div> -->
   <div id="leaderboard" class="modal-body">
-    <img id="venueimg" src="venues/MasjidNW.JPG" style="width:60%;"></img>
+    <!-- <img id="venueimg" src="venues/MasjidNW.JPG" style="width:60%;"></img> -->
     <table  class = "table table-dark" style="font-family: Kanz-al-Marjaan; position: absolute; right: 0; top: 0; text-align: center; width: 40%; height: 90%; font-size:3rem">
       <tr><td id = 'name' style="font-size: 3rem;">حاتم ثثرتاثثوروالا</td></tr>
       <tr><td id="seat">1128</td></tr>
@@ -90,27 +55,22 @@
 <br><br>
 <center><btn id="trslot" class = "btn btn-warning btn-lg" style="font-size: 30vh;"></btn></center>
 <script>
+var data;
+fetch('https://nairobi.jameasaifiyah.edu/Jameawebservice/api/nairobi/ImtehanRollNo?token=Po19azSdO0J0Wqi6fpGcdSQu5')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(jsonData => {
+    data = jsonData;
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
 
-data = {
-  'abcd':{
-    'name':'ملا حاتم الشيخ مرتضى بهائي ثثرتاثثوروالا',
-    'tr':24653,
-    'venue':'MasjidNW',
-    'seat':18
-  },
-  'ad':{
-    'name':'ملا طاهر الشيخ علي اصغر سعيد',
-    'tr':24453,
-    'venue':'IwanNW',
-    'seat':145
-  },
-  'and':{
-    'name':'ملا حسن الشيخ مرتضى بهائي شفانا',
-    'tr':24612,
-    'venue':'RadiantE',
-    'seat':145
-  }
-}
 venues = {
   'MasjidNW':'النخل - مسجد الزهراء',
   'IwanNW':'التفاح - الايوان البرهاني',
@@ -125,7 +85,7 @@ let tr;
 // document.addEventListener('keydown', function() {
 //     modal.style.display = 'none';
 // });
-
+console.log(data);
 // Add event listeners for digits to += to trslot
 for(let i = 0; i <= 9; i++) {
     document.addEventListener('keydown', function(event) {
@@ -141,13 +101,12 @@ document.addEventListener('keydown', function(event) {
     if(event.key == 'Enter') {
         
         for (d in data){
-          if (data[d]['tr']==trslot.innerHTML){
+          if (data[d]['TRNO']==trslot.innerHTML){
             modal.style.display = 'block';
-            document.getElementById('name').innerText = data[d]['name']
-            document.getElementById('seat').innerText = data[d]['seat']
-            // document.getElementById('venue').innerText =
-            document.getElementById('venue').innerText = venues[data[d]['venue']]
-            document.getElementById('venueimg').src = './venues/' + data[d]['venue'] + ".JPG"
+            document.getElementById('name').innerText = data[d]['Name_Arabi']
+            document.getElementById('seat').innerText = data[d]['Rollno']
+            document.getElementById('venue').innerText = data[d]['BLock_Ism'] + " - " + data[d]['Location_Arb']
+            // document.getElementById('venueimg').src = './venues/' + data[d]['venue'] + ".JPG"
           }
         }
 
