@@ -122,11 +122,12 @@
         user.providerData.forEach(profile => {
           console.log(profile.photoURL);
           document.getElementById("profile").innerHTML = "<img src='"+profile.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName;
+          update(userRef, {
+          highscore: score
+        }, { merge: true });
+          
         }); 
-        if (user != null) {
-//this will give you all the urls once there is user data
-//TODO: update profile picture of user in users db and make photoURL of user this URL
-}
+
 
 
         console.log(user)
