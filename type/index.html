@@ -121,7 +121,7 @@
         document.getElementById("profile").innerHTML = "<img src='"+user.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName;
         user.providerData.forEach(profile => {
           console.log(profile.photoURL);
-          document.getElementById("profile").innerHTML = "<img src='"+profile.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName;
+           const userRef = ref(database, 'users/' + user.uid); document.getElementById("profile").innerHTML = "<img src='"+profile.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName;
           update(userRef, {
           highscore: score
         }, { merge: true });
