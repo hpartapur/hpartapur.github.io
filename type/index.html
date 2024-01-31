@@ -119,7 +119,16 @@
         document.getElementById("logout").style.display='block'
         document.getElementById("profile").style.hidden = 'block'
         document.getElementById('loginmodal').style.display='none';
-        document.getElementById("profile").innerHTML = "<img src='"+user.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName
+        document.getElementById("profile").innerHTML = "<img src='"+user.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName;
+        user.providerData.forEach(profile => {
+          console.log(profile.photoURL);
+           const userRef = ref(database, 'users/' + user.uid); document.getElementById("profile").innerHTML = "<img src='"+profile.photoURL+"' style='height: 6.5vh; border-radius: 50% '> "+user.displayName;
+          update(userRef, {
+          highscore: score
+        }, { merge: true });
+          
+        }); 
+
 
 
         console.log(user)
