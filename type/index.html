@@ -22,6 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7620239072665997"
      crossorigin="anonymous"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -155,8 +156,6 @@
         const userRef = ref(database, 'users/' + user.uid);
         // Use the update function to update the highscore property
         // TODO replace set with update
-
-        // FIXME
         if (score > user.highscore){
         update(userRef, {
           highscore: score
@@ -500,6 +499,16 @@ window.reportError = reportError;
     <div class="modal-header">
       <center><h2 style='align-self: center;'>Leaderboard</h2></center>
       <h3 id="lbtitle2"></h3>
+      
+        
+        <a id=whatsappshare href="" data-action="share/whatsapp/share"target="_blank">
+          <button class='btn btn-success' onclick="var waurl= 'whatsapp://send?text=Highscore:' + user.highscore+ ' \r\nCompete against me on TypeRighter⌨ https:/khardal.net/type'; document.getElementById('whatsappshare').href=waurl; console.log(waurl)">
+            <i class="fa-brands fa-whatsapp"></i>
+            Share to Whatsapp</button>
+          </a>
+         
+
+      
       <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
   <div class="modal-body" id="leaderboard" style="overflow-y: scroll;"></div>
 </div>
@@ -530,19 +539,11 @@ window.reportError = reportError;
       <h2 style='align-self: center;'><center>Game Over</center></h2>
       <span style="cursor:pointer;" onclick="document.getElementById('gameovermodal').style.display='none'">&times;</span></div>
   <div class="modal-body" id="gameoverbody" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"></div>
-</div>
+
 </div>
 
-<!-- <div id="sharemodal" class="modal" >
-  <div class="modal-content" style="width: 45%; font-family: 'Audiowide';">
-    <div class="modal-header">
-      <h2 style='align-self: center;'><center>Share a Challenge to a Friend!</center></h2>
-      <span style="cursor:pointer;" onclick="document.getElementById('sharemodal').style.display='none'">&times;</span></div>
-  <div class="modal-body" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
-  <button class="btn btn-lg btn-link"><a href="mailto:?cc=kawakibcreations@gmail.com&subject=⌨Type-Righter Challenge&body=I challenge you to beat my highscore of on the Khardal Type-Righter Arabic Game">📩Email</a></button>
-  </div>
 </div>
-</div> -->
+
 
 <div id="gendermodal" class="modal" >
   <div class="modal-content" style="width: 65%; font-family: 'Audiowide';">
