@@ -6,17 +6,19 @@ const huroof = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز'
 'ل', 'م', 'ن', 'و', 'ه', 'ي',"ء","ئ","ى","ة"]
 const hints = {'ا':"h", 'ب':"f", 'ت':"j", 'ث':"e", 'ج':"[", 'ح':"p", 'خ':"o", 'د':"]", 'ذ':"`", 'ر':"v", 'ز':".", 'س':"s", 'ش':"a", 'ص':"w", 'ض':"q", 'ط':"'", 'ظ':"/",
  'ع':"u", 'غ':"y", 'ف':"t", 'ق':"r", 'ك':";",'ل':"g", 'م':"l", 'ن':"k", 'و':",", 'ه':"i", 'ي':"d","ء":"x","ئ":"z","ى":"n","ة":"m"}
-var bgMusic = new Audio("otl.mp3")
-bgMusic = new Audio ("gwen.mp3")
+var bgMusic = new Audio ("gwen.mp3")
 let wrongfx = new Audio("/asal_assets/wrong.mp3")
 let rightfx = new Audio ("/asal_assets/points.mp3")
-var highscore = getCookie("highscore");
-if (highscore==undefined){highscore=0;}
+var highscore;
+highscore=0;
 var times =[]
 var lettercount = 0
 var averages = []
 var sum = 0;
 var average =0;
+var letterlist=[]
+var letter_averages=[]
+var keyAverages;
 
 
 
@@ -79,24 +81,31 @@ function draw() {
 
 
     if (lives<=0){
-        GAevent()
+        document.getElementById('gameovermodal').style.display='block'
+        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+user.highscore + "\nAverage Typing Speed: " + (sum/averages.length).toFixed(3) + " seconds per Letter\n" + (60/(sum/averages.length)).toFixed(3)+" Letters per Minute"
+		document.getElementById('whatsappshare').href='whatsapp://send?text= Score: ' + score + '/nCompete against me on TypeRighter⌨ /n https://khardal.net/type' 
+		keyAverages = calculateLetterAverages(letter_averages)
+		addLetterData(keyAverages)
+		GAevent()
         writeSessionData()
 		updateHighscore()
-        // TODO: replace alert with modals
-        document.getElementById('gameovermodal').style.display='block'
-        document.getElementById('gameoverbody').innerText="You scored "+score+"\nHigh Score: "+highscore + "\nAverage Typing Speed: " + (sum/averages.length).toFixed(3) + " seconds per Letter\n" + (60/(sum/averages.length)).toFixed(3)+" Letters per Minute"
-        if (score>highscore){
-            highscore=score;
+		if (score>user.highscore){
             updateHighscore();
-            document.cookie = "highscore="+highscore;
-            document.getElementById('gameoverbody').innerText+="\nNew highscore!";
-			document.getElementById('gameoverbody').style.color="green";
-			setTimeout(() => {document.getElementById("document.getElementById('settingsmodal').style.display='block'")}, 5253);
+            document.cookie = "highscore="+user.highscore;
         }
         bgMusic.pause();
         playing=false;
         score=0;
         lives=3;
+		harf = new Harf();
+		letterlist=[]
+		letter_averages=[]
+		times=[]
+		averages=[]
+		sum=0
+		average=0
+		lettercount=0
+		keyAverages={}		
     }
     }
 
@@ -114,7 +123,34 @@ function keyPressed(){
     }
 }
 
+function calculateLetterAverages(letterAverages) {
+	letterAverages = letterAverages.slice(1)
 
+	// Create an object to store cumulative times and counts for each letter
+	const letterStats = {};
+
+	// Iterate over the array and accumulate times and counts for each letter
+	letterAverages.forEach((entry) => {
+		const { letter, average } = entry;
+
+		if (!letterStats[letter]) {
+			// Initialize if the letter is encountered for the first time
+			letterStats[letter] = { totalSeconds: 0, count: 0 };
+		}
+
+		// Accumulate total seconds and increment count for the letter
+		letterStats[letter].totalSeconds += average;
+		letterStats[letter].count++;
+	});
+
+	// Create an object of objects with unique letters and their average times
+	const result = {};
+	Object.entries(letterStats).forEach(([letter, stats]) => {
+		result[letter] = stats.totalSeconds / stats.count;
+	});
+
+	return result;
+}
 
 class Harf{
     constructor(){
@@ -124,11 +160,13 @@ class Harf{
         this.y=height*0.05;
         this.size=height*0.03;
         this.randomLetter = huroof[Math.floor(Math.random() * huroof.length)];
+		letterlist.push(this.randomLetter)
 		if (playing){
 			this.starttime = new Date()
 			times.push(this.starttime)
 			console.log(times[times.length-1] - times[times.length-2])
 			averages.push((times[times.length-1] - times[times.length-2])/1000)
+			letter_averages.push({letter:letterlist[letterlist.length-2], average:times[times.length-1] - times[times.length-2]})
 			if (isNaN(averages[0])){averages.splice(0,1)}
 			sum=0
 			for (let i = 0; i < averages.length; i++ ) {
