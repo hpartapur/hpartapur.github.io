@@ -257,6 +257,8 @@ function pullData() {
     dataArray.forEach((item, index) => {
       const { name, highscore, photo } = item;
 
+      if (highscore == 0) {return}
+
       const row = document.createElement('tr');
 
       // Create columns for ranking, name, and highscore
@@ -279,6 +281,7 @@ function pullData() {
       row.appendChild(nameCol);
       row.appendChild(highscoreCol);
       // Append the row to the table body
+
       tbody.appendChild(row);
     });
     table.appendChild(tbody);
@@ -506,7 +509,8 @@ window.reportError = reportError;
 <div id="leaderboardmodal" class="modal" style="overflow-y: auto; font-family: 'Audiowide';">
   <div class="modal-content" style="width: 75%; background-image: url('/asal_assets/bg-downsized.jpg'); background-size: 10%;">
     <div class="modal-header">
-      <center><h2 style='align-self: center;'>Leaderboard</h2></center>
+      <!-- <center><h2 style='align-self: center;'>Leaderboard</h2></center> -->
+      <center><h2 style='align-self: center;'>لوحة الدرجات - الروض العربي</h2></center>
       <h3 id="lbtitle2"></h3>
       
         
