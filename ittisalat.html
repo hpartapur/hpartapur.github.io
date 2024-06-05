@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fetch Data</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        window.onload = function() {
+            fetch('https://corsproxy.io/?https%3A%2F%2Fapi.codetabs.com%2Fv1%2Fproxy%2F%3Fquest%3Dhttps%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FZeroAbsentRoomwise%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+
+data = JSON.parse(data);
+console.log(data)
+dates = [];
+for (var d in data) {
+    dates.push(data[d]["G_Dt_DateFormate"]);
+    // console.log(data[d]);
+}
+dates = Array.from(new Set(dates));
+
+dates = dates.sort();
+dates.reverse();
+console.log(dates);
+
+recent = dates[0];
+console.log(recent);
+
+attended = [];
+for (var d in data) {
+    if (data[d]["G_Dt_DateFormate"] == recent) {
+        attended.push(data[d]["RoomNo"]);
+        // console.log(data[d]);
+    }
+}
+
+attended = [...new Set(attended)];
+console.log(attended);
+
+streak = {};
+for (var room in attended) {
+    streak[attended[room]] = [];
+    for (var date in dates) {
+        for (var d in data) {
+            if (
+                data[d]["G_Dt_DateFormate"] == dates[date] &&
+                data[d]["RoomNo"] == attended[room]
+            ) {
+                streak[attended[room]].push(data[d]["G_Dt_DateFormate"]);
+                // console.log(date);
+            }
+        }
+    }
+}
+
+for (var room in streak) {
+    streak[room] = [...new Set(streak[room])];
+}
+dataset=[]
+dataset.push(['Room','Consecutive Full Haziri',{role:'style'}])
+for (var room in streak) {
+    broken = false;
+    count=0
+    for (var date in dates) {
+        if (streak[room].includes(dates[date]) && broken == false) {
+            console.log('Streak continues')
+            count++;
+        } else {
+            console.log('Streak broken')
+            broken = true;
+            
+        }
+    }
+    streak[room] = count;
+    dataset.push(["Room "+room,streak[room],'red']);
+}
+
+console.log(streak)
+
+
+console.log(dataset);
+
+var header = dataset.shift();
+dataset.sort(function(a, b) {
+    if (a[1] > b[1]) return -1;
+    if (a[1] < b[1]) return 1;
+    if (a[0] < b[0]) return -1;
+    if (a[0] > b[0]) return 1;
+    return 0;
+});
+dataset.unshift(header);
+console.log(dataset)
+console.log(screen.width)
+
+  google.charts.load('current', {packages: [ 'corechart','bar']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable(dataset);
+    var options = {
+      title: 'Namaz Streaks',
+      subtitle:'As of '+ new Date(recent).toDateString(),
+      curveType: 'function',
+      legend: { position: 'bottom' },
+      'width':screen.width*0.98,
+      'height':screen.height*0.7,
+      hAxis: {
+          title: '# of Days Entire Room has Been Present in Fajr Namaz',
+          minValue: 0,
+          interval: 1
+        },
+        vAxis: {
+          title: 'Room Number'
+        },
+      bars: 'horizontal', // Required for Material Bar Charts.
+    };
+    var chart = new google.charts.Bar(document.getElementById('chart_div'));
+    // var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+    
+
+//     google.visualization.events.addListener(chart, 'ready', function () {
+//     var imgUri = chart.getImageURI();
+//     var link = document.createElement('a');
+//     link.href = imgUri;
+//     link.download = 'chart.png';
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// });
+
+chart.draw(data, google.charts.Bar.convertOptions(options));
+  }
+
+
+
+
+
+})
+
+                
+        };
+
+   
+</script>
+</head>
+<body>
+    <!-- <h1>Check the console for the fetched data</h1>
+    <p id="demo"></p> -->
+    <div id="chart_div"></div>
+</body>
+</html>
