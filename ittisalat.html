@@ -101,22 +101,29 @@ console.log(screen.width)
   function drawChart() {
     var data = google.visualization.arrayToDataTable(dataset);
     var options = {
-      title: 'Namaz Streaks',
-      subtitle:'As of '+ new Date(recent).toDateString(),
-      curveType: 'function',
-      legend: { position: 'bottom' },
-      'width':screen.width*0.98,
-      'height':screen.height,
-      hAxis: {
-          title: '# of Days Entire Room has Been Present in Fajr Namaz',
-          minValue: 0,
-          interval: 1
-        },
-        vAxis: {
-          title: 'Room Number'
-        },
-      bars: 'horizontal', // Required for Material Bar Charts.
-    };
+  title: 'Namaz Streaks',
+  titleTextStyle: {fontSize: 50}, // Increase the size of the title
+  subtitle:'As of '+ new Date(recent).toDateString(),
+  subtitleTextStyle: {fontSize: 20}, // Increase the size of the subtitle
+  curveType: 'function',
+  legend: { position: 'none' },
+  'width':screen.width*0.98,
+  'height':screen.height,
+  hAxis: {
+      title: '# of Days Entire Room has Been Present in Fajr Namaz',
+      titleTextStyle: {fontSize: 40}, // Increase the size of the hAxis title
+      minValue: 0,
+      interval: 1,
+      textStyle: {fontSize: 20} // Increase the size of the hAxis numbers
+    },
+    vAxis: {
+      title: 'Room Number',
+      textStyle: {fontSize: 12} // Increase the size of the vAxis numbers
+    },
+  bars: 'horizontal', // Required for Material Bar Charts.
+  backgroundColor: {
+    fill:'transparent'}
+};
     var chart = new google.charts.Bar(document.getElementById('chart_div'));
     // var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
     
