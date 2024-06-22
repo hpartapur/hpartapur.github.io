@@ -10,6 +10,7 @@
     <link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf"
     type="font/ttf" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -28,6 +29,7 @@
 <body>
 	<div class="topnav" id="myTopnav">
 		<a href="index.html" class="active">Home</a>
+    <button class="btn btn-info" onclick="renderLeaderboard();" id="myBtn">Instructions</button>
 		<!-- <div class="dropdown">
 			<button class="dropbtn">Waaz Day List
 				<i class="fa fa-caret-down"></i>
@@ -49,10 +51,10 @@
     <!-- The Modal -->
 
         <!-- Trigger/Open The Modal -->
-    <div id="myModal" class="modal">
+    <div id="myModal" class="modal" style="overflow-y: auto;">
 
       <!-- Modal content -->
-       <div class="modal-content">
+       <div class="modal-content" style="width: 70%;">
         <div id = "ModalHeaderDiv" class="modal-header">
           <span class="close">&times;</span>
           <h2 id="Modal Header" dir ="ltr">Today's topic is:<br><strong>
@@ -93,7 +95,7 @@
             <button class="keyboard-button">ے</button>
             <button class="keyboard-button">ذ</button>
         </div>
-        <div class="container first-row">
+        <div class="first-row">
             <button class="keyboard-button">ج</button>
             <button class="keyboard-button">ح</button>
             <button class="keyboard-button">خ</button>
@@ -157,5 +159,40 @@ function myFunction() {
         'value':score_n
         });}
 </script>
+<div id="loginmodal" class="modal" >
+  <div class="modal-content" style="width: 45%;">
+    <div class="modal-header">
+      <h2 style='align-self: center;'><center>You must log in to play this game</center></h2>
+      <h4>This game will not work as intended without a login</h4>
+      </div>
+  <div class="modal-body" id="loginbody">
+    <center>
+      <button id="login"  onclick="glogin()"><img src="./type/g.png" style="height: 4vh; ">Sign in with Google</button>
+    </center>
+  </div>
+</div>
+</div>
+<div id="leaderboardmodal" class="modal" style="overflow-y: auto; font-family: 'Audiowide';">
+  <div class="modal-content" style="width: 75%; background-image: url('/asal_assets/bg-downsized.jpg'); background-size: 10%;">
+    <div class="modal-header">
+      <center><h2 style='align-self: center;'>Leaderboard</h2></center>
+      <h3 id="lbtitle2"></h3>
+      
+<!--         
+        <a id=whatsappshare href="" data-action="share/whatsapp/share"target="_blank">
+          <button class='btn btn-success' onclick="var waurl= 'whatsapp://send?text=Highscore:' + user.highscore+ ' \r\nCompete against me on TypeRighter⌨ https:/khardal.net/type'; document.getElementById('whatsappshare').href=waurl; console.log(waurl)">
+            <i class="fa-brands fa-whatsapp"></i>
+            Share to Whatsapp</button>
+          </a>
+          -->
+
+      
+      <span style="cursor:pointer;" onclick="document.getElementById('leaderboardmodal').style.display='none'">&times;</span></div>
+  <div class="modal-body" id="leaderboard" style="overflow-y: scroll;"></div>
+</div>
+</div>
+
+
+</div>
 </body>
 </html>
