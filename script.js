@@ -71,7 +71,7 @@ auth.onAuthStateChanged(function (user) {
 					email: user.email,
 					highscore: 0,
 					totalscore: 0,
-					dateJoined: new Date().toGMTString(),
+					dateJoined: new Date(),
 				});
 			}
 		});
@@ -260,6 +260,8 @@ function checkGuess() {
 		name: user.displayName,
 		word: rightGuessString,
 		guess: guessString,
+		date: new Date().toDateString(),
+		timestamp: new Date().toISOString(),
 	});
 
 	scoreboardl = scoreboardl.concat("%0a");
@@ -287,6 +289,8 @@ function checkGuess() {
 			word: rightGuessString,
 			score: score_n,
 			result: "win",
+			date: new Date().toDateString(),
+			timestamp: new Date().toISOString(),
 		});
 
 		return;
@@ -314,7 +318,9 @@ function checkGuess() {
 				name: user.displayName,
 				word: rightGuessString,
 				score: score_n,
-				result: "win",
+				result: "loss",
+				date: new Date().toDateString(),
+				timestamp: new Date().toISOString(),
 			});
 		}
 	}
@@ -498,9 +504,41 @@ function modalgenerator(category) {
 	} else if (category == "youwin") {
 		modal.style.display = "block";
 		document.getElementById("Modal Header").innerHTML = "Great Job!";
-		document.getElementById(
-			"Modal Body 1"
-		).innerHTML = `"${rightGuessString}" :The correct word was`;
+		const dbRef = ref(database);
+		onValue(dbRef, (snapshot) => {
+			const data = snapshot.val();
+			console.log(data["games"]);
+			const gamesArray = Object.entries(data["games"]);
+			gamesArray.sort((a, b) => b[1].score - a[1].score);
+			console.log(gamesArray);
+			var leaderboardtable = {};
+			var leaderboardcode =
+				"<table dir=ltr class='table table-success table-striped table-bordered' style='font-family: CURSIVE'><tr><th>Rank</th><th>Name</th><th>Score</th></tr>";
+			for (let i = 0; i < gamesArray.length; i++) {
+				const gameData = gamesArray[i][1];
+				if (gameData.date == new Date().toDateString()) {
+					//Only keeps scores from today
+
+					if (leaderboardtable[gameData.name]) {
+						leaderboardtable[gameData.name] += gameData.score;
+					} else {
+						leaderboardtable[gameData.name] = gameData.score;
+					}
+				}
+			}
+			leaderboardtable = Object.entries(leaderboardtable);
+			console.log(leaderboardtable);
+			// console.log(gamesArray);
+			for (let i = 0; i < leaderboardtable.length; i++) {
+				const playerData = leaderboardtable[i];
+				leaderboardcode += `<tr><td>${i + 1}</td><td>${
+					playerData[0]
+				}</td><td>${playerData[1]}</td></tr>`;
+			}
+			document.getElementById("Modal Body 1").innerHTML = leaderboardcode;
+		});
+
+		document.getElementById("Modal Body 1").innerHTML = "";
 		document.getElementById(
 			"Modal Body 2"
 		).innerHTML = `${WORDSDEF[rightGuessString]}`;
@@ -579,13 +617,29 @@ function renderLeaderboard() {
 		gamesArray.sort((a, b) => b[1].score - a[1].score);
 		console.log(gamesArray);
 		const leaderboard = document.getElementById("leaderboard");
+		var leaderboardtable = {};
 		var leaderboardcode =
-			"<table dir=ltr class='table table-success'><tr><th>Rank</th><th>Name</th><th>Score</th></tr>";
+			"<table dir=ltr class='table table-success table-striped table-bordered' style='font-family: CURSIVE'><tr><th>Rank</th><th>Name</th><th>Score</th></tr>";
 		for (let i = 0; i < gamesArray.length; i++) {
 			const gameData = gamesArray[i][1];
+			if (gameData.date == new Date().toDateString()) {
+				//Only keeps scores from today
+
+				if (leaderboardtable[gameData.name]) {
+					leaderboardtable[gameData.name] += gameData.score;
+				} else {
+					leaderboardtable[gameData.name] = gameData.score;
+				}
+			}
+		}
+		leaderboardtable = Object.entries(leaderboardtable);
+		console.log(leaderboardtable);
+		// console.log(gamesArray);
+		for (let i = 0; i < leaderboardtable.length; i++) {
+			const playerData = leaderboardtable[i];
 			leaderboardcode += `<tr><td>${i + 1}</td><td>${
-				gameData.name
-			}</td><td>${gameData.score}</td></tr>`;
+				playerData[0]
+			}</td><td>${playerData[1]}</td></tr>`;
 		}
 		leaderboard.innerHTML = leaderboardcode;
 	});

@@ -4,9 +4,9 @@
 }
 
 a:link, a:visited {
-background-color:;
+/* background-color:; */
 color: white;
-padding:;
+/* padding:; */
 text-align: center;
 text-decoration: none;
 display: none;
@@ -104,6 +104,13 @@ body {
     float: right;
     margin: 0px;
 }
+@media (max-width: 768px) {
+  .keyboard-button {
+      font-size: 5vw; /* Adjust font size for better visibility on small screens */
+      padding: 2.7vw; /* Increase padding for easier interaction on touch screens */
+      /* Add any other adjustments needed for mobile screens */
+  }
+}
 .keyboard-button:hover{
     color: saddlebrown;
     background-color: lightgray;
@@ -185,7 +192,8 @@ strong {
     padding: 2px 16px;
     background-color: navy;
     color: white;
-    text-align: center
+    text-align: center;
+    display: block;
 }
 
 .modal-body {
