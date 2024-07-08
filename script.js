@@ -545,7 +545,7 @@ function modalgenerator(category) {
 		document.getElementById(
 			"Modal Footer"
 		).innerHTML = `${score_n} :Your Score`;
-		document.getElementById("refresh").href += "?score=" + score_n;
+		// document.getElementById("refresh").href += "?score=" + score_n;
 		document.getElementById("refresh").innerHTML = "!Next round";
 		document.getElementById(
 			"whatsappshare"
@@ -554,7 +554,8 @@ function modalgenerator(category) {
 			"whatsapp://send?text=" +
 			scoreboard +
 			"%0a" +
-			"Day 7 Khardal Score: " +
+			// RAGHIB CHANGE DAY NUMBER HERE !!!!!!
+			"Day 1 Khardal Score: " +
 			score_n +
 			"%0a" +
 			"www.khardal.net";
