@@ -555,7 +555,7 @@ function modalgenerator(category) {
 			scoreboard +
 			"%0a" +
 			// RAGHIB CHANGE DAY NUMBER HERE !!!!!!
-			"Day 1 Khardal Score: " +
+			"Day 6 Khardal Score: " +
 			score_n +
 			"%0a" +
 			"www.khardal.net";
