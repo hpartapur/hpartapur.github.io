@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .game-box {
+            width: 80%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid black;
+            background-color: lightgray;
+            font-size: 24px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            margin-top: 20px;
+        }
+        
+        .button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: lightblue;
+            border: none;
+            cursor: pointer;
+            /* width: 30%; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-box">
+        <span id="word">Word</span>
+    </div>
+    <div class="button-container">
+        <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6Tujd_utOYiQy0CretpQLjZFaq4cM9t0XvQ&s"></button>
+        <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1JRwTY093KvLhMuKh-HhonWqbyPiuhxQ5Q&s"></button>
+        <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MOKWfwNAo9UGFqtkKy8Q8sIoZd77iGMSNQ&s"></button>
+    </div>
+</body>
+<script>
+    var data=[
+    {
+        "Word": "ياقوت",
+        "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6Tujd_utOYiQy0CretpQLjZFaq4cM9t0XvQ&s"
+    },
+    {
+        "Word": "خزانه",
+        "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MOKWfwNAo9UGFqtkKy8Q8sIoZd77iGMSNQ&s"
+    },
+    {
+        "Word": "گهورو",
+        "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1JRwTY093KvLhMuKh-HhonWqbyPiuhxQ5Q&s"
+    }
+]
+const questioned = data[Math.floor(Math.random() * data.length)];
+
+console.log(questioned);
+document.getElementById('word').innerText = questioned['Word'];
+
+var options = []
+options.push(questioned['Photo']);
+while (options.length < 3) {
+    var option = data[Math.floor(Math.random() * data.length)]['Photo'];
+    if (options.indexOf(option) === -1) {
+        options.push(option);
+    }
+}
+
+document.querySelectorAll('.button').forEach((button, index) => {
+    button.addEventListener('click', () => {
+        if (options[index] === questioned['Photo']) {
+            alert('Correct');
+        } else {
+            alert('Wrong');
+        }
+    });
+    button.querySelector('img').src = options[index];
+});
+
+</script>
+</html></div>
