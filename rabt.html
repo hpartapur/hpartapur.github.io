@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="preload" as="font" href="/assets/Kanz-al-Marjaan.ttf">
     <title>Game Page</title>
     <style>
         body {
@@ -333,6 +334,7 @@ document.querySelectorAll('.button').forEach((button, index) => {
         if (options[index] === questioned['Photo']) { //if selected is correct
 
             times.push((new Date() - starttime)/1000)
+            newWord();
             var totaltime = 0
             for (let time in times){
                 totaltime+=times[time]
@@ -346,7 +348,7 @@ document.querySelectorAll('.button').forEach((button, index) => {
 
             rightfx.play()
             // alert('Correct');
-            newWord();
+            // newWord();
         } else {
             wrongfx.play()
             alert('Wrong');
