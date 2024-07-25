@@ -47,6 +47,7 @@
 </head>
 
 <body>
+    <p id="avg" style="position: absolute; left: 40vw; top: 1vh; font-size: 3vh;" ></p>
     <div class="game-box" style="border-radius: 53vw;">
         <span id="word" style="font-family: Kanz-al-Marjaan; font-size: 16vh;">Word</span>
     </div>
@@ -251,7 +252,7 @@
         "Photo": "./rabt/numbers/Slide88.jpg"
     },
     {
-        "Word": "تيوياسي",
+        "Word": "نيوياسي",
         "Photo": "./rabt/numbers/Slide89.jpg"
     },
     {
@@ -297,11 +298,13 @@
 ]
 var questioned;
 var options;
+var times=[]
 let wrongfx = new Audio("/asal_assets/wrong.mp3")
 let rightfx = new Audio ("/asal_assets/points.mp3")
+var starttime = new Date()
 
 function newWord(){
-
+    starttime= new Date()
     questioned = data[Math.floor(Math.random() * data.length)];
     console.log(questioned);
     document.getElementById('word').innerText = questioned['Word'];
@@ -327,9 +330,22 @@ document.querySelectorAll('.button').forEach((button, index) => {
     button.addEventListener('click', () => {
         console.log(options[index])
         console.log(questioned['Photo'])
-        if (options[index] === questioned['Photo']) {
+        if (options[index] === questioned['Photo']) { //if selected is correct
+
+            times.push((new Date() - starttime)/1000)
+            var totaltime = 0
+            for (let time in times){
+                totaltime+=times[time]
+            }
+            var avg = times.length/totaltime
+            avg = avg*60
+            avg=Math.round((avg) * 100) / 100
+            console.log(avg+"words per minute")
+            document.getElementById('avg').innerText=avg+" words per minute"
+
+
             rightfx.play()
-            alert('Correct');
+            // alert('Correct');
             newWord();
         } else {
             wrongfx.play()
