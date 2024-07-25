@@ -15,14 +15,14 @@
             background-size: 70vw;
         }
         .game-box {
-            width: 80%;
+            width: 95%;
             height: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 2px solid black;
             background-color: lightgray;
-            font-size: 15vh;
+            font-size: 5vh;
         }
         
         .button-container {
@@ -58,22 +58,242 @@
 </body>
 <script>
     var data=[
+    // {
+    //     "Word": "ياقوت",
+    //     "Photo": "./rabt/yaqut.png"
+    // },
+    // {
+    //     "Word": "خزانه",
+    //     "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MOKWfwNAo9UGFqtkKy8Q8sIoZd77iGMSNQ&s"
+    // },
+    // {
+    //     "Word": "گهورو",
+    //     "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1JRwTY093KvLhMuKh-HhonWqbyPiuhxQ5Q&s"
+    // },
+    // {
+    //     "Word": "ثثنححوتير",
+    //     "Photo": "./rabt/pinchotair.png"
+    // },
     {
-        "Word": "ياقوت",
-        "Photo": "./rabt/yaqut.png"
+        "Word": "ايكتاليس",
+        "Photo": "./rabt/numbers/Slide41.jpg"
     },
     {
-        "Word": "خزانه",
-        "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MOKWfwNAo9UGFqtkKy8Q8sIoZd77iGMSNQ&s"
+        "Word": "بيتاليس",
+        "Photo": "./rabt/numbers/Slide42.jpg"
     },
     {
-        "Word": "گهورو",
-        "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1JRwTY093KvLhMuKh-HhonWqbyPiuhxQ5Q&s"
+        "Word": "تيتاليس",
+        "Photo": "./rabt/numbers/Slide43.jpg"
+    },
+    {
+        "Word": "ححمّـاليس",
+        "Photo": "./rabt/numbers/Slide44.jpg"
+    },
+    {
+        "Word": "ثثستاليس",
+        "Photo": "./rabt/numbers/Slide45.jpg"
+    },
+    {
+        "Word": "ححهيتاليس",
+        "Photo": "./rabt/numbers/Slide46.jpg"
+    },
+    {
+        "Word": "سرتاليس",
+        "Photo": "./rabt/numbers/Slide47.jpg"
+    },
+    {
+        "Word": "ارتاليس",
+        "Photo": "./rabt/numbers/Slide48.jpg"
+    },
+    {
+        "Word": "اوككنثثححاس",
+        "Photo": "./rabt/numbers/Slide49.jpg"
+    },
+    {
+        "Word": "ححوثثن",
+        "Photo": "./rabt/numbers/Slide54.jpg"
+    },
+    {
+        "Word": "ثثححثثن",
+        "Photo": "./rabt/numbers/Slide55.jpg"
+    },
+    {
+        "Word": "ححهثثن",
+        "Photo": "./rabt/numbers/Slide56.jpg"
+    },
+    {
+        "Word": "ستاون",
+        "Photo": "./rabt/numbers/Slide57.jpg"
+    },
+    {
+        "Word": "اضضهاون",
+        "Photo": "./rabt/numbers/Slide58.jpg"
+    },
+    {
+        "Word": "اوككنساهضضهـ",
+        "Photo": "./rabt/numbers/Slide59.jpg"
+    },
+    {
+        "Word": "ساهضض",
+        "Photo": "./rabt/numbers/Slide60.jpg"
+    },
+    {
+        "Word": "ايكسضضهـ",
+        "Photo": "./rabt/numbers/Slide61.jpg"
+    },
+    {
+        "Word": "باسضضهـ",
+        "Photo": "./rabt/numbers/Slide62.jpg"
+    },
+    {
+        "Word": "تريسضضهـ",
+        "Photo": "./rabt/numbers/Slide63.jpg"
+    },
+    {
+        "Word": "ححوسضضهـ",
+        "Photo": "./rabt/numbers/Slide64.jpg"
+    },
+    {
+        "Word": "ثثانسضضهـ",
+        "Photo": "./rabt/numbers/Slide65.jpg"
+    },
+    {
+        "Word": "ححهاسضضهـ",
+        "Photo": "./rabt/numbers/Slide66.jpg"
+    },
+    {
+        "Word": "سرسضضهـ",  
+        "Photo": "./rabt/numbers/Slide67.jpg"
+    },
+    {
+        "Word": "ارسضضهـ",
+        "Photo": "./rabt/numbers/Slide68.jpg"
+    },
+    {
+        "Word": "اوككنستير",
+        "Photo": "./rabt/numbers/Slide69.jpg"
+    },
+    {
+        "Word": "ستير",
+        "Photo": "./rabt/numbers/Slide70.jpg"
+    },
+    {
+        "Word": "ايكوتير",
+        "Photo": "./rabt/numbers/Slide71.jpg"
+    },
+    {
+        "Word": "بظظتّير",
+        "Photo": "./rabt/numbers/Slide72.jpg"
+    },
+    {
+        "Word": "تيظظوتير",
+        "Photo": "./rabt/numbers/Slide73.jpg"
+    },
+    {
+        "Word": "ححموتير",
+        "Photo": "./rabt/numbers/Slide74.jpg"
     },
     {
         "Word": "ثثنححوتير",
-        "Photo": "./rabt/pinchotair.png"
-    }
+        "Photo": "./rabt/numbers/Slide75.jpg"
+    },
+    {
+        "Word": "ححهوتير",
+        "Photo": "./rabt/numbers/Slide76.jpg"
+    },
+    {
+        "Word": "ستوتير",
+        "Photo": "./rabt/numbers/Slide77.jpg"
+    },
+    {
+        "Word": "اضضهوتير",
+        "Photo": "./rabt/numbers/Slide78.jpg"
+    },
+    {
+        "Word": "اوككنايسي",
+        "Photo": "./rabt/numbers/Slide79.jpg"
+    },
+    {
+        "Word": "ايسي",
+        "Photo": "./rabt/numbers/Slide80.jpg"
+    },
+    {
+        "Word": "ايكياسي",
+        "Photo": "./rabt/numbers/Slide81.jpg"
+    },
+    {
+        "Word": "بياسي",
+        "Photo": "./rabt/numbers/Slide82.jpg"
+    },
+    {
+        "Word": "تيرياسي",
+        "Photo": "./rabt/numbers/Slide83.jpg"
+    },
+    {
+        "Word": "ححورياسي",
+        "Photo": "./rabt/numbers/Slide84.jpg"
+    },
+    {
+        "Word": "ثثنححياسي",
+        "Photo": "./rabt/numbers/Slide85.jpg"
+    },
+    {
+        "Word": "ححهياسي",
+        "Photo": "./rabt/numbers/Slide86.jpg"
+    },
+    {
+        "Word": "ستياسي",
+        "Photo": "./rabt/numbers/Slide87.jpg"
+    },
+    {
+        "Word": "اضضهياسي",
+        "Photo": "./rabt/numbers/Slide88.jpg"
+    },
+    {
+        "Word": "تيوياسي",
+        "Photo": "./rabt/numbers/Slide89.jpg"
+    },
+    {
+        "Word": "نيوو",
+        "Photo": "./rabt/numbers/Slide90.jpg"
+    },
+    {
+        "Word": "ايكانو",
+        "Photo": "./rabt/numbers/Slide91.jpg"
+    },
+    {
+        "Word": "بانو",
+        "Photo": "./rabt/numbers/Slide92.jpg"
+    },
+    {
+        "Word": "تانو",
+        "Photo": "./rabt/numbers/Slide93.jpg"
+    },
+    {
+        "Word": "ححورانو",
+        "Photo": "./rabt/numbers/Slide94.jpg"
+    },
+    {
+        "Word": "ثثنححانو",
+        "Photo": "./rabt/numbers/Slide95.jpg"
+    },
+    {
+        "Word": "ححهنّو",
+        "Photo": "./rabt/numbers/Slide96.jpg"
+    },
+    {
+        "Word": "ستانو",
+        "Photo": "./rabt/numbers/Slide97.jpg"
+    },
+    {
+        "Word": "اضضهانو",
+        "Photo": "./rabt/numbers/Slide98.jpg"
+    },
+    {
+        "Word": "نوانو",
+        "Photo": "./rabt/numbers/Slide99.jpg"
+    },
 ]
 var questioned;
 var options;
