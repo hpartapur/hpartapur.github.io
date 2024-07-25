@@ -11,8 +11,9 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+            background-image: url(./asal_assets/bg-downsized.jpg);
+            background-size: 70vw;
         }
-        
         .game-box {
             width: 80%;
             height: 50%;
@@ -21,13 +22,13 @@
             justify-content: center;
             border: 2px solid black;
             background-color: lightgray;
-            font-size: 24px;
+            font-size: 15vh;
         }
         
         .button-container {
             display: flex;
             justify-content: space-around;
-            width: 80%;
+            width: 90vw;
             margin-top: 20px;
         }
         
@@ -37,17 +38,20 @@
             background-color: lightblue;
             border: none;
             cursor: pointer;
+            border-radius: 5vw;
+            margin: .1vw;
+            width: 30vw;
             /* width: 30%; */
         }
     </style>
 </head>
 
 <body>
-    <div class="game-box">
-        <span id="word">Word</span>
+    <div class="game-box" style="border-radius: 53vw;">
+        <span id="word" style="font-family: Kanz-al-Marjaan; font-size: 16vh;">Word</span>
     </div>
     <div class="button-container">
-        <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6Tujd_utOYiQy0CretpQLjZFaq4cM9t0XvQ&s"></button>
+        <button class="button"><img src="https://encrypted-tbn0.gstom/images?q=tbn:ANd9GcT6Tujd_utOYiQy0CretpQLjZFaq4cM9t0XvQ&s"></button>
         <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1JRwTY093KvLhMuKh-HhonWqbyPiuhxQ5Q&s"></button>
         <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MOKWfwNAo9UGFqtkKy8Q8sIoZd77iGMSNQ&s"></button>
     </div>
@@ -56,7 +60,7 @@
     var data=[
     {
         "Word": "ياقوت",
-        "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6Tujd_utOYiQy0CretpQLjZFaq4cM9t0XvQ&s"
+        "Photo": "./rabt/yaqut.png"
     },
     {
         "Word": "خزانه",
@@ -65,32 +69,59 @@
     {
         "Word": "گهورو",
         "Photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1JRwTY093KvLhMuKh-HhonWqbyPiuhxQ5Q&s"
+    },
+    {
+        "Word": "ثثنححوتير",
+        "Photo": "./rabt/pinchotair.png"
     }
 ]
-const questioned = data[Math.floor(Math.random() * data.length)];
+var questioned;
+var options;
+let wrongfx = new Audio("/asal_assets/wrong.mp3")
+let rightfx = new Audio ("/asal_assets/points.mp3")
 
-console.log(questioned);
-document.getElementById('word').innerText = questioned['Word'];
+function newWord(){
 
-var options = []
-options.push(questioned['Photo']);
+    questioned = data[Math.floor(Math.random() * data.length)];
+    console.log(questioned);
+    document.getElementById('word').innerText = questioned['Word'];
+
+    options = []
+    options.push(questioned['Photo']);
 while (options.length < 3) {
     var option = data[Math.floor(Math.random() * data.length)]['Photo'];
     if (options.indexOf(option) === -1) {
         options.push(option);
     }
 }
+options.sort(() => Math.random() - 0.5);
+document.querySelectorAll('.button').forEach((button, index) => {
+    button.querySelector('img').src = options[index];
+    button.querySelector('img').style.width='25vw'
+    button.querySelector('img').style.height='25vw'
+});
+}
 
+newWord();
 document.querySelectorAll('.button').forEach((button, index) => {
     button.addEventListener('click', () => {
+        console.log(options[index])
+        console.log(questioned['Photo'])
         if (options[index] === questioned['Photo']) {
+            rightfx.play()
             alert('Correct');
+            newWord();
         } else {
+            wrongfx.play()
             alert('Wrong');
         }
     });
     button.querySelector('img').src = options[index];
 });
+
+
+
+
 
 </script>
 </html></div>
