@@ -11,7 +11,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: Kanz-al-Marjaan,Arial, sans-serif;
             background-image: url(./asal_assets/bg-downsized.jpg);
             background-size: 70vw;
         }
@@ -48,7 +48,6 @@
 </head>
 
 <body>
-    <p id="avg" style="position: absolute; left: 40vw; top: 1vh; font-size: 3vh;" ></p>
     <div class="game-box" style="border-radius: 53vw;">
         <span id="word" style="font-family: Kanz-al-Marjaan; font-size: 16vh;">Word</span>
     </div>
@@ -58,8 +57,10 @@
         <button class="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MOKWfwNAo9UGFqtkKy8Q8sIoZd77iGMSNQ&s"></button>
     </div>
 </body>
-<script>
-    var data=[
+<script type="module">
+    var backgroundaudio = new Audio("/type/gwen.mp3")
+    var playing = false;
+    var questions=[
     // {
     //     "Word": "ياقوت",
     //     "Photo": "./rabt/yaqut.png"
@@ -300,20 +301,58 @@
 var questioned;
 var options;
 var times=[]
+var wrongs = []
+var attempts = 0;
 let wrongfx = new Audio("/asal_assets/wrong.mp3")
 let rightfx = new Audio ("/asal_assets/points.mp3")
+var tr = prompt("Enter your TR number")
 var starttime = new Date()
+var answered = []
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
+import {
+	getDatabase,
+	ref,
+	push,
+	onValue,
+	set,
+	get,
+	update,
+} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+const firebaseConfig = {
+	apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+	authDomain: "khardal.firebaseapp.com",
+	projectId: "khardal",
+	storageBucket: "khardal.appspot.com",
+	messagingSenderId: "258618544710",
+	appId: "1:258618544710:web:2b734571b863de60dc3047",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+window.database = getDatabase(app);
+const dbRef=ref(database)
+onValue(dbRef, (snapshot) => {
+			window.data = snapshot.val();
+			console.log(data);
+		});
 
 function newWord(){
     starttime= new Date()
-    questioned = data[Math.floor(Math.random() * data.length)];
+    questioned = questions[Math.floor(Math.random() * questions.length)];
+    while (answered.indexOf(questioned['Word']) !== -1) {
+        questioned = questions[Math.floor(Math.random() * questions.length)];
+    }
+    answered.push(questioned['Word'])
     console.log(questioned);
     document.getElementById('word').innerText = questioned['Word'];
 
     options = []
     options.push(questioned['Photo']);
 while (options.length < 3) {
-    var option = data[Math.floor(Math.random() * data.length)]['Photo'];
+    var option = questions[Math.floor(Math.random() * questions.length)]['Photo'];
     if (options.indexOf(option) === -1) {
         options.push(option);
     }
@@ -331,6 +370,7 @@ document.querySelectorAll('.button').forEach((button, index) => {
     button.addEventListener('click', () => {
         console.log(options[index])
         console.log(questioned['Photo'])
+        attempts++;
         if (options[index] === questioned['Photo']) { //if selected is correct
 
             times.push((new Date() - starttime)/1000)
@@ -339,19 +379,43 @@ document.querySelectorAll('.button').forEach((button, index) => {
             for (let time in times){
                 totaltime+=times[time]
             }
-            var avg = times.length/totaltime
-            avg = avg*60
-            avg=Math.round((avg) * 100) / 100
-            console.log(avg+"words per minute")
-            document.getElementById('avg').innerText=avg+" words per minute"
+            if (totaltime<=30){
+                newWord()
+            }else{
+                var avg = times.length/totaltime
+                avg = avg*60
+                avg=Math.round((avg) * 100) / 100
+                console.log(avg+"words per minute")
+                var accuracy = (100-(wrongs.length/attempts)*100)
+                console.log("Accuracy: "+accuracy+"%")
+                push(ref(database, 'rabt/sessions/'),
+                {
+                    tr: tr,
+                    avg: avg,
+                    // timestamp: new Date().toISOString(),
+                    date: new Date().toDateString(),
+                    accuracy: accuracy,
+                    wrongs: wrongs,
+                }
+            )
+                if (!data.rabt[tr] || avg>data.rabt[tr]){
+                    set(ref(database, 'rabt/'+tr), avg)
+                }
+                alert('TR: '+tr+'\n'+avg+" words per minute"+'\n'+"Accuracy: "+accuracy+"%")
+                location.reload()
+            }
 
 
             rightfx.play()
-            // alert('Correct');
-            // newWord();
+            if (playing==false){
+                backgroundaudio.play()
+                playing=true;
+            }
         } else {
             wrongfx.play()
             alert('Wrong');
+            answered.pop(questioned['Word'])
+            wrongs.push(questioned['Word'])
         }
     });
     button.querySelector('img').src = options[index];
