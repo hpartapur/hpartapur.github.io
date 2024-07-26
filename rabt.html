@@ -404,6 +404,19 @@ document.querySelectorAll('.button').forEach((button, index) => {
                     set(ref(database, 'rabt/'+tr), avg)
                 }
                 alert('TR: '+tr+'\n'+avg+" words per minute"+'\n'+"Accuracy: "+accuracy+"%")
+                var scores=[]
+                for (let d in data.rabt){
+                    if (d != "sessions"){
+                        scores.push([d, data.rabt[d]])}}
+                scores.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+                var scorestring = ""
+                for (let s in scores){
+                    var rank = parseInt(s)+1
+                    scorestring+=rank+". "+scores[s][0]+": "+scores[s][1]+'numbers per minute \n'
+                }
+                alert("Top Scores:\n"+scorestring)
                 location.reload()
             }
 
