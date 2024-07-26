@@ -347,7 +347,8 @@ function newWord(){
     }
     answered.push(questioned['Word'])
     console.log(questioned);
-    document.getElementById('word').innerText = questioned['Word'];
+    // document.getElementById('word').innerText = questioned['Word'];
+    // moved this slower so images are first to load
 
     options = []
     options.push(questioned['Photo']);
@@ -363,6 +364,7 @@ document.querySelectorAll('.button').forEach((button, index) => {
     button.querySelector('img').style.width='25vw'
     button.querySelector('img').style.height='25vw'
 });
+    document.getElementById('word').innerText = questioned['Word'];
 }
 
 newWord();
