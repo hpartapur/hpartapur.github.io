@@ -9,18 +9,23 @@
     <style>
         body{
             background-image: url('https://khardal.net/asal_assets/bg.jpg');
-            background-size: 100px
+            background-size: 100px;
         }
         #periods-container {
-          width: 100%; /* Set container width to 100% */
+          width: 95vw; /* Set container width to 100% */
           height: 30%;
           max-height: 20vh;
+        }
+        strong {
+            color: green;
         }
         table {
             height: 10vh;
             padding: 0rem 0rem;
-            margin: 1vh 5vh;
-            margin-left: 5vh;
+            margin: 1vh 2vh;
+            /* margin-left: 5vh; */
+            font-size: 0.72vw;
+            font-weight: 700;
         }
         .table>:not(caption)>*>* {
             padding: 0.5vh 0.4vh;
@@ -125,7 +130,7 @@ if (building == '8') {
     // filter out duplicates
     uniqueClasses = uniqueClasses.filter((v, i, a) => a.indexOf(v) === i);
     console.log(uniqueClasses);
-    table="<table class='table table-striped table-bordered table-hover table-warning'>"
+    table="<table class='table table-striped table-bordered table-hover table-primary table-responsive'>"
     // table += "<tr>"
     // table += "<th>Class</th>"
     //     for (let i = 0; i < 8; i++) {
@@ -142,7 +147,8 @@ if (building == '8') {
     data=remaining
     var slots=["Darajah"]
     for (let d in data){
-        timing= data[d]['P_Time_From'] + " - " + data[d]['P_Time_To']
+        // timing= data[d]['P_Time_From'] + " - " + data[d]['P_Time_To']
+        timing=data[d]['PeriodId'] + "<br>" + data[d]['P_Time_From'] + " - " + data[d]['P_Time_To']
         slots.push(timing)
     }
      //remove duplicates from slots
@@ -160,9 +166,9 @@ if (building == '8') {
             if (data[period]['PeriodId'] == hissatnum){ 
                 if (data[period]['ClassName'] == uniqueClasses[classroom]){
                 if(data[period]['isBadal']==1){
-                   row += "<td style='color:red'>" + data[period]['BookName']  + "</td>"
+                   row += "<td style='color:red'>" + data[period]['BookName'] +"<br>"+data[period]['AssignName'] + "</td>"
                 }else{
-                    row += "<td>" + data[period]['BookName'] + "</td>"
+                    row += "<td>" + data[period]['BookName']+"<br>"+data[period]['AssignName']  + "</td>"
                 }
                 hissatnum = data[period]['PeriodId']
                 hissatnum++
