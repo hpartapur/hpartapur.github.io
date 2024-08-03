@@ -17,7 +17,9 @@
           max-height: 20vh;
         }
         strong {
-            color: green;
+            color:mediumblue;
+            font-weight: 800;
+            font-size: 0.8vw;
         }
         table {
             height: 10vh;
@@ -25,7 +27,10 @@
             margin: 1vh 2vh;
             /* margin-left: 5vh; */
             font-size: 0.72vw;
-            font-weight: 700;
+            /* font-weight: 700; */
+            vertical-align: middle;
+            align-items: center;
+            text-align: center;
         }
         .table>:not(caption)>*>* {
             padding: 0.5vh 0.4vh;
@@ -49,13 +54,15 @@ console.log(hours + ':' + minutes + ':' + seconds);
 time = hours + ':' + minutes + ':' + seconds;
 console.log(time);
 
-// Calculate time + 35 minutes
-currentDate.setMinutes(currentDate.getMinutes() + 35);
-var newHours = String(currentDate.getHours()).padStart(2, '0');
-var newMinutes = String(currentDate.getMinutes()).padStart(2, '0');
-var newSeconds = String(currentDate.getSeconds()).padStart(2, '0');
-var newTime = newHours + ':' + newMinutes + ':' + newSeconds;
-console.log("Time after 35 minutes: " + newTime);
+// //if time is past 4:30, change day to next day
+// if (hours >= 16 && minutes >= 30) {
+//     var currentDate = new Date();
+//     var year = currentDate.getFullYear();
+//     var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+//     var day = String(currentDate.getDate() + 1).padStart(2, '0');
+//     date = year + '-' + month + '-' + day;
+//     console.log(date)
+// }
 
 
 // Append time directly to the URL without encoding
@@ -130,7 +137,7 @@ if (building == '8') {
     // filter out duplicates
     uniqueClasses = uniqueClasses.filter((v, i, a) => a.indexOf(v) === i);
     console.log(uniqueClasses);
-    table="<table class='table table-striped table-bordered table-hover table-primary table-responsive'>"
+    table="<table class='table table-striped table-bordered table-hover table-warning table-responsive'>"
     // table += "<tr>"
     // table += "<th>Class</th>"
     //     for (let i = 0; i < 8; i++) {
@@ -148,7 +155,7 @@ if (building == '8') {
     var slots=["Darajah"]
     for (let d in data){
         // timing= data[d]['P_Time_From'] + " - " + data[d]['P_Time_To']
-        timing=data[d]['PeriodId'] + "<br>" + data[d]['P_Time_From'] + " - " + data[d]['P_Time_To']
+        timing="Hissat "+data[d]['PeriodId'] + "<br>" + data[d]['P_Time_From'] + " - " + data[d]['P_Time_To']
         slots.push(timing)
     }
      //remove duplicates from slots
@@ -163,12 +170,15 @@ if (building == '8') {
         row += "<th>" + uniqueClasses[classroom] + "</th>"
         var hissatnum=data[0]['PeriodId']
         for (let period in data){
+        var teacher = data[period]['AssignName']
+        //if teacher has numbers in it, remove numbers
+        teacher = teacher.replace(/[0-9]/g, '');
             if (data[period]['PeriodId'] == hissatnum){ 
                 if (data[period]['ClassName'] == uniqueClasses[classroom]){
                 if(data[period]['isBadal']==1){
-                   row += "<td style='color:red'>" + data[period]['BookName'] +"<br>"+data[period]['AssignName'] + "</td>"
+                   row += "<td style='background-color:#e13c3ca1'><strong>" + data[period]['BookName'] +"</strong><br><br>"+teacher+ "</td>"
                 }else{
-                    row += "<td>" + data[period]['BookName']+"<br>"+data[period]['AssignName']  + "</td>"
+                    row += "<td><strong>" + data[period]['BookName']+"</strong><br><br>"+teacher  + "</td>"
                 }
                 hissatnum = data[period]['PeriodId']
                 hissatnum++
