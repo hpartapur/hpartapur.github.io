@@ -66,15 +66,15 @@ console.log(time);
 
 
 // Append time directly to the URL without encoding
-url = "https://nairobi.jameasaifiyah.edu/Jameawebservice/api/nairobi/JadwalSignage?token=Po19azSdO0J0Wqi6fpGcdSQu5&dt=" + date + "&tm=" + time;
-url="https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5%26dt%3D2024-06-11%26tm%3D15%3A50%3A54"
+//url = "https://nairobi.jameasaifiyah.edu/Jameawebservice/api/nairobi/JadwalSignage?token=Po19azSdO0J0Wqi6fpGcdSQu5&dt=" + date + "&tm=" + time;
+//url="https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5%26dt%3D2024-06-11%26tm%3D15%3A50%3A54"
 // time ="8:30:54"
 
 // Correctly encode and append the date and time to the URL
 // url = "https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5%26dt=" + encodeURIComponent(date) + "%26tm=" + encodeURIComponent(time);
- url = "https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5%26dt=" + encodeURIComponent(date) + "%26tm="
+// url = "https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5%26dt=" + encodeURIComponent(date) + "%26tm="
 //url = "https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Fdt%3D" + encodeURIComponent(date) + "%26tm%3D%26token%3DPo19azSdO0J0Wqi6fpGcdSQu5"
-console.log(url);
+url="https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FJadwalSignage%3Fdt%3D"+date+"%26tm%3D%26token%3DPo19azSdO0J0Wqi6fpGcdSQu5"
 
 console.log(url);
 
@@ -129,6 +129,7 @@ if (building == '8') {
     });
     console.log(data)
 
+
     var uniqueClasses=[];
 
     for (let d in data) {
@@ -148,12 +149,14 @@ if (building == '8') {
     //     }
     var currentTime= new Date().toLocaleTimeString();
     console.log(currentTime)
+    console.log(time)
     var remaining=[]
     for (let d in data){
-        if(data[d]['P_Time_To']>currentTime){
+        if(data[d]['P_Time_To']>time){
             remaining.push(data[d])
         }
     }
+    console.log(remaining)
     data=remaining
     var slots=["Darajah"]
     for (let d in data){
