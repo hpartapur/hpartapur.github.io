@@ -7,6 +7,70 @@
     </head>
     <body>
         <input type="text" id="its">
-        <button onclick="var its=document.getElementById('its').value*53; var link = './foodfest.html?id='+its; location.replace(link)">Login</button>
+        <button id="itssubmit" onclick="var its=document.getElementById('its').value; var link = './foodfest.html?login='+its; location.replace(link)">Login</button>
+        <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import {
+	getDatabase,
+	ref,
+	push,
+	onValue,
+	set,
+	get,
+	update,
+} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+const firebaseConfig = {
+	apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+	authDomain: "khardal.firebaseapp.com",
+	projectId: "khardal",
+	storageBucket: "khardal.appspot.com",
+	messagingSenderId: "258618544710",
+	appId: "1:258618544710:web:2b734571b863de60dc3047",
+};
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      window.database = getDatabase(app);
+
+      
+const url = window.location.href;
+
+// Create URLSearchParams object
+const urlParams = new URLSearchParams(new URL(url).search);
+const its = urlParams.get('login');
+if(its){
+    console.log(its)
+    document.getElementById('its').hidden=true;
+    document.getElementById('itssubmit').hidden=true;
+  const dbRef = ref(database);
+  onValue(dbRef, (snapshot) => { 
+    const data = snapshot.val()['foodfest'];
+    console.log(data)
+    for (let student in data){
+        if(data[student]['ITS']==its){
+            var user = data[student]
+            console.log(user)
+            document.write("Welcome "+user.Name+user.Darajah)
+        }
+        if(user){
+            if(user.Selection == 'Unselected'){
+                console.log(user.Selection)
+                for (let student in data){
+                    if(student.Darajah == user.Darajah){
+                        console.log(student)
+                    }
+                }
+            }else{
+                document.write("You have selected "+user.Selection)
+            }
+        }else{
+            document.write("UNAUTHORIZED")
+        }
+    }
+    
+  })
+}else{
+    console.log("NO ITS")
+}
+</script>
 </body>
 </html> 
