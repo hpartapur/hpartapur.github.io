@@ -315,7 +315,7 @@ var attempts = 0;
 let wrongfx = new Audio("/asal_assets/wrong.mp3")
 let rightfx = new Audio ("/asal_assets/points.mp3")
 var tr = prompt("Enter your TR number")
-if(typeof tr == 'undefined'||tr.length<3){
+if(typeof tr == 'undefined'||tr.length<3||tr==null){
 	alert("Invalid TR. Please try again");
 	location.reload()
 }
