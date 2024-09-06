@@ -22,8 +22,19 @@
         .form-container {
             margin-top: 2vw;
         }
+        .modal-body{
+            background-color: blue;
+        }
     </style>
 </head>
+<div id="loginmodal" class="modal" >
+    <div class="modal-content" style="width: 100vw; height:50vh">
+    <div class="modal-body" id="loginbody">
+        <center><button id="login"  onclick="glogin()"><img src="./type/g.png" style="height: 4vh; ">Sign in with Google</button>
+        </center>
+        </div>
+  </div>
+  </div>
 <body class="bg-light p-4">
     <div class="container">
         <h1 class="text-center mb-4">Select a Class</h1>
@@ -34,6 +45,7 @@
             </select>
         </div>
         <button onclick="extract()" class="btn btn-primary btn-lg">Submit Data</button>
+        <button onclick="signout()" class="btn btn-danger ">Sign Out</button>
         <div id="table" class="table-container mt-4"></div>
     </div>
 
@@ -45,6 +57,13 @@
             push,
             onValue,
         } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+        import {
+            getAuth,
+            signInWithPopup,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut,
+        } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
@@ -58,6 +77,48 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        function glogin() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    const user = result.user;
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    const email = error.customData.email;
+                    const credential = GoogleAuthProvider.credentialFromError(error);
+                });
+}
+window.glogin = glogin;
+
+const provider = new GoogleAuthProvider();
+window.signInWithPopup = signInWithPopup;
+window.provider = provider;
+window.auth = auth;
+
+auth.onAuthStateChanged(function (user) {
+	if (user) {
+		window.user = user;
+		console.log(user);
+		pullData();
+		document.getElementById("loginmodal").style.display = "none";
+	} else {
+		window.user = null;
+        console.log("Not singed in")
+		document.getElementById("loginmodal").style.display = "block";
+	}
+});
+
+function signout() {
+	auth.signOut();
+    location.reload()
+}
+window.signout = signout;
+
 
         function pullData() {
             const dbRef = ref(database);
@@ -123,6 +184,7 @@
                         });
                         pushdata['Darajah'] = selection;
                         pushdata['Timestamp'] = new Date().toLocaleString();
+                        pushdata['MarkedBy']= window.user.email
                         console.log(pushdata);
                     }
                     console.log(pushdata);
@@ -132,7 +194,7 @@
             });
         }
 
-        pullData();
+        // pullData();
     </script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
