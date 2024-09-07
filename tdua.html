@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Tilawat Dua Names</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div id="assigned"></div>
+</body>
+
+<script>
+    url=`https://corsproxy.io/?https%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameaWebservice%2Fapi%2Fnairobi%2FDua_Data%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5`
+    // url=`https://nairobi.jameasaifiyah.edu/JameaWebservice/api/nairobi/Dua_Data?token=Po19azSdO0J0Wqi6fpGcdSQu5`
+    
+fetch(url).then(response => response.json()).then(data => {
+    var table = `<table dir='rtl' class='table table-warning table-striped table-bordered'><thead class='thead-dark'><tr><th>اسم</th><th>تلاوة</th></tr></thead><tbody>`;
+console.log(data);
+daydisplay=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Monday']
+todisplay = daydisplay[new Date().getDay()]
+data.forEach(day => {
+    if(day['Day_English']==todisplay){
+        document.getElementById('assigned').innerHTML=`<h1 class='yawm'>تلاوة الدعاء - ${day['Day_Arabic']}</h1>`
+        if(/\d/.test(day['FirstDua_FullName'])){
+                table+= `<tr><td><img class = "profile" src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${day['FirstDua_ITS']}.jpg'>${day['FirstDua_FullName']}</td>
+                <td><br>${day['FirstDua']}</td></tr>`
+        }
+
+        if(/\d/.test(day['Quran_FullName'])){
+            table+= `<tr><td><img class = "profile" src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${day['Quran_ITS']}.jpg'>${day['Quran_FullName']}</td>
+                <td><br>${day['Quran']}</td></tr>`
+        }
+
+
+        if(/\d/.test(day['DailyDua_FullName'])){
+            table+= `<tr><td><img class = "profile" src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${day['DailyDua_ITS']}.jpg'>${day['DailyDua_FullName']}</td>
+                <td><br>دعاء ${day['DailyDua']}</td></tr>`
+        }
+
+}
+});
+document.getElementById('assigned').innerHTML+=table;
+})
+</script>
+<style>
+    .table{
+        font-family: Kanz-al-Marjaan;
+        font-size: 2vw;
+        text-align: right;
+        width: 80vw;
+        position: absolute;
+        left: 10vw;
+    }
+    th{
+       text-align: center;
+    }
+    .yawm{
+        font-size: 3vw;
+        font-family: Kanz-al-Marjaan;
+        text-align: center;
+    }
+    .profile{
+        border-radius: 50%;
+        width: 20vh;
+    }
+    body{
+        background-image: url('https://khardal.net/asal_assets/bg.jpg');
+        background-size: 10vw;
+    }
+</style>
+</html>
