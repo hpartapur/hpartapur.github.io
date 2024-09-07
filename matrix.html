@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Class Selection Page</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .student-img {
+            width: 12vw;
+            height: 12vw;
+            border-radius: 50%;
+        }
+        .rating-label {
+            display: block;
+        }
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .form-container {
+            margin-top: 2vw;
+        }
+        .modal-body{
+            background-color: blue;
+        }
+    </style>
+</head>
+<div id="loginmodal" class="modal" >
+    <div class="modal-content" style="width: 100vw; height:50vh">
+    <div class="modal-body" id="loginbody">
+        <center><button id="login"  onclick="glogin()"><img src="./type/g.png" style="height: 4vh; ">Sign in with Google</button>
+        </center>
+        </div>
+  </div>
+  </div>
+<body class="bg-light p-4">
+    <div class="container">
+        <h1 class="text-center mb-4">Select a Class</h1>
+        <div class="mb-4">
+            <label for="darajah-selection" class="form-label">Class</label>
+            <select id="darajah-selection" class="form-control">
+                <option>Select a Class</option>
+            </select>
+        </div>
+        <button onclick="extract()" class="btn btn-primary btn-lg">Submit Data</button>
+        <button onclick="signout()" class="btn btn-danger ">Sign Out</button>
+        <div id="table" class="table-container mt-4"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            onValue,
+        } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+        import {
+            getAuth,
+            signInWithPopup,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut,
+        } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+            authDomain: "khardal.firebaseapp.com",
+            projectId: "khardal",
+            storageBucket: "khardal.appspot.com",
+            messagingSenderId: "258618544710",
+            appId: "1:258618544710:web:2b734571b863de60dc3047",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        function glogin() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    const user = result.user;
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    const email = error.customData.email;
+                    const credential = GoogleAuthProvider.credentialFromError(error);
+                });
+}
+window.glogin = glogin;
+
+const provider = new GoogleAuthProvider();
+window.signInWithPopup = signInWithPopup;
+window.provider = provider;
+window.auth = auth;
+
+auth.onAuthStateChanged(function (user) {
+	if (user) {
+		window.user = user;
+		console.log(user);
+		pullData();
+		document.getElementById("loginmodal").style.display = "none";
+	} else {
+		window.user = null;
+        console.log("Not singed in")
+		document.getElementById("loginmodal").style.display = "block";
+	}
+});
+
+function signout() {
+	auth.signOut();
+    location.reload()
+}
+window.signout = signout;
+
+
+        function pullData() {
+            const dbRef = ref(database);
+            onValue(dbRef, (snapshot) => { 
+                const data = snapshot.val()['matrix'];
+                console.log(data);
+                window.data = data;
+                var studentdata = data['studentdata'];
+
+                let classes = [];
+                for (let d in studentdata) {
+                    if (!classes.includes(studentdata[d]['ClassName'])) {
+                        classes.push(studentdata[d]['ClassName']);
+                    }
+                }
+
+                classes = Array.from(new Set(classes));
+                console.log(classes);
+
+                classes.sort(function(a, b) {
+                return b[1] - a[1];
+                });
+
+                const selectElement = document.getElementById('darajah-selection');
+                selectElement.innerHTML = '<option>Select a Class</option>'; // Reset options
+                classes.forEach(darajah => {
+                    selectElement.innerHTML += `<option>${darajah}</option>`;
+                });
+
+                selectElement.addEventListener('change', function() {
+                    console.log(selectElement.value);
+                    var selection = selectElement.value;
+
+                    var table = `<table class='table table-striped table-bordered'><thead class='thead-dark'><tr><th>Name</th><th>Rating</th></tr></thead><tbody>`;
+                    var talabats = [];
+                    window.talabats=talabats;
+                    for (let student in studentdata) {
+                        if (studentdata[student]["ClassName"] == selection) {
+                            talabats.push(studentdata[student]);
+                            table += `<tr><td><img src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${studentdata[student]["ITSID"]}.jpg' class='student-img'> ${studentdata[student]["Name"]}</td><td>
+                                <label class='rating-label'><input type="radio" name="${studentdata[student]["ITSID"]}" value="-2"> -2</label>
+                                <label class='rating-label'><input type="radio" name="${studentdata[student]["ITSID"]}" value="-1"> -1</label>
+                                <label class='rating-label'><input type="radio" checked name="${studentdata[student]["ITSID"]}" value="0">  +0</label>
+                                <label class='rating-label'><input type="radio" name="${studentdata[student]["ITSID"]}" value="+1"> +1</label>
+                                <label class='rating-label'><input type="radio" name="${studentdata[student]["ITSID"]}" value="+2"> +2</label>
+                            </td></tr>`;
+                        }
+                    }
+                    table += `</tbody></table>`;
+                    document.getElementById('table').innerHTML = table;
+                });
+
+                window.extract = function() {
+                    let pushdata = {};
+                    const selection = document.getElementById('darajah-selection').value;
+                    for (let talabat of talabats) {
+                        let options = document.getElementsByName(talabat['ITSID']);
+                        options.forEach(option => {
+                            if (option.checked) {
+                                console.log(option.name, option.value);
+                                pushdata[option.name] = option.value;
+                            }
+                        });
+                        pushdata['Darajah'] = selection;
+                        pushdata['Timestamp'] = new Date().toLocaleString();
+                        pushdata['MarkedBy']= window.user.email
+                        console.log(pushdata);
+                    }
+                    console.log(pushdata);
+                    push(ref(database,'matrix/scores'), pushdata);
+                    alert("Scores submitted")
+                };
+            });
+        }
+
+        // pullData();
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
