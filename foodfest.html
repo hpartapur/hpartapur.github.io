@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Scoreboard</title>
+		<title>FoodFest 1446H</title>
 		<link
 			href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
 			rel="stylesheet"
@@ -59,14 +59,14 @@
 					console.log(data);
 					for (let student in data) {
 						var validits = false;
-						if (data[student]["ITS"] == its) {
+						if (data[student]["ITSID"] == its) {
 							var user = data[student];
 							console.log(user);
 						}
 						if (user) {
 							validits = true;
 							var profile = `<table class='table table-secondary'><tr><th>Name</th><th>Darajah</th><th>Selection</th><th>Timestamp</th></tr>`;
-							profile += `<tr><td><img style="width:10vh;" src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${user.ITS}.jpg'> ${user.ITS}${user.Name}</td><td>${user.Darajah}</td><td>${user.Selection}</td><td>${user.Timestamp}</td></tr>`;
+							profile += `<tr><td><img style="width:10vh;" src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${user.ITSID}.jpg'> ${user.ITSID}${user.Name}</td><td>${user.Class}</td><td>${user.Selection}</td><td>${user.Timestamp}</td></tr>`;
 							profile += `</table>`;
 							document.getElementById("profile").innerHTML =
 								profile;
@@ -79,7 +79,7 @@
 								Unselected: 0,
 							};
 							for (let d in data) {
-								if (data[d]["Darajah"] == user["Darajah"]) {
+								if (data[d]["Class"] == user["Class"]) {
 									classcounts[data[d]["Selection"]] += 1;
 									total += 1;
 								}
