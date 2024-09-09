@@ -1,76 +1,190 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Scoreboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- add gradients to each team color bg, and fonts make more exciting, and amke score bigger -->
-    </head>
-    <body>
-        <input type="text" id="its">
-        <button id="itssubmit" onclick="var its=document.getElementById('its').value; var link = './foodfest.html?login='+its; location.replace(link)">Login</button>
-        <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-import {
-	getDatabase,
-	ref,
-	push,
-	onValue,
-	set,
-	get,
-	update,
-} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-const firebaseConfig = {
-	apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
-	authDomain: "khardal.firebaseapp.com",
-	projectId: "khardal",
-	storageBucket: "khardal.appspot.com",
-	messagingSenderId: "258618544710",
-	appId: "1:258618544710:web:2b734571b863de60dc3047",
-};
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      window.database = getDatabase(app);
+	<head>
+		<title>Scoreboard</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		/>
+		<!-- add gradients to each team color bg, and fonts make more exciting, and amke score bigger -->
+	</head>
+	<body>
+		<input type="text" id="its" />
+		<button
+			id="itssubmit"
+			onclick="var its=document.getElementById('its').value; var link = './foodfest.html?login='+its; location.replace(link)"
+		>
+			Login
+		</button>
+		<div id="profile"></div>
+		<script type="module">
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import {
+				getDatabase,
+				ref,
+				push,
+				onValue,
+				set,
+				get,
+				update,
+			} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
 
-      
-const url = window.location.href;
+			const url = window.location.href;
 
-// Create URLSearchParams object
-const urlParams = new URLSearchParams(new URL(url).search);
-const its = urlParams.get('login');
-if(its){
-    console.log(its)
-    document.getElementById('its').hidden=true;
-    document.getElementById('itssubmit').hidden=true;
-  const dbRef = ref(database);
-  onValue(dbRef, (snapshot) => { 
-    const data = snapshot.val()['foodfest'];
-    console.log(data)
-    for (let student in data){
-        if(data[student]['ITS']==its){
-            var user = data[student]
-            console.log(user)
-            document.write("Welcome "+user.Name+user.Darajah)
-        }
-        if(user){
-            if(user.Selection == 'Unselected'){
-                console.log(user.Selection)
-                for (let student in data){
-                    if(student.Darajah == user.Darajah){
-                        console.log(student)
-                    }
-                }
-            }else{
-                document.write("You have selected "+user.Selection)
-            }
-        }else{
-            document.write("UNAUTHORIZED")
-        }
-    }
-    
-  })
-}else{
-    console.log("NO ITS")
-}
-</script>
-</body>
-</html> 
+			// Create URLSearchParams object
+			const urlParams = new URLSearchParams(new URL(url).search);
+			const its = urlParams.get("login");
+			if (its) {
+				console.log(its);
+				document.getElementById("its").hidden = true;
+				document.getElementById("itssubmit").hidden = true;
+				const dbRef = ref(database);
+				onValue(dbRef, (snapshot) => {
+					const data = snapshot.val()["foodfest"];
+					console.log(data);
+					for (let student in data) {
+						var validits = false;
+						if (data[student]["ITS"] == its) {
+							var user = data[student];
+							console.log(user);
+						}
+						if (user) {
+							validits = true;
+							var profile = `<table class='table table-secondary'><tr><th>Name</th><th>Darajah</th><th>Selection</th><th>Timestamp</th></tr>`;
+							profile += `<tr><td><img style="width:10vh;" src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${user.ITS}.jpg'> ${user.ITS}${user.Name}</td><td>${user.Darajah}</td><td>${user.Selection}</td><td>${user.Timestamp}</td></tr>`;
+							profile += `</table>`;
+							document.getElementById("profile").innerHTML =
+								profile;
+							var total = 0;
+							var classcounts = {
+								Red: 0,
+								Blue: 0,
+								Yellow: 0,
+								Green: 0,
+								Unselected: 0,
+							};
+							for (let d in data) {
+								if (data[d]["Darajah"] == user["Darajah"]) {
+									classcounts[data[d]["Selection"]] += 1;
+									total += 1;
+								}
+							}
+							console.log(classcounts);
+							console.log(total);
+							let cap = Math.floor(total / 4);
+							let table = `<table class='table table-secondary'><tr><th>Red</th><th>Blue</th><th>Yellow</th><th>Green</th></tr>`;
+							table += `<tr><td>${
+								cap - classcounts["Red"]
+							} Passes Left</td><td>${
+								cap - classcounts["Blue"]
+							} Passes Left</td><td>${
+								cap - classcounts["Yellow"]
+							} Passes Left</td><td>${
+								cap - classcounts["Green"]
+							} Passes Left</td><tr>`;
+
+							if (cap != classcounts["Red"]) {
+								table += `<tr><td><button id='allocate_red' class='btn btn-danger'>Allocate</button></td>`;
+							} else {
+								table += `<tr><td><button id='allocate_red' class='btn btn-danger' disabled >Allocate</button></td>`;
+							}
+							if (cap != classcounts["Blue"]) {
+								table += `<td><button id='allocate_blue' class='btn btn-primary'>Allocate</button></td>`;
+							} else {
+								table += `<td><button id='allocate_blue' class='btn btn-primary' disabled >Allocate</button></td>`;
+							}
+							if (cap != classcounts["Yellow"]) {
+								table += `<td><button id='allocate_yellow' class='btn btn-warning'>Allocate</button></td>`;
+							} else {
+								table += `<td><button id='allocate_yellow' class='btn btn-warning' disabled >Allocate</button></td>`;
+							}
+							if (cap != classcounts["Green"]) {
+								table += `<td><button id='allocate_green' class='btn btn-success'>Allocate</button></td>`;
+							} else {
+								table += `<td><button id='allocate_green' class='btn btn-success' disabled >Allocate</button></td>`;
+							}
+							document.getElementById("profile").innerHTML +=
+								table;
+
+							document
+								.getElementById("allocate_red")
+								.addEventListener("click", () => {
+									let userindex = data.indexOf(user);
+									let update = data[userindex];
+									update["Selection"] = "Red";
+									update["Timestamp"] =
+										new Date().toLocaleString();
+									set(
+										ref(database, "foodfest/" + userindex),
+										update
+									);
+								});
+							document
+								.getElementById("allocate_blue")
+								.addEventListener("click", () => {
+									let userindex = data.indexOf(user);
+									let update = data[userindex];
+									update["Selection"] = "Blue";
+									update["Timestamp"] =
+										new Date().toLocaleString();
+									set(
+										ref(database, "foodfest/" + userindex),
+										update
+									);
+								});
+							document
+								.getElementById("allocate_yellow")
+								.addEventListener("click", () => {
+									let userindex = data.indexOf(user);
+									let update = data[userindex];
+									update["Selection"] = "Yellow";
+									update["Timestamp"] =
+										new Date().toLocaleString();
+									set(
+										ref(database, "foodfest/" + userindex),
+										update
+									);
+								});
+							document
+								.getElementById("allocate_green")
+								.addEventListener("click", () => {
+									let userindex = data.indexOf(user);
+									let update = data[userindex];
+									update["Selection"] = "Green";
+									update["Timestamp"] =
+										new Date().toLocaleString();
+									set(
+										ref(database, "foodfest/" + userindex),
+										update
+									);
+								});
+						}
+					}
+					if (validits == false) {
+						alert(
+							"Invalid User. Please login with appropriate credentials"
+						);
+						location.replace("https://khardal.net/foodfest.html");
+					}
+				});
+			} else {
+				console.log("NO ITS");
+			}
+		</script>
+	</body>
+</html>
