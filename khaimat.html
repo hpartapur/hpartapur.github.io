@@ -15,12 +15,46 @@
 				box-sizing: border-box;
 			}
 
+			@keyframes glow {
+				0% {
+					text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+				}
+				50% {
+					text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+				}
+				100% {
+					text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+				}
+			}
+
+			@keyframes pulse {
+				0% {
+					transform: scale(1);
+				}
+				50% {
+					transform: scale(1.05);
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+
 			h1 {
 				text-align: center;
 				color: #fff;
 				padding: 20px 0;
 				font-size: 2.5rem;
-				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+				text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+				animation: glow 1.5s ease-in-out infinite;
 			}
 
 			.scoreboard {
@@ -38,8 +72,10 @@
 				border-radius: 10px;
 				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 				width: 18vw;
+				animation: pulse 2s ease-in-out infinite;
 				transition: transform 0.3s ease;
 			}
+
 			.team.red {
 				background: linear-gradient(135deg, #ffcccc 0%, #ff8585 100%);
 				color: #fff;
@@ -62,24 +98,29 @@
 
 			.team:hover {
 				transform: translateY(-5px);
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 			}
 
 			.score {
 				font-size: 8vw;
 				font-weight: bold;
 				margin: 10px 0;
+				opacity: 0;
+				animation: fadeIn 1s forwards;
 			}
 
-			/* Color adjustments for better contrast */
 			.red {
 				color: #e53e3e;
 			}
+
 			.blue {
 				color: #2b6cb0;
 			}
+
 			.yellow {
 				color: #d69e2e;
 			}
+
 			.green {
 				color: #38a169;
 			}
@@ -106,9 +147,11 @@
 			</div>
 		</div>
 		<script>
-			function animateScore(element, finalValue, duration) {
+			function animateScore(element, finalValue, duration, delay) {
 				let start = 0;
 				const startTime = Date.now();
+
+				element.style.animationDelay = `${delay}ms`;
 
 				function update() {
 					const elapsed = Date.now() - startTime;
@@ -129,18 +172,19 @@
 			const yellow = document.getElementById("yellowscore");
 			const green = document.getElementById("greenscore");
 
-			const redscore = 435;
-			const bluescore = 475;
-			const yellowscore = 640;
-			const greenscore = 320;
+			const redscore = 945;
+			const bluescore = 875;
+			const yellowscore = 975;
+			const greenscore = 710;
 
-			var timer = 10000;
+			const timer = 10000;
 
 			document.addEventListener("DOMContentLoaded", () => {
-				animateScore(red, redscore, timer);
-				animateScore(blue, bluescore, timer);
-				animateScore(yellow, yellowscore, timer);
-				animateScore(green, greenscore, timer);
+				const delayStep = 200;
+				animateScore(red, redscore, timer, 0);
+				animateScore(blue, bluescore, timer, delayStep);
+				animateScore(yellow, yellowscore, timer, delayStep * 2);
+				animateScore(green, greenscore, timer, delayStep * 3);
 			});
 		</script>
 	</body>
