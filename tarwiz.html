@@ -30,8 +30,8 @@
 				padding: 1vw 1.5vw;
 				margin: 1vw;
 				border-radius: 0.5vw;
-				border-width: 2vw;
-				font-size: 21vh;
+				border-width: 1vw;
+				font-size: 5vw;
 				cursor: pointer;
 				font-family: "Kanz-al-Marjaan", sans-serif;
 				transition: transform 0.18s ease;
@@ -105,7 +105,7 @@
 		<script type="module">
 			var score = 0;
 			var timer;
-			var timeLeft = 10;
+			var timeLeft = 20;
 			const firebaseConfig = {
 				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
 				authDomain: "khardal.firebaseapp.com",
@@ -148,7 +148,7 @@
 				}
 
 				function startTimer() {
-					timeLeft = 10;
+					timeLeft = 20;
 					document.getElementById("timer").textContent = "Time left: " + timeLeft + "s";
 
 					if (timer) clearInterval(timer);
