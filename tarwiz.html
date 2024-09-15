@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<!-- TODO: Have ONLY ALLOWED 30 QUESTIONS ON LINE 142 SLICE -->
 		<title>Tarwiz Quizzes</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
@@ -58,7 +59,6 @@
 			#timer {
 				color: red;
 				font-size: 2rem;
-				margin-bottom: 20px;
 			}
 		</style>
 	</head>
@@ -92,6 +92,9 @@
 					</ul>
 					<ul class="navbar-nav">
 						<h2 class="nav-link" id="timer">Time left: 30s</h2>
+					</ul>
+					<ul class="navbar-nav">
+						<h2 class="nav-link">Question <span id="currentQuestion"></span>/<span id="qcount"></span></h2>
 					</ul>
 				</div>
 			</div>
@@ -136,7 +139,7 @@
 				let objquestions = snapshot.val().questions;
 				let qarray = Object.values(objquestions);
 				qarray = qarray.sort(() => Math.random() - 0.5);
-				console.log(qarray);
+				qarray = qarray.slice(0, 30);
 				window.questions = qarray;
 				console.log(window.questions);
 				console.log(snapshot.val());
@@ -191,6 +194,7 @@
 
 					if (isCorrect) {
 						currentQuestion++;
+						console.log(currentQuestion);
 						score++;
 						document.getElementById("score").textContent = "Score: " + score;
 						if (currentQuestion < window.questions.length) {
@@ -214,6 +218,9 @@
 					var option2 = document.getElementById("option2");
 					var option3 = document.getElementById("option3");
 					var option4 = document.getElementById("option4");
+
+					document.getElementById("currentQuestion").innerText = currentQuestion;
+					document.getElementById("qcount").innerText = window.questions.length;
 
 					question.textContent = window.questions[currentQuestion]["Question"];
 					let isEnglishFirstChar = /^[A-Za-z]/.test(window.questions[currentQuestion]["Question"]);
