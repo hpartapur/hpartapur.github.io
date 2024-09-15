@@ -3,14 +3,20 @@
 	<head>
 		<!-- TODO: Have ONLY ALLOWED 30 QUESTIONS ON LINE 142 SLICE -->
 		<title>Tarwiz Quizzes</title>
+		<link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
+
 		<style>
 			/* Basic Reset */
 			* {
 				margin: 0;
 				padding: 0;
 				box-sizing: border-box;
+			}
+			@font-face {
+				font-family: KM;
+				src: url(/assets/Kanz-al-Marjaan.ttf);
 			}
 			body {
 				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -24,7 +30,7 @@
 				margin-bottom: 20px;
 				font-size: 4vw;
 				color: #444;
-				font-family: "Kanz-al-Marjaan", sans-serif;
+				font-family: "Kanz-al-Marjaan", KM, sans-serif;
 				background-color: goldenrod;
 			}
 			.buttons {
@@ -34,7 +40,7 @@
 				border-width: 1vw;
 				font-size: 3.5vw;
 				cursor: pointer;
-				font-family: "Kanz-al-Marjaan", sans-serif;
+				font-family: "Kanz-al-Marjaan", KM, sans-serif;
 				transition: transform 0.18s ease;
 			}
 			.buttons:hover {
@@ -119,7 +125,7 @@
 			};
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
 			import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-			import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
 			// Initialize Firebase
 			const app = initializeApp(firebaseConfig);
@@ -133,7 +139,8 @@
 				window.location.href = "index.html";
 			}
 
-			onValue(ref(window.database, "tarwiz/" + code), (snapshot) => {
+			// Use `get` to fetch data once
+			get(ref(window.database, "tarwiz/" + code)).then((snapshot) => {
 				let quizTitle = snapshot.val().quizTitle;
 				document.getElementById("quizname").innerText = quizTitle;
 				let objquestions = snapshot.val().questions;
