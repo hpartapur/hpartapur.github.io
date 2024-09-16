@@ -112,6 +112,8 @@
 		<button id="option3" class="buttons"></button>
 		<button id="option4" class="buttons"></button>
 		<script type="module">
+			let wrongfx = new Audio("/asal_assets/wrong.mp3");
+			let rightfx = new Audio("/asal_assets/points.mp3");
 			var score = 0;
 			var timer;
 			var timeLeft = 20;
@@ -185,6 +187,7 @@
 					setTimeout(function () {
 						document.getElementById("wrongAnswerOverlay").style.display = "none";
 					}, 500);
+					wrongfx.play();
 
 					currentQuestion++;
 					if (currentQuestion < window.questions.length) {
@@ -201,6 +204,7 @@
 
 					if (isCorrect) {
 						currentQuestion++;
+						rightfx.play();
 						console.log(currentQuestion);
 						score++;
 						document.getElementById("score").textContent = "Score: " + score;
