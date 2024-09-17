@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Material Design Buttons</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+		<style>
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				margin: 0;
+				background-color: #f5f5f5;
+			}
+			.container {
+				text-align: center;
+			}
+			.btn {
+				margin: 10px;
+				width: 100%;
+				max-width: 200px;
+			}
+			.btn-container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.btn-positive {
+				background-color: #4caf50; /* Green */
+				color: white;
+			}
+			.btn-negative {
+				background-color: #f44336; /* Red */
+				color: white;
+			}
+			.btn-neutral {
+				background-color: #ff9800; /* Orange */
+				color: white;
+			}
+			.login-form {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.login-form input {
+				margin: 5px;
+			}
+			@media (max-width: 600px) {
+				.btn {
+					font-size: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" id="content">
+			<!-- Content will be injected here based on URL parameters -->
+		</div>
+
+		<script>
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
+			import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
+			function getQueryParams() {
+				const params = new URLSearchParams(window.location.search);
+				return {
+					ITS: params.get("ITS"),
+				};
+			}
+
+			function showLoginForm() {
+				const content = document.getElementById("content");
+				content.innerHTML = `
+                <h1>Login</h1>
+                <div class="login-form">
+                    <input type="text" id="username" placeholder="Username" />
+                    <button class="btn waves-effect waves-light btn-positive" id="loginBtn">Login</button>
+                </div>
+            `;
+
+				document.getElementById("loginBtn").addEventListener("click", () => {
+					const username = document.getElementById("username").value;
+					if (username) {
+						const params = new URLSearchParams(window.location.search);
+						params.set("ITS", username);
+						window.location.search = params.toString(); // Update URL with new query parameter
+					} else {
+						alert("Please enter a username.");
+					}
+				});
+			}
+
+			function showButtons(text) {
+				const content = document.getElementById("content");
+				content.innerHTML = `
+                <h1>${text}</h1>
+                <div class="btn-container">
+                    <button class="btn waves-effect waves-light btn-positive" data-value="+500">+500</button>
+                    <button class="btn waves-effect waves-light btn-positive" data-value="+200">+200</button>
+                    <button class="btn waves-effect waves-light btn-positive" data-value="+100">+100</button>
+                    <button class="btn waves-effect waves-light btn-negative" data-value="-50">-50</button>
+                    <button class="btn waves-effect waves-light btn-negative" data-value="-100">-100</button>
+                    <button class="btn waves-effect waves-light btn-negative" data-value="-150">-150</button>
+                </div>
+            `;
+
+				// Add event listeners to all buttons
+				document.querySelectorAll(".btn-container button").forEach((button) => {
+					button.addEventListener("click", () => {
+						console.log(button.getAttribute("data-value"));
+					});
+				});
+			}
+
+			document.addEventListener("DOMContentLoaded", () => {
+				const params = getQueryParams();
+				const ITS = params.ITS;
+
+				if (ITS === "none") {
+					location.reload(); // Reload the page if ITS is 'none'
+					return;
+				}
+
+				if (ITS) {
+					let title;
+					switch (ITS) {
+						case "20397305":
+							title = "SMH";
+							break;
+						case "40482820":
+							title = "MR";
+							break;
+						case "20372307":
+							title = "HAHA";
+							break;
+						default:
+							location.replace("https://khardal.net/saqafat.html"); // Reload the page if ITS does not match predefined values
+							return;
+					}
+					showButtons(title);
+				} else {
+					showLoginForm();
+				}
+			});
+		</script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	</body>
+</html>
