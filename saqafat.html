@@ -8,7 +8,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
 		<style>
 			body {
-				display: flex;
 				justify-content: center;
 				align-items: center;
 				height: 100vh;
@@ -59,6 +58,7 @@
 		<div class="container" id="content">
 			<!-- Content will be injected here based on URL parameters -->
 		</div>
+		<br /><br />
 		<div id="logs"></div>
 
 		<script type="module">
@@ -71,8 +71,7 @@
 				appId: "1:258618544710:web:2b734571b863de60dc3047",
 			};
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-			import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-			import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
 			// Initialize Firebase
 			const app = initializeApp(firebaseConfig);
@@ -128,13 +127,8 @@
                     </select>
                     <label>Rounds</label>
                 </div>
-                <div class="btn-container">
-                    <button class="btn waves-effect waves-light btn-positive" data-value="+500">+500</button>
-                    <button class="btn waves-effect waves-light btn-positive" data-value="+200">+200</button>
-                    <button class="btn waves-effect waves-light btn-positive" data-value="+100">+100</button>
-                    <button class="btn waves-effect waves-light btn-negative" data-value="-50">-50</button>
-                    <button class="btn waves-effect waves-light btn-negative" data-value="-100">-100</button>
-                    <button class="btn waves-effect waves-light btn-negative" data-value="-150">-150</button>
+                <div id="buttonsContainer" class="btn-container">
+                    <!-- Buttons will be dynamically added here -->
                 </div>
             `;
 
@@ -153,31 +147,64 @@
 					const selectedRound = event.target.value;
 					console.log("Selected round:", selectedRound);
 					window.selectedRound = selectedRound;
-					// Set the round variable or perform actions based on selection
+					// Update buttons based on the selected round
+					updateButtons(selectedRound);
 				});
 
-				// Add event listeners to all buttons
-				document.querySelectorAll(".btn-container button").forEach((button) => {
-					button.addEventListener("click", () => {
-						const pushing = {
-							value: button.getAttribute("data-value"),
-							ITS: window.ITS,
-							round: window.selectedRound,
-							team: window.selectedTeam,
-							timestamp: new Date().toLocaleTimeString(),
-						};
-						console.log(pushing);
-						const db = window.database;
-						const dataRef = ref(db, "saqafat"); // Adjust 'data' to the desired path in your database
-						push(dataRef, pushing)
-							.then(() => {
-								console.log("Data successfully pushed to Firebase");
-							})
-							.catch((error) => {
-								console.error("Error pushing data to Firebase:", error);
-							});
+				// Function to update buttons based on selected round
+				function updateButtons(selectedRound) {
+					const buttonsContainer = document.getElementById("buttonsContainer");
+					buttonsContainer.innerHTML = ""; // Clear existing buttons
+
+					let buttons = [];
+
+					if (selectedRound == "1" || selectedRound == "3") {
+						buttons = [
+							{ value: "+100", class: "btn-positive" },
+							{ value: "-50", class: "btn-negative" },
+						];
+					} else if (selectedRound == "2" || selectedRound == "4") {
+						buttons = [
+							{ value: "+500", class: "btn-positive" },
+							{ value: "+200", class: "btn-positive" },
+							{ value: "+100", class: "btn-positive" },
+							{ value: "-50", class: "btn-negative" },
+							{ value: "-100", class: "btn-negative" },
+							{ value: "-150", class: "btn-negative" },
+						];
+					}
+
+					buttons.forEach((button) => {
+						const btnElement = document.createElement("button");
+						btnElement.className = `btn waves-effect waves-light ${button.class}`;
+						btnElement.setAttribute("data-value", button.value);
+						btnElement.textContent = button.value;
+						buttonsContainer.appendChild(btnElement);
 					});
-				});
+
+					// Add event listeners to all new buttons
+					buttonsContainer.querySelectorAll("button").forEach((button) => {
+						button.addEventListener("click", () => {
+							const pushing = {
+								value: button.getAttribute("data-value"),
+								ITS: window.ITS,
+								round: window.selectedRound,
+								team: window.selectedTeam,
+								timestamp: new Date().toLocaleTimeString(),
+							};
+							console.log(pushing);
+							const db = window.database;
+							const dataRef = ref(db, "saqafat"); // Adjust 'saqafat' to the desired path in your database
+							push(dataRef, pushing)
+								.then(() => {
+									console.log("Data successfully pushed to Firebase");
+								})
+								.catch((error) => {
+									console.error("Error pushing data to Firebase:", error);
+								});
+						});
+					});
+				}
 			}
 
 			document.addEventListener("DOMContentLoaded", () => {
@@ -212,6 +239,20 @@
 							return;
 					}
 					showButtons(title, teams);
+					const dataRef = ref(window.database, "saqafat");
+					onValue(dataRef, (snapshot) => {
+						let data = snapshot.val();
+						console.log(data);
+						let table = `<table class="responsive-table"><tr><th>Round</th><th>Team</th><th>Value</th><th>Time</th></tr>`;
+						for (let d in data) {
+							if (data[d]["ITS"] == window.ITS) {
+								console.log(data[d]);
+								table += `<tr><td>${data[d]["round"]}</td><td>${data[d]["team"]}</td><td>${data[d]["value"]}</td><td>${data[d]["timestamp"]}</td></tr>`;
+							}
+						}
+						table += `</table>`;
+						document.getElementById("logs").innerHTML = table;
+					});
 				} else {
 					showLoginForm();
 				}
