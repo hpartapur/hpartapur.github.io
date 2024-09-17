@@ -6,49 +6,76 @@
 		<title>Page Title</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-	</head>
-	<body></body>
-	<script type="module">
-		const firebaseConfig = {
-			apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
-			authDomain: "khardal.firebaseapp.com",
-			projectId: "khardal",
-			storageBucket: "khardal.appspot.com",
-			messagingSenderId: "258618544710",
-			appId: "1:258618544710:web:2b734571b863de60dc3047",
-		};
-		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-		import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-
-		// Initialize Firebase
-		const app = initializeApp(firebaseConfig);
-		window.database = getDatabase(app);
-		const dataRef = ref(window.database, "saqafat");
-		var teams = ["A", "B", "C", "D", "E", "F"];
-		var rounds = [1, 2, 3, 4];
-		onValue(dataRef, (snapshot) => {
-			let data = snapshot.val();
-			console.log(data);
-			let table = `<table class="table table-success"><tr><th>Round</th><th>${teams[0]}</th><th>${teams[1]}</th><th>${teams[2]}</th><th>${teams[3]}</th><th>${teams[4]}</th><th>${teams[5]}</th></tr>`;
-			for (let round in rounds) {
-				console.log(rounds[round]);
-				table += `<tr><th>${rounds[round]}</th>`;
-				teams.forEach((team) => {
-					table += `<td>`;
-					let score = 0;
-					for (let d in data) {
-						if ((data[d]["team"] == team) & (data[d]["round"] == rounds[round])) {
-							console.log(data[d]);
-							score += parseInt(data[d]["value"]);
-						}
-					}
-					table += score;
-					table += `</td>`;
-				});
-				table += `</tr>`;
+		<style>
+			body {
+				background-image: url(./assets/musabaqatbg.jpg);
+				background-size: cover; /* Adjust this to cover or contain based on your preference */
+				height: 100vh; /* Make sure the body takes up the full viewport height */
+				margin: 0; /* Remove default margin */
+				display: flex; /* Use flexbox for centering */
+				justify-content: center; /* Center horizontally */
+				align-items: center; /* Center vertically */
+				font-family: Kanz-al-Marjaan;
 			}
-			table += `</table>`;
-			document.body.innerHTML = table;
-		});
-	</script>
+			.table-container {
+				width: 90vw; /* Set the width of the table container */
+				text-align: center;
+			}
+			td,
+			th {
+				font-size: 2vw;
+			}
+			table {
+				border-radius: 4vw;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="table-container">
+			<!-- Table will be injected here by JavaScript -->
+		</div>
+		<script type="module">
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
+			const dataRef = ref(window.database, "saqafat");
+			var teams = ["ابيض القلب", "سليم القلب", "دريا دل", "شير دل", "Golden Heart", "Warm Hearted"];
+			var rounds = [1, 2, 3, 4];
+			onValue(dataRef, (snapshot) => {
+				let data = snapshot.val();
+				console.log(data);
+				let table = `<table class="table" style='background-color: #fdf3e6'><tr><th>Round</th><th>${teams[0]}</th><th>${teams[1]}</th><th>${teams[2]}</th><th>${teams[3]}</th><th>${teams[4]}</th><th>${teams[5]}</th></tr>`;
+				for (let round in rounds) {
+					console.log(rounds[round]);
+					table += `<tr><th>${rounds[round]}</th>`;
+					teams.forEach((team) => {
+						table += `<td>`;
+						let score = 0;
+						for (let d in data) {
+							if ((data[d]["team"] == team) & (data[d]["round"] == rounds[round])) {
+								console.log(data[d]);
+								score += parseInt(data[d]["value"]);
+							}
+						}
+						table += score;
+						table += `</td>`;
+					});
+					table += `</tr>`;
+				}
+				table += `</table>`;
+				document.querySelector(".table-container").innerHTML = table;
+			});
+		</script>
+	</body>
 </html>
