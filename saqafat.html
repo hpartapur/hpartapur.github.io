@@ -59,8 +59,9 @@
 		<div class="container" id="content">
 			<!-- Content will be injected here based on URL parameters -->
 		</div>
+		<div id="logs"></div>
 
-		<script>
+		<script type="module">
 			const firebaseConfig = {
 				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
 				authDomain: "khardal.firebaseapp.com",
@@ -76,6 +77,7 @@
 			// Initialize Firebase
 			const app = initializeApp(firebaseConfig);
 			window.database = getDatabase(app);
+
 			function getQueryParams() {
 				const params = new URLSearchParams(window.location.search);
 				return {
@@ -105,10 +107,27 @@
 				});
 			}
 
-			function showButtons(text) {
+			function showButtons(text, teams) {
 				const content = document.getElementById("content");
 				content.innerHTML = `
-                <h1>${text}</h1>
+                <h5>${text}</h5>
+                <div class="input-field col s12">
+                    <select id="teamsDropdown">
+                        <option value="" disabled selected>Choose your team</option>
+                        ${teams.map((team) => `<option value="${team}">${team}</option>`).join("")}
+                    </select>
+                    <label>Teams</label>
+                </div>
+                <div class="input-field col s12">
+                    <select id="roundsDropdown">
+                        <option value="" disabled selected>Choose a round</option>
+                        <option value="1">Round 1</option>
+                        <option value="2">Round 2</option>
+                        <option value="3">Round 3</option>
+                        <option value="4">Round 4</option>
+                    </select>
+                    <label>Rounds</label>
+                </div>
                 <div class="btn-container">
                     <button class="btn waves-effect waves-light btn-positive" data-value="+500">+500</button>
                     <button class="btn waves-effect waves-light btn-positive" data-value="+200">+200</button>
@@ -119,10 +138,44 @@
                 </div>
             `;
 
+				// Initialize Materialize dropdowns
+				M.FormSelect.init(document.querySelectorAll("select"));
+
+				// Add event listeners for dropdown changes
+				document.getElementById("teamsDropdown").addEventListener("change", (event) => {
+					const selectedTeam = event.target.value;
+					console.log("Selected team:", selectedTeam);
+					window.selectedTeam = selectedTeam;
+					// Set the team variable or perform actions based on selection
+				});
+
+				document.getElementById("roundsDropdown").addEventListener("change", (event) => {
+					const selectedRound = event.target.value;
+					console.log("Selected round:", selectedRound);
+					window.selectedRound = selectedRound;
+					// Set the round variable or perform actions based on selection
+				});
+
 				// Add event listeners to all buttons
 				document.querySelectorAll(".btn-container button").forEach((button) => {
 					button.addEventListener("click", () => {
-						console.log(button.getAttribute("data-value"));
+						const pushing = {
+							value: button.getAttribute("data-value"),
+							ITS: window.ITS,
+							round: window.selectedRound,
+							team: window.selectedTeam,
+							timestamp: new Date().toLocaleTimeString(),
+						};
+						console.log(pushing);
+						const db = window.database;
+						const dataRef = ref(db, "saqafat"); // Adjust 'data' to the desired path in your database
+						push(dataRef, pushing)
+							.then(() => {
+								console.log("Data successfully pushed to Firebase");
+							})
+							.catch((error) => {
+								console.error("Error pushing data to Firebase:", error);
+							});
 					});
 				});
 			}
@@ -130,6 +183,7 @@
 			document.addEventListener("DOMContentLoaded", () => {
 				const params = getQueryParams();
 				const ITS = params.ITS;
+				window.ITS = ITS;
 
 				if (ITS === "none") {
 					location.reload(); // Reload the page if ITS is 'none'
@@ -138,21 +192,26 @@
 
 				if (ITS) {
 					let title;
+					let teams;
 					switch (ITS) {
 						case "20397305":
-							title = "SMH";
+							title = "J Sk Mohammad bh Hamid";
+							teams = ["A", "B"];
 							break;
 						case "40482820":
-							title = "MR";
+							title = "J M Mustafa bh Roker";
+							teams = ["C", "D"];
 							break;
 						case "20372307":
-							title = "HAHA";
+							title = "J Sk Huzaifa bh Haidermota";
+							teams = ["E", "F"];
 							break;
 						default:
+							alert("Invalid User");
 							location.replace("https://khardal.net/saqafat.html"); // Reload the page if ITS does not match predefined values
 							return;
 					}
-					showButtons(title);
+					showButtons(title, teams);
 				} else {
 					showLoginForm();
 				}
