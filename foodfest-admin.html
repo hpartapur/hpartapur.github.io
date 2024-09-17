@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>FoodFest 1446H</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		/>
+		<!-- add gradients to each team color bg, and fonts make more exciting, and amke score bigger -->
+	</head>
+	<body>
+		<input type="text" id="its" />
+		<button
+			id="itssubmit"
+			onclick="var its=document.getElementById('its').value; var link = './foodfest.html?login='+its; location.replace(link)"
+		>
+			Login
+		</button>
+		<div id="profile"></div>
+		<script type="module">
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import {
+				getDatabase,
+				ref,
+				push,
+				onValue,
+				set,
+				get,
+				update,
+			} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
+			const dbRef = ref(database);
+			onValue(dbRef, (snapshot) => {
+				const data = snapshot.val()["foodfest"];
+				console.log(data);
+				for (let d in data) {
+					console.log(data[d]);
+				}
+			});
+		</script>
+	</body>
+</html>
