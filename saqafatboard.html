@@ -73,6 +73,18 @@
 					});
 					table += `</tr>`;
 				}
+				table += `<tr style="color:green; font-weight:800;"><th>Total</th>`;
+				for (let team in teams) {
+					table += `<td>`;
+					let totalscore = 0;
+					for (let d in data) {
+						if (data[d]["team"] == teams[team]) {
+							totalscore += parseInt(data[d]["value"]);
+						}
+					}
+					table += `${totalscore}</td>`;
+				}
+				table += `</tr>`;
 				table += `</table>`;
 				document.querySelector(".table-container").innerHTML = table;
 			});
