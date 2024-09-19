@@ -74,15 +74,36 @@
 					table += `</tr>`;
 				}
 				table += `<tr style="color:green; font-weight:800;"><th>Total</th>`;
+				let scorelist = [];
+				let highscore = 0;
 				for (let team in teams) {
-					table += `<td>`;
 					let totalscore = 0;
 					for (let d in data) {
 						if (data[d]["team"] == teams[team]) {
 							totalscore += parseInt(data[d]["value"]);
 						}
 					}
-					table += `${totalscore}</td>`;
+					scorelist.push(totalscore);
+					if (totalscore > highscore) {
+						highscore = totalscore;
+					}
+				}
+				// for (let team in teams) {
+				// 	table += `<td>`;
+				// 	let totalscore = 0;
+				// 	for (let d in data) {
+				// 		if (data[d]["team"] == teams[team]) {
+				// 			totalscore += parseInt(data[d]["value"]);
+				// 		}
+				// 	}
+				// 	table += `${totalscore}</td>`;
+				// }
+				for (let score in scorelist) {
+					table += `<td>`;
+					if (scorelist[score] == highscore) {
+						table += "🎖️";
+					}
+					table += `${scorelist[score]}</td>`;
 				}
 				table += `</tr>`;
 				table += `</table>`;
