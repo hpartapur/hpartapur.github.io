@@ -163,7 +163,7 @@
 							{ value: "+100", class: "btn-positive" },
 							{ value: "-50", class: "btn-negative" },
 						];
-					} else if (selectedRound == "2" || selectedRound == "4") {
+					} else if (selectedRound == "2") {
 						buttons = [
 							{ value: "+500", class: "btn-positive" },
 							{ value: "+200", class: "btn-positive" },
@@ -172,6 +172,66 @@
 							{ value: "-100", class: "btn-negative" },
 							{ value: "-150", class: "btn-negative" },
 						];
+					} else if (selectedRound == "4") {
+						const elements = document.getElementsByClassName("select-dropdown dropdown-trigger");
+						for (let i = 0; i < elements.length; i++) {
+							elements[i].style.display = "none"; // Hides the element
+						}
+						// Add input field and submit button
+						const inputField = document.createElement("input");
+						inputField.setAttribute("type", "number");
+						inputField.setAttribute("placeholder", "Enter the team's total score for Round 4");
+						inputField.className = "input-field col s12";
+
+						const submitButton = document.createElement("button");
+						submitButton.className = "btn waves-effect waves-light btn-positive";
+						submitButton.textContent = "Submit";
+
+						const allteams = ["ابيض القلب", "سليم القلب", "دريا دل", "شير دل", "Golden Heart", "Warm Hearted"];
+						const teamdropdown = document.createElement("select");
+						teamdropdown.id = "allTeamDropdown";
+						teamdropdown.className;
+						teamdropdown.style.display = "block";
+						allteams.forEach((team) => {
+							const option = document.createElement("option");
+							option.value = team;
+							option.text = team;
+							teamdropdown.appendChild(option);
+						});
+
+						// Append input field and button to the buttons container
+						buttonsContainer.appendChild(teamdropdown);
+						buttonsContainer.appendChild(inputField);
+						buttonsContainer.appendChild(submitButton);
+
+						// Add event listener for submit button
+						submitButton.addEventListener("click", () => {
+							const inputValue = inputField.value;
+							window.selectedTeam = teamdropdown.value;
+							if (inputValue) {
+								const pushing = {
+									value: inputValue,
+									ITS: window.ITS,
+									round: selectedRound,
+									team: window.selectedTeam,
+									timestamp: new Date().toLocaleTimeString(),
+								};
+								console.log(pushing);
+								const db = window.database;
+								const dataRef = ref(db, "saqafat");
+								push(dataRef, pushing)
+									.then(() => {
+										console.log("Data successfully pushed to Firebase");
+									})
+									.catch((error) => {
+										console.error("Error pushing data to Firebase:", error);
+									});
+								inputField.value = ""; // Clear input field after submission
+							} else {
+								alert("Please enter a value.");
+							}
+						});
+						return; // Exit the function after handling round 4
 					}
 
 					buttons.forEach((button) => {
@@ -223,27 +283,27 @@
 					switch (ITS) {
 						case "20397305":
 							title = "J Sk Mohammad bh Hamid";
-							teams = ["Abyad ul Qalb", "Darya Dil"];
+							teams = ["ابيض القلب", "دريا دل"];
 							break;
 						case "30461192":
 							title = "J M Taha bh Poonawala";
-							teams = ["Golden Heart", "Saleem ul Qalb"];
+							teams = ["Golden Heart", "سليم القلب"];
 							break;
 						case "20372307":
 							title = "J Sk Huzaifa bh Haidermota";
-							teams = ["Sher Dil", "Warm Hearted"];
+							teams = ["شير دل", "Warm Hearted"];
 							break;
 						case "40416784":
 							title = "M Nafisa bn Shakir";
-							teams = ["Abyad ul Qalb", "Sher Dil"];
+							teams = ["ابيض القلب", "شير دل"];
 							break;
 						case "50457046":
 							title = "Ummehani bn Hamid";
-							teams = ["Golden Heart", "Saleem ul Qalb"];
+							teams = ["Golden Heart", "سليم القلب"];
 							break;
 						case "50456739":
 							title = "Maryam bn Jeserwala";
-							teams = ["Darya Dil", "Warm Hearted"];
+							teams = ["دريا دل", "Warm Hearted"];
 							break;
 						default:
 							alert("Invalid User");
