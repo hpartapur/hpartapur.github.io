@@ -11,7 +11,7 @@
 		<style>
 			body {
 				font-family: "Roboto", sans-serif;
-				background: linear-gradient(135deg, #00c6ff, #0072ff); /* Modern gradient background */
+				/* background: linear-gradient(135deg, #00c6ff, #0072ff); Modern gradient background */
 				color: #333;
 				margin: 0;
 				display: flex;
@@ -170,6 +170,8 @@
 					}
 
 					if (user) {
+						document.body.style.backgroundColor = user.Selection;
+						console.log(user.Selection);
 						let profileHtml = `
 							<div class="card" style='overflow:scroll'>
 								<div class="card-content">
@@ -214,7 +216,7 @@
 
 						let cap = Math.floor(total / 4);
 						let tableHtml = `
-							<div class="card" style='overflow:scroll'>
+							<div hidden class="card" style='overflow:scroll'>
 								<div class="card-content">
 									<table>
 										<thead>
