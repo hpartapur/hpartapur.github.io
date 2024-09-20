@@ -2,31 +2,88 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Excel to Firebase</title>
+		<title>Tarwiz Admin</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-		<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
 		<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-		<!-- Add Firebase products that you want to use -->
 		<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 	</head>
 	<body>
-		<input type="file" id="upload" accept=".xlsx, .xls" />
-		<button id="convert">Upload and Convert</button>
-		<div id="result"></div>
-		<button id="copyLink" style="display: none">Copy Link</button>
+		<div class="container mt-4">
+			<h1>Tarwiz Admin</h1>
+			<button id="downloadTemplate" class="btn btn-primary mb-3">Download Quiz Template</button>
+			<input type="file" id="upload" accept=".xlsx, .xls" class="mb-2" />
+			<button id="convert" class="btn btn-success mb-3">Upload and Convert</button>
+			<button id="export" class="btn btn-warning mb-3" style="display: none">Export to Excel</button>
+
+			<button id="previewQuestions" class="btn btn-info mb-3" style="display: none" data-toggle="modal" data-target="#questionsModal">
+				Preview Questions
+			</button>
+			<button id="copyLink" class="btn btn-info" style="display: none">Copy Link</button>
+			<button class="btn btn-secondary mb-3" data-toggle="modal" data-target="#tutorialModal">Help</button>
+			<div id="result"></div>
+
+			<!-- Spinner -->
+			<div id="spinnerContainer" class="d-none text-center mb-3">
+				<div class="spinner-border" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<p>Loading...</p>
+			</div>
+		</div>
+
+		<!-- Tutorial Modal -->
+		<div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="tutorialModalLabel">Tarwiz Admin Tutorial</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<h6>Step 1: Download the Quiz Template</h6>
+						<p>Click the "Download Quiz Template" button to get the Excel file for quiz preparation.</p>
+						<h6>Step 2: Prepare Your Quiz Data</h6>
+						<p>Open the downloaded template, fill in your quiz questions, and save it in .xlsx or .xls format.</p>
+						<h6>Step 3: Upload Your Quiz</h6>
+						<p>Click "Choose File" to upload your prepared Excel file and then click "Upload and Convert".</p>
+						<h6>Step 4: Enter Quiz Title</h6>
+						<p>When prompted, enter a title for your quiz.</p>
+						<h6>Step 5: Copy the Link</h6>
+						<p>Once the upload is successful, click "Copy Link" to save the link for accessing your quiz.</p>
+						<h6>Step 6: Access an Existing Quiz</h6>
+						<p>To view an existing quiz, append the quiz code to the URL: <code>khardal.net/tarwiz.html?code=YOUR_CODE</code>.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Questions Modal -->
+		<div class="modal fade" id="questionsModal" tabindex="-1" role="dialog" aria-labelledby="questionsModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="questionsModalLabel">Questions</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="questionsTableContainer"></div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<script type="module">
-			// display the questions
-			// display players
-			// get url params
-			// add button for copying admin link
-
-			// Get URL parameters
-
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-			import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-			import { getDatabase, ref, push, onValue, set, get, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
 			// Your web app's Firebase configuration
 			const firebaseConfig = {
 				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
@@ -40,29 +97,89 @@
 			// Initialize Firebase
 			firebase.initializeApp(firebaseConfig);
 
+			// Download template functionality
+			document.getElementById("downloadTemplate").addEventListener("click", function () {
+				const link = document.createElement("a");
+				link.href = "assets/tarwiz-template.xlsx"; // Replace with the actual path to your template file
+				link.download = "tarwiz-template.xlsx"; // Set the filename
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+			});
+
 			const urlParams = new URLSearchParams(window.location.search);
 			const code = urlParams.get("code");
+
 			if (code) {
 				document.getElementById("convert").style.display = "none";
 				document.getElementById("upload").style.display = "none";
 				document.getElementById("result").innerText = "Code: " + code;
+
+				// Show spinner
+				document.getElementById("spinnerContainer").classList.remove("d-none");
+
 				// Pull data from Firebase
 				firebase
 					.database()
 					.ref("tarwiz")
 					.on("value", function (snapshot) {
+						// Hide spinner
+						document.getElementById("spinnerContainer").classList.add("d-none");
+
 						var data = snapshot.val()[code];
 						var sessions = Object.values(data.sessions);
+						var questions = data.questions || [];
 
-						var tabler = `<table class="table-success table-responsive"><tr><th>ID</th><th>Score</th><th>Timestamp</th></tr>`;
-						// Iterate over sessions data
+						// Scores Table
+						var scoreTable = `<h2>Scores</h2><table style='width:40vw;' class="table table-info table-responsive"><tr><th>ID</th><th>Score</th><th>Timestamp</th></tr>`;
 						sessions.forEach((session) => {
-							tabler += `<tr><td>${session.id}</td><td>${session.score}</td><td>${session.timestamp}</td></tr>`;
-							console.log(session.id);
+							scoreTable += `<tr><td>${session.id}</td><td>${session.score}</td><td>${session.timestamp}</td></tr>`;
 						});
-						tabler += `</table`;
-						document.write(tabler);
+						scoreTable += `</table>`;
+
+						document.getElementById("result").innerHTML += scoreTable;
+
+						// Prepare questions table for modal
+						var questionTable = `<table style='width:100%;' class="table table-secondary"><tr><th>Question</th><th>Answer</th><th>Wrong Answers</th></tr>`;
+						questions.forEach((question) => {
+							var wrongAnswers = [];
+							for (let i = 1; i <= 3; i++) {
+								if (question[`Wrong Answer ${i}`]) {
+									wrongAnswers.push(question[`Wrong Answer ${i}`]);
+								}
+							}
+							questionTable += `<tr>
+                                        <td>${question.Question}</td>
+                                        <td class='table-success'>${question["Correct Answer"]}</td>
+                                        <td class='table-danger'>${wrongAnswers.join("<br>") || "None"}</td>
+                                      </tr>`;
+						});
+						questionTable += `</table>`;
+
+						// Show the "Preview Questions" button
+						document.getElementById("previewQuestions").style.display = "inline";
+						document.getElementById("questionsTableContainer").innerHTML = questionTable;
+
+						// Show export button
+						document.getElementById("export").style.display = "inline";
 					});
+
+				document.getElementById("export").addEventListener("click", function () {
+					var tableData = [];
+					var rows = document.querySelectorAll("#result table tr");
+					rows.forEach((row) => {
+						var rowData = [];
+						row.querySelectorAll("td, th").forEach((cell) => {
+							rowData.push(cell.innerText);
+						});
+						tableData.push(rowData);
+					});
+
+					const worksheet = XLSX.utils.aoa_to_sheet(tableData);
+					const workbook = XLSX.utils.book_new();
+					XLSX.utils.book_append_sheet(workbook, worksheet, "Scores & Questions");
+					XLSX.writeFile(workbook, "quiz_data.xlsx");
+				});
 			} else {
 				document.getElementById("convert").addEventListener("click", function () {
 					var file = document.getElementById("upload").files[0];
@@ -89,11 +206,17 @@
 							quizTitle: quizTitle,
 						};
 
+						// Show spinner before uploading
+						document.getElementById("spinnerContainer").classList.remove("d-none");
+
 						// Push to Firebase
 						var ref = firebase
 							.database()
 							.ref("tarwiz")
 							.push(uploadData, function (error) {
+								// Hide spinner after upload
+								document.getElementById("spinnerContainer").classList.add("d-none");
+
 								if (error) {
 									alert("Data could not be saved." + error);
 								} else {
@@ -120,5 +243,10 @@
 				});
 			}
 		</script>
+
+		<!-- Include Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	</body>
 </html>
