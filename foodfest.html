@@ -170,7 +170,8 @@
 					}
 
 					if (user) {
-						document.body.style.backgroundColor = user.Selection;
+						document.body.style.backgroundImage = `url(${user.Selection}.png)`;
+						console.log(`${user.Selection}.png`);
 						console.log(user.Selection);
 						let profileHtml = `
 							<div class="card" style='overflow:scroll'>
