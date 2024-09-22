@@ -28,6 +28,9 @@
 			table {
 				border-radius: 4vw;
 			}
+			.icon {
+				width: 10vw;
+			}
 		</style>
 	</head>
 	<body>
@@ -55,7 +58,15 @@
 			onValue(dataRef, (snapshot) => {
 				let data = snapshot.val();
 				console.log(data);
-				let table = `<table class="table" style='background-color: #fdf3e6'><tr><th>Round</th><th>${teams[0]}</th><th>${teams[1]}</th><th>${teams[2]}</th><th>${teams[3]}</th><th>${teams[4]}</th><th>${teams[5]}</th></tr>`;
+				// let table = `<table class="table" style='background-color: #fdf3e6'><tr><th>Round</th><th>${teams[0]}</th><th>${teams[1]}</th><th>${teams[2]}</th><th>${teams[3]}</th><th>${teams[4]}</th><th>${teams[5]}</th></tr>`;
+				let table = `<table class="table" style='background-color: #fdf3e6'><tr><th>Round</th>
+					<th><img class='icon' src='${teams[0]}.png'></th>
+					<th><img class='icon' src='${teams[1]}.png'></th>
+					<th><img class='icon' src='${teams[2]}.png'></th>
+					<th><img class='icon' src='${teams[3]}.png'></th>
+					<th><img class='icon' src='${teams[4]}.png'></th>
+					<th><img class='icon' src='${teams[5]}.png'></th>
+					</tr>`;
 				for (let round in rounds) {
 					console.log(rounds[round]);
 					table += `<tr><th>${rounds[round]}</th>`;
