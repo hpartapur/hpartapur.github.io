@@ -71,7 +71,7 @@
 				appId: "1:258618544710:web:2b734571b863de60dc3047",
 			};
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-			import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
 			// Initialize Firebase
 			const app = initializeApp(firebaseConfig);
@@ -140,14 +140,12 @@
 					const selectedTeam = event.target.value;
 					console.log("Selected team:", selectedTeam);
 					window.selectedTeam = selectedTeam;
-					// Set the team variable or perform actions based on selection
 				});
 
 				document.getElementById("roundsDropdown").addEventListener("change", (event) => {
 					const selectedRound = event.target.value;
 					console.log("Selected round:", selectedRound);
 					window.selectedRound = selectedRound;
-					// Update buttons based on the selected round
 					updateButtons(selectedRound);
 				});
 
@@ -190,7 +188,6 @@
 						const allteams = ["ابيض القلب", "سليم القلب", "دريا دل", "شير دل", "Golden Heart", "Warm Hearted"];
 						const teamdropdown = document.createElement("select");
 						teamdropdown.id = "allTeamDropdown";
-						teamdropdown.className;
 						teamdropdown.style.display = "block";
 						allteams.forEach((team) => {
 							const option = document.createElement("option");
@@ -254,7 +251,7 @@
 							};
 							console.log(pushing);
 							const db = window.database;
-							const dataRef = ref(db, "saqafat"); // Adjust 'saqafat' to the desired path in your database
+							const dataRef = ref(db, "saqafat");
 							push(dataRef, pushing)
 								.then(() => {
 									console.log("Data successfully pushed to Firebase");
@@ -293,17 +290,21 @@
 							title = "J Sk Huzaifa bh Haidermota";
 							teams = ["شير دل", "Warm Hearted"];
 							break;
-						case "40416784":
-							title = "M Nafisa bn Shakir";
+						case "30440567":
+							title = "Nafisa bai Mulla Taher bhai Arushawala";
 							teams = ["ابيض القلب", "شير دل"];
 							break;
-						case "50457046":
-							title = "Ummehani bn Hamid";
-							teams = ["Golden Heart", "سليم القلب"];
+						case "20372387":
+							title = "Sarrah bai Shaikh Murtaza bhai Qasimji";
+							teams = ["Golden Heart", "Warm Hearted"];
 							break;
-						case "50456739":
-							title = "Maryam bn Jeserwala";
+						case "40431149":
+							title = "Zahra bai Shaikh Shabbir bhai Jabalpurwala";
 							teams = ["دريا دل", "Warm Hearted"];
+							break;
+						case "admin":
+							title = "Admin User";
+							teams = ["ابيض القلب", "سليم القلب", "دريا دل", "شير دل", "Golden Heart", "Warm Hearted"];
 							break;
 						default:
 							alert("Invalid User");
@@ -315,11 +316,18 @@
 					onValue(dataRef, (snapshot) => {
 						let data = snapshot.val();
 						console.log(data);
-						let table = `<table class="responsive-table"><tr><th>Round</th><th>Team</th><th>Value</th><th>Time</th></tr>`;
-						for (let d in data) {
-							if (data[d]["ITS"] == window.ITS) {
-								console.log(data[d]);
-								table += `<tr><td>${data[d]["round"]}</td><td>${data[d]["team"]}</td><td>${data[d]["value"]}</td><td>${data[d]["timestamp"]}</td></tr>`;
+						let table = `<table class="responsive-table"><tr><th>Round</th><th>Team</th><th>Value</th><th>Time</th><th>Action</th></tr>`;
+						for (let key in data) {
+							if (data[key]["ITS"] == window.ITS) {
+								console.log(data[key]);
+								table += `
+                                <tr>
+                                    <td>${data[key]["round"]}</td>
+                                    <td>${data[key]["team"]}</td>
+                                    <td>${data[key]["value"]}</td>
+                                    <td>${data[key]["timestamp"]}</td>
+                                    <td><button class="btn waves-effect waves-light btn-negative" onclick="deleteEntry('${key}')">Delete</button></td>
+                                </tr>`;
 							}
 						}
 						table += `</table>`;
@@ -329,6 +337,42 @@
 					showLoginForm();
 				}
 			});
+
+			// Function to delete an entry
+			function deleteEntry(key) {
+				let confirmed = confirm("Are you sure you want to delete this entry?");
+				if (confirmed) {
+					const dataRef = ref(window.database, "saqafat/" + key);
+					remove(dataRef)
+						.then(() => {
+							console.log("Data successfully deleted from Firebase");
+							// Refresh the logs after deletion
+							const dataRef = ref(window.database, "saqafat");
+							onValue(dataRef, (snapshot) => {
+								let data = snapshot.val();
+								let table = `<table class="responsive-table"><tr><th>Round</th><th>Team</th><th>Value</th><th>Time</th><th>Action</th></tr>`;
+								for (let key in data) {
+									if (data[key]["ITS"] == window.ITS) {
+										table += `
+                                    <tr>
+                                        <td>${data[key]["round"]}</td>
+                                        <td>${data[key]["team"]}</td>
+                                        <td>${data[key]["value"]}</td>
+                                        <td>${data[key]["timestamp"]}</td>
+                                        <td><button class="btn waves-effect waves-light btn-negative" onclick="deleteEntry('${key}')">Delete</button></td>
+                                    </tr>`;
+									}
+								}
+								table += `</table>`;
+								document.getElementById("logs").innerHTML = table;
+							});
+						})
+						.catch((error) => {
+							console.error("Error deleting data from Firebase:", error);
+						});
+				}
+			}
+			window.deleteEntry = deleteEntry;
 		</script>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
