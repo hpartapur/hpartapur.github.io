@@ -11,9 +11,36 @@
 	<body>
 		<div class="container mt-4">
 			<h1>Tarwiz Admin</h1>
+
 			<button id="downloadTemplate" class="btn btn-primary mb-3">Download Quiz Template</button>
 			<input type="file" id="upload" accept=".xlsx, .xls" class="mb-2" />
 			<button id="convert" class="btn btn-success mb-3">Upload and Convert</button>
+			<!-- Quiz Options Form -->
+			<div class="mt-4" hidden>
+				<h2>Quiz Options</h2>
+				<form id="quizOptionsForm">
+					<div class="form-group">
+						<label for="shuffle">Shuffle Questions</label>
+						<input type="checkbox" id="shuffle" checked />
+					</div>
+					<div class="form-group">
+						<label for="questionlimited">Limit Questions</label>
+						<input type="checkbox" id="questionlimited" checked />
+					</div>
+					<div class="form-group" id="questionLimitGroup">
+						<label for="questionlimit">Question Limit</label>
+						<input type="number" id="questionlimit" value="30" min="1" />
+					</div>
+					<div class="form-group">
+						<label for="timelimited">Time Limited</label>
+						<input type="checkbox" id="timelimited" checked />
+					</div>
+					<div class="form-group" id="timeLimitGroup">
+						<label for="timelimit">Time Limit (in minutes)</label>
+						<input type="number" id="timelimit" value="20" min="1" />
+					</div>
+				</form>
+			</div>
 			<button id="export" class="btn btn-warning mb-3" style="display: none">Export to Excel</button>
 
 			<button id="previewQuestions" class="btn btn-info mb-3" style="display: none" data-toggle="modal" data-target="#questionsModal">
@@ -151,97 +178,82 @@
 							questionTable += `<tr>
                                         <td>${question.Question}</td>
                                         <td class='table-success'>${question["Correct Answer"]}</td>
-                                        <td class='table-danger'>${wrongAnswers.join("<br>") || "None"}</td>
-                                      </tr>`;
+                                        <td>${wrongAnswers.join(", ")}</td>
+                                    </tr>`;
 						});
 						questionTable += `</table>`;
 
-						// Show the "Preview Questions" button
-						document.getElementById("previewQuestions").style.display = "inline";
 						document.getElementById("questionsTableContainer").innerHTML = questionTable;
-
-						// Show export button
-						document.getElementById("export").style.display = "inline";
+						document.getElementById("previewQuestions").style.display = "block";
+						document.getElementById("copyLink").style.display = "block";
 					});
 
-				document.getElementById("export").addEventListener("click", function () {
-					var tableData = [];
-					var rows = document.querySelectorAll("#result table tr");
-					rows.forEach((row) => {
-						var rowData = [];
-						row.querySelectorAll("td, th").forEach((cell) => {
-							rowData.push(cell.innerText);
-						});
-						tableData.push(rowData);
+				document.getElementById("copyLink").addEventListener("click", function () {
+					navigator.clipboard.writeText(window.location.href).then(() => {
+						alert("Link copied to clipboard!");
 					});
-
-					const worksheet = XLSX.utils.aoa_to_sheet(tableData);
-					const workbook = XLSX.utils.book_new();
-					XLSX.utils.book_append_sheet(workbook, worksheet, "Scores & Questions");
-					XLSX.writeFile(workbook, "quiz_data.xlsx");
-				});
-			} else {
-				document.getElementById("convert").addEventListener("click", function () {
-					var file = document.getElementById("upload").files[0];
-					var reader = new FileReader();
-					reader.onload = function (e) {
-						var data = new Uint8Array(e.target.result);
-						var workbook = XLSX.read(data, { type: "array" });
-						var firstSheetName = workbook.SheetNames[0];
-						var worksheet = workbook.Sheets[firstSheetName];
-						var json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-						var keys = json.shift();
-						var jsonData = json.map((row) => {
-							return keys.reduce((obj, key, index) => {
-								if (row[index] !== undefined) {
-									obj[key] = row[index];
-								}
-								return obj;
-							}, {});
-						});
-						var quizTitle = prompt("Enter Quiz Title");
-						var uploadData = {
-							questions: jsonData,
-							timestamp: new Date().toISOString(),
-							quizTitle: quizTitle,
-						};
-
-						// Show spinner before uploading
-						document.getElementById("spinnerContainer").classList.remove("d-none");
-
-						// Push to Firebase
-						var ref = firebase
-							.database()
-							.ref("tarwiz")
-							.push(uploadData, function (error) {
-								// Hide spinner after upload
-								document.getElementById("spinnerContainer").classList.add("d-none");
-
-								if (error) {
-									alert("Data could not be saved." + error);
-								} else {
-									var pushCode = ref.key;
-									document.getElementById("result").innerText = "Push Code: " + pushCode;
-									var copyButton = document.getElementById("copyLink");
-									copyButton.style.display = "inline";
-									copyButton.onclick = function () {
-										navigator.clipboard.writeText(`khardal.net/tarwiz.html?code=${pushCode}`).then(
-											function () {
-												alert(
-													'Link copied to clipboard. You can use the same link to access the quiz as an admin by changing "tarwiz" to "tarwiz-admin".'
-												);
-											},
-											function () {
-												alert("Failed to copy link");
-											}
-										);
-									};
-								}
-							});
-					};
-					reader.readAsArrayBuffer(file);
 				});
 			}
+
+			document.getElementById("convert").addEventListener("click", function () {
+				const fileInput = document.getElementById("upload");
+				const file = fileInput.files[0];
+
+				if (!file) {
+					alert("Please upload a file.");
+					return;
+				}
+
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					const data = new Uint8Array(e.target.result);
+					const workbook = XLSX.read(data, { type: "array" });
+					const firstSheetName = workbook.SheetNames[0];
+					const worksheet = workbook.Sheets[firstSheetName];
+					const json = XLSX.utils.sheet_to_json(worksheet);
+
+					const questions = json.map((row) => ({
+						Question: row["Question"],
+						"Correct Answer": row["Correct Answer"],
+						"Wrong Answer 1": row["Wrong Answer 1"],
+						"Wrong Answer 2": row["Wrong Answer 2"],
+						"Wrong Answer 3": row["Wrong Answer 3"],
+					}));
+
+					const quizData = {
+						title: prompt("Enter quiz title:"),
+						questions: questions,
+						sessions: {},
+					};
+
+					// Show spinner
+					document.getElementById("spinnerContainer").classList.remove("d-none");
+
+					const newQuizRef = push(ref(getDatabase(), "tarwiz"));
+					newQuizRef.set(quizData).then(() => {
+						// Hide spinner
+						document.getElementById("spinnerContainer").classList.add("d-none");
+						alert("Quiz uploaded successfully!");
+						location.href = `?code=${newQuizRef.key}`;
+					});
+				};
+				reader.readAsArrayBuffer(file);
+			});
+
+			// Quiz options visibility
+			document.getElementById("questionlimited").addEventListener("change", function () {
+				const questionLimitGroup = document.getElementById("questionLimitGroup");
+				questionLimitGroup.style.display = this.checked ? "block" : "none";
+			});
+
+			document.getElementById("timelimited").addEventListener("change", function () {
+				const timeLimitGroup = document.getElementById("timeLimitGroup");
+				timeLimitGroup.style.display = this.checked ? "block" : "none";
+			});
+
+			// Initialize visibility based on the initial state of the checkboxes
+			document.getElementById("questionLimitGroup").style.display = document.getElementById("questionlimited").checked ? "block" : "none";
+			document.getElementById("timeLimitGroup").style.display = document.getElementById("timelimited").checked ? "block" : "none";
 		</script>
 
 		<!-- Include Bootstrap JS -->
