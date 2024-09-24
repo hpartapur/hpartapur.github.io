@@ -1,76 +1,291 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Scoreboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- add gradients to each team color bg, and fonts make more exciting, and amke score bigger -->
-    </head>
-    <body>
-        <input type="text" id="its">
-        <button id="itssubmit" onclick="var its=document.getElementById('its').value; var link = './foodfest.html?login='+its; location.replace(link)">Login</button>
-        <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-import {
-	getDatabase,
-	ref,
-	push,
-	onValue,
-	set,
-	get,
-	update,
-} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-const firebaseConfig = {
-	apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
-	authDomain: "khardal.firebaseapp.com",
-	projectId: "khardal",
-	storageBucket: "khardal.appspot.com",
-	messagingSenderId: "258618544710",
-	appId: "1:258618544710:web:2b734571b863de60dc3047",
-};
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      window.database = getDatabase(app);
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>FoodFest 1446H</title>
+		<!-- Material Design and Google Fonts -->
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" />
+		<style>
+			body {
+				font-family: "Roboto", sans-serif;
+				/* background: linear-gradient(135deg, #00c6ff, #0072ff); Modern gradient background */
+				color: #333;
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+			}
+			.container {
+				width: 100%;
+				max-width: 1200px;
+				padding: 20px;
+			}
+			.card {
+				border-radius: 8px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				overflow: hidden;
+				background: #fff;
+			}
+			.card-header {
+				background-color: #0072ff;
+				color: #fff;
+				padding: 20px;
+				text-align: center;
+				font-size: 1.5rem;
+				font-weight: 500;
+			}
+			.card-content {
+				padding: 20px;
+			}
+			.input-field input {
+				color: #333;
+			}
+			.input-field label {
+				color: #555;
+			}
+			.btn {
+				border-radius: 24px;
+				padding: 10px 20px;
+				font-size: 1rem;
+				font-weight: 500;
+				text-transform: uppercase;
+			}
+			.btn:hover {
+				filter: brightness(0.9);
+			}
+			.btn-red {
+				background-color: #f44336;
+				color: #fff;
+			}
+			.btn-blue {
+				background-color: #2196f3;
+				color: #fff;
+			}
+			.btn-yellow {
+				background-color: #ffeb3b;
+				color: #333;
+			}
+			.btn-green {
+				background-color: #4caf50;
+				color: #fff;
+			}
+			.profile-image {
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				object-fit: cover;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+			}
+			table {
+				width: 100%;
+				margin: 20px 0;
+				border-collapse: collapse;
+			}
+			th,
+			td {
+				padding: 15px;
+				text-align: left;
+				border-bottom: 1px solid #ddd;
+			}
+			th {
+				background-color: #f4f4f4;
+			}
+			.highlight {
+				background-color: #f9f9f9;
+			}
+			@media (max-width: 600px) {
+				.card-header {
+					font-size: 1.25rem;
+				}
+				.btn {
+					font-size: 0.9rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="card" id="itscard">
+				<div class="card-header">FoodFest 1446H</div>
+				<div class="card-content">
+					<div class="input-field">
+						<input type="text" id="its" class="mdc-text-field__input" />
+						<label for="its">Enter ITS ID</label>
+					</div>
+					<button id="itssubmit" class="btn btn-blue" onclick="handleLogin()">
+						Login
+						<i class="material-icons right">send</i>
+					</button>
+				</div>
+			</div>
+			<div id="profile"></div>
+		</div>
 
-      
-const url = window.location.href;
+		<!-- Material Design JavaScript -->
+		<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+		<script type="module">
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
-// Create URLSearchParams object
-const urlParams = new URLSearchParams(new URL(url).search);
-const its = urlParams.get('login');
-if(its){
-    console.log(its)
-    document.getElementById('its').hidden=true;
-    document.getElementById('itssubmit').hidden=true;
-  const dbRef = ref(database);
-  onValue(dbRef, (snapshot) => { 
-    const data = snapshot.val()['foodfest'];
-    console.log(data)
-    for (let student in data){
-        if(data[student]['ITS']==its){
-            var user = data[student]
-            console.log(user)
-            document.write("Welcome "+user.Name+user.Darajah)
-        }
-        if(user){
-            if(user.Selection == 'Unselected'){
-                console.log(user.Selection)
-                for (let student in data){
-                    if(student.Darajah == user.Darajah){
-                        console.log(student)
-                    }
-                }
-            }else{
-                document.write("You have selected "+user.Selection)
-            }
-        }else{
-            document.write("UNAUTHORIZED")
-        }
-    }
-    
-  })
-}else{
-    console.log("NO ITS")
-}
-</script>
-</body>
-</html> 
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+
+			const app = initializeApp(firebaseConfig);
+			const database = getDatabase(app);
+
+			function handleLogin() {
+				const its = document.getElementById("its").value;
+				const link = "./foodfest.html?login=" + its;
+				location.replace(link);
+			}
+			window.handleLogin = handleLogin;
+
+			const url = window.location.href;
+			const urlParams = new URLSearchParams(new URL(url).search);
+			const its = urlParams.get("login");
+
+			if (its) {
+				document.getElementById("its").style.display = "none";
+				document.getElementById("itscard").style.display = "none";
+				document.getElementById("itssubmit").style.display = "none";
+				const dbRef = ref(database);
+				onValue(dbRef, (snapshot) => {
+					const data = snapshot.val()["foodfest"];
+					let user;
+					for (let student in data) {
+						if (data[student]["ITSID"] === its) {
+							user = data[student];
+							break;
+						}
+					}
+
+					if (user) {
+						document.body.style.backgroundImage = `url(${user.Selection}.png)`;
+						console.log(`${user.Selection}.png`);
+						console.log(user.Selection);
+						let profileHtml = `
+							<div class="card" style='overflow:scroll'>
+								<div class="card-content">
+									<span class="card-title">${user.Name}</span>
+									<table>
+										<thead>
+											<tr>
+												<th>Name</th>
+												<th>Darajah</th>
+												<th>Selection</th>
+												<th>Timestamp</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr class="highlight">
+												<td><img src='http://nairobi.jameasaifiyah.edu/Malaf/Photos/${user.ITSID}.jpg' alt='Profile Picture' class='profile-image'> ${user.ITSID} ${user.Name}</td>
+												<td>${user.Class}</td>
+												<td>${user.Selection}</td>
+												<td>${user.Timestamp}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						`;
+
+						let total = 0;
+						const classCounts = {
+							Red: 0,
+							Blue: 0,
+							Yellow: 0,
+							Green: 0,
+							Unselected: 0,
+						};
+
+						for (let d in data) {
+							if (data[d]["Class"] === user["Class"]) {
+								classCounts[data[d]["Selection"]] += 1;
+								total += 1;
+							}
+						}
+
+						let cap = Math.floor(total / 4);
+						let tableHtml = `
+							<div hidden class="card" style='overflow:scroll'>
+								<div class="card-content">
+									<table>
+										<thead>
+											<tr>
+												<th>Red</th>
+												<th>Blue</th>
+												<th>Yellow</th>
+												<th>Green</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>${cap - classCounts["Red"]} Passes Left</td>
+												<td>${cap - classCounts["Blue"]} Passes Left</td>
+												<td>${cap - classCounts["Yellow"]} Passes Left</td>
+												<td>${cap - classCounts["Green"]} Passes Left</td>
+											</tr>
+											<tr>
+												<td>${
+													cap != classCounts["Red"]
+														? `<button id='allocate_red' class='btn btn-red'>Allocate</button>`
+														: `<button id='allocate_red' class='btn btn-red' disabled>Allocate</button>`
+												}</td>
+												<td>${
+													cap != classCounts["Blue"]
+														? `<button id='allocate_blue' class='btn btn-blue'>Allocate</button>`
+														: `<button id='allocate_blue' class='btn btn-blue' disabled>Allocate</button>`
+												}</td>
+												<td>${
+													cap != classCounts["Yellow"]
+														? `<button id='allocate_yellow' class='btn btn-yellow'>Allocate</button>`
+														: `<button id='allocate_yellow' class='btn btn-yellow' disabled>Allocate</button>`
+												}</td>
+												<td>${
+													cap != classCounts["Green"]
+														? `<button id='allocate_green' class='btn btn-green'>Allocate</button>`
+														: `<button id='allocate_green' class='btn btn-green' disabled>Allocate</button>`
+												}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<button class='btn btn-red' onclick="location.replace('https://khardal.net/foodfest.html')">Logout</button>
+						`;
+
+						document.getElementById("profile").innerHTML = profileHtml + tableHtml;
+
+						document.getElementById("allocate_red").addEventListener("click", () => allocate("Red"));
+						document.getElementById("allocate_blue").addEventListener("click", () => allocate("Blue"));
+						document.getElementById("allocate_yellow").addEventListener("click", () => allocate("Yellow"));
+						document.getElementById("allocate_green").addEventListener("click", () => allocate("Green"));
+
+						function allocate(color) {
+							const userindex = Object.keys(data).find((key) => data[key] === user);
+							const update = {
+								...user,
+								Selection: color,
+								Timestamp: new Date().toLocaleString(),
+							};
+							set(ref(database, "foodfest/" + userindex), update);
+						}
+					} else {
+						alert("Invalid User. Please login with appropriate credentials");
+						location.replace("https://khardal.net/foodfest.html");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

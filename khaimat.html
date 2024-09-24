@@ -1,100 +1,188 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Scoreboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- add gradients to each team color bg, and fonts make more exciting, and amke score bigger -->
-    <style>
-        body {
-            background: linear-gradient(135deg, #65f69d 0%, #85c7fd 100%);
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #fff;
-            padding: 20px 0;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .scoreboard {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-        }
-        
-        .team {
-            text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 18vw;
-            transition: transform 0.3s ease;
-        }
-    .team.red { 
-        background: linear-gradient(135deg, #ffcccc 0%, #ff8585 100%);
-        color: #fff; 
-    }
+	<head>
+		<title>Scoreboard</title>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+		<style>
+			body {
+				background: linear-gradient(135deg, #65f69d 0%, #85c7fd 100%);
+				font-family: "Roboto", sans-serif;
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			/* 
+			@keyframes glow {
+				0% {
+					text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+				}
+				50% {
+					text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+				}
+				100% {
+					text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+				}
+			} */
+			/* 
+			@keyframes pulse {
+				0% {
+					transform: scale(1);
+				}
+				50% {
+					transform: scale(1.05);
+				}
+				100% {
+					transform: scale(1);
+				}
+			} */
 
-    .team.blue { 
-        background: linear-gradient(135deg, #b3d9ff 0%, #85aaff 100%);
-        color: #fff; 
-    }
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
 
-    .team.yellow { 
-        background: linear-gradient(135deg, #fff0b3 0%, #ffd985 100%);
-        color: #fff; 
-    }
+			h1 {
+				text-align: center;
+				color: #fff;
+				padding: 20px 0;
+				font-size: 2.5rem;
+				text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+				/* animation: glow 1.5s ease-in-out infinite; */
+			}
 
-    .team.green { 
-        background: linear-gradient(135deg, #b3e6b3 0%, #85d985 100%);
-        color: #fff; 
-    }
-        
-        .team:hover {
-            transform: translateY(-5px);
-        }
-        
-        .score {
-            font-size: 8vw;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        /* Color adjustments for better contrast */
-        .red { color: #e53e3e; }
-        .blue { color: #2b6cb0; }
-        .yellow { color: #d69e2e; }
-        .green { color: #38a169; }
-    </style>
-</head>
-<body>
-    <h1>🏆Annual Sports Tournament 1446H🏆</h1>
-    <div class="scoreboard">
-        <div class="team red">
-            <h2>Team Red🔥</h2>
-            <div class="score red">435</div>
-        </div>
-        <div class="team blue">
-            <h2>Team Blue🌊</h2>
-            <div class="score blue">475</div>
-        </div>
-        <div class="team yellow">
-            <h2>Team Yellow🌋</h2>
-            <div class="score yellow">640</div>
-        </div>
-        <div class="team green">
-            <h2>Team Green🌱</h2>
-            <!-- <h5>Marjaan | Zumurrud</h5> -->
-            <div class="score green">320</div>
-        </div>
-    </div>
-</body>
-</html> 
+			.scoreboard {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 20px;
+				padding: 20px;
+			}
+
+			.team {
+				text-align: center;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				width: 18vw;
+				animation: pulse 2s ease-in-out infinite;
+				transition: transform 0.3s ease;
+			}
+
+			.team.red {
+				background: linear-gradient(135deg, #ffcccc 0%, #ff8585 100%);
+				color: #fff;
+			}
+
+			.team.blue {
+				background: linear-gradient(135deg, #b3d9ff 0%, #85aaff 100%);
+				color: #fff;
+			}
+
+			.team.yellow {
+				background: linear-gradient(135deg, #fff0b3 0%, #f7bf47 100%);
+				color: #fff;
+			}
+
+			.team.green {
+				background: linear-gradient(135deg, #b3e6b3 0%, #85d985 100%);
+				color: #fff;
+			}
+
+			.team:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+			}
+
+			.score {
+				font-size: 8vw;
+				font-weight: bold;
+				margin: 10px 0;
+				opacity: 0;
+				animation: fadeIn 1s forwards;
+			}
+
+			.red {
+				color: #e53e3e;
+			}
+
+			.blue {
+				color: #2b6cb0;
+			}
+
+			.yellow {
+				color: #d69e2e;
+			}
+
+			.green {
+				color: #38a169;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>🏆 Annual Sports Tournament 1446H 🏆</h1>
+		<div class="scoreboard">
+			<div class="team red">
+				<h2>Team Red🔥</h2>
+				<div id="redscore" class="score red">0</div>
+			</div>
+			<div class="team blue">
+				<h2>Team Blue🌊</h2>
+				<div id="bluescore" class="score blue">0</div>
+			</div>
+			<div class="team yellow">
+				<h2>Team Yellow🌋</h2>
+				<div id="yellowscore" class="score yellow">0</div>
+			</div>
+			<div class="team green">
+				<h2>Team Green🌱</h2>
+				<div id="greenscore" class="score green">0</div>
+			</div>
+		</div>
+		<script>
+			function animateScore(element, finalValue, duration, delay) {
+				let start = 0;
+				const startTime = Date.now();
+
+				element.style.animationDelay = `${delay}ms`;
+
+				function update() {
+					const elapsed = Date.now() - startTime;
+					const progress = Math.min(elapsed / duration, 1);
+					const currentValue = Math.floor(progress * finalValue);
+					element.textContent = currentValue;
+
+					if (progress < 1) {
+						requestAnimationFrame(update);
+					}
+				}
+
+				update();
+			}
+
+			const red = document.getElementById("redscore");
+			const blue = document.getElementById("bluescore");
+			const yellow = document.getElementById("yellowscore");
+			const green = document.getElementById("greenscore");
+
+			const redscore = 1310;
+			const bluescore = 1505;
+			const yellowscore = 1596;
+			const greenscore = 1030;
+
+			const timer = 10000;
+
+			document.addEventListener("DOMContentLoaded", () => {
+				const delayStep = 200;
+				animateScore(red, redscore, timer, 0);
+				animateScore(blue, bluescore, timer, delayStep);
+				animateScore(yellow, yellowscore, timer, delayStep * 2);
+				animateScore(green, greenscore, timer, delayStep * 3);
+			});
+		</script>
+	</body>
+</html>

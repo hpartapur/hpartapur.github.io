@@ -1,215 +1,267 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Excel to JSON Converter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-            text-align: center; /* Center align text for a modern look */
-            background-image: url(./assets/bg.jpg);
-        }
-        h1 {
-            margin-bottom: 20px;
-            font-size: 7vw;
-            color: #444;
-            font-family: 'Kanz-al-Marjaan', sans-serif;
-            background-color: goldenrod;
-        }
-        .buttons {
-            padding: 1vw 1.5vw;
-            margin: 1vw;
-            border-radius: 0.5vw;
-            border-width: 2vw;
-            /* border-color: transparent; */
-            font-size: 21vh;
-            cursor: pointer;
-            font-family: 'Kanz-al-Marjaan', sans-serif;
-            transition: transform 0.18s ease; /* Smooth transform effect */
-        }
-        .buttons:hover {
-            transform: scale(1.2); /* Slightly enlarge buttons on hover */
-        }
-        #option1 { background-color: #ff4b5c; } /* Red */
-        #option2 { background-color: #4caf50; } /* Green */
-        #option3 { background-color: #ffeb3b; color: #333; } /* Yellow with darker text for contrast */
-        #option4 { background-color: #2196f3; } /* Blue */
-        input[type="file"] {
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    <!-- Full-screen overlay, initially hidden -->
-<div id="correctAnswerOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: green; z-index: 1000;"></div>
-<div id="wrongAnswerOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: red; z-index: 1000;"></div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Tarwiz</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <!-- <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn-danger" onclick="window.location.href = 'jadwal2.html';">Jadwal</button>
-                    </li> -->
-                    <p class="nav-link" id="score">Score:0</p>
-                    <!-- Add more nav items here -->
-                </ul>
-            </div>
-        </div>
-    </nav><br><br><br>
-    <h1 dir="rtl" id="question"></h1>
-    <button id="option1" class="buttons"></button>
-    <button id="option2" class="buttons"></button>
-    <button id="option3" class="buttons"></button>
-    <button id="option4" class="buttons"></button>
-    <script type="module">
-var score = 0;
-const firebaseConfig = {
-	apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
-	authDomain: "khardal.firebaseapp.com",
-	projectId: "khardal",
-	storageBucket: "khardal.appspot.com",
-	messagingSenderId: "258618544710",
-	appId: "1:258618544710:web:2b734571b863de60dc3047",
-};
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
-import {
-	getDatabase,
-	ref,
-	push,
-	onValue,
-	set,
-	get,
-	update,
-} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+<html lang="en">
+	<head>
+		<title>Tarwiz Quizzes</title>
+		<link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
+		<style>
+			/* Basic Reset */
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			@font-face {
+				font-family: KM;
+				src: url(/assets/Kanz-al-Marjaan.ttf);
+			}
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				margin: 0;
+				background: url(./assets/musabaqatbg.jpg) center center fixed;
+				background-size: cover;
+				color: #333;
+				text-align: center;
+			}
+			nav {
+				background-color: rgba(0, 0, 0, 0.7);
+				padding: 10px;
+			}
+			h1 {
+				margin: 20px 0;
+				font-size: 2.5em;
+				color: #020202;
+				font-family: "Kanz-al-Marjaan", KM, sans-serif;
+				text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.7);
+			}
+			.buttons {
+				color: black;
+				display: inline-block;
+				padding: 15px 30px;
+				margin: 10px;
+				border-radius: 12px;
+				font-size: 1.5em;
+				cursor: pointer;
+				font-family: "Kanz-al-Marjaan", KM, sans-serif;
+				transition: transform 0.2s, background-color 0.3s;
+				border: 1vw;
+			}
+			.buttons:hover {
+				transform: scale(1.05);
+			}
+			#option1 {
+				background-color: #ff4b5c;
+			}
+			#option2 {
+				background-color: #4caf50;
+			}
+			#option3 {
+				background-color: #ffeb3b;
+				color: #333;
+			}
+			#option4 {
+				background-color: #2196f3;
+			}
+			#timer,
+			#score {
+				font-size: 1.2em;
+				color: #fff;
+				margin: 10px;
+			}
+			.overlay {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: none;
+				z-index: 1000;
+				opacity: 0.9;
+			}
+			#correctAnswerOverlay {
+				background-color: green;
+			}
+			#wrongAnswerOverlay {
+				background-color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="correctAnswerOverlay" class="overlay"></div>
+		<div id="wrongAnswerOverlay" class="overlay"></div>
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#" id="quizname">Tarwiz</a>
+				<div class="collapse navbar-collapse">
+					<div class="navbar-nav ms-auto">
+						<h2 class="nav-link" id="score">Score: 0</h2>
+						<h2 class="nav-link" id="timer">Time left: 30s</h2>
+						<h2 class="nav-link">Question <span id="currentQuestion"></span>/<span id="qcount"></span></h2>
+					</div>
+				</div>
+			</div>
+			<br />
+			<div class="progress" style="height: 10px; margin: 10px; width: 100%">
+				<div
+					id="progressBar"
+					class="progress-bar"
+					role="progressbar"
+					style="width: 0%; background-color: #4caf50"
+					aria-valuenow="0"
+					aria-valuemin="0"
+					aria-valuemax="100"
+				></div>
+			</div>
+		</nav>
+		<div class="container mt-5 pt-5">
+			<h1 dir="rtl" id="question"></h1>
+			<div>
+				<button id="option1" class="buttons"></button>
+				<button id="option2" class="buttons"></button>
+				<button id="option3" class="buttons"></button>
+				<button id="option4" class="buttons"></button>
+			</div>
+		</div>
+		<script type="module">
+			let wrongfx = new Audio("/asal_assets/wrong.mp3");
+			let rightfx = new Audio("/asal_assets/points.mp3");
+			var score = 0;
+			var timer;
+			var timeLeft = 20;
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getDatabase, ref, push, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-window.database = getDatabase(app);
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
+			const urlParams = new URLSearchParams(window.location.search);
+			const code = urlParams.get("code");
 
-const urlParams = new URLSearchParams(window.location.search);
-const code = urlParams.get('code');
+			if (!code) {
+				alert("No code provided!");
+				window.location.href = "index.html";
+			}
 
-if (!code) {
-    alert('No code provided!');
-    window.location.href = 'index.html';
-}
+			get(ref(window.database, "tarwiz/" + code)).then((snapshot) => {
+				let quizTitle = snapshot.val().quizTitle;
+				document.getElementById("quizname").innerText = quizTitle;
+				let objquestions = snapshot.val().questions;
+				let qarray = Object.values(objquestions)
+					.sort(() => Math.random() - 0.5)
+					.slice(0, 30);
+				window.questions = qarray;
+				var questionElement = document.getElementById("question");
+				var option1 = document.getElementById("option1");
+				var option2 = document.getElementById("option2");
+				var option3 = document.getElementById("option3");
+				var option4 = document.getElementById("option4");
+				var currentQuestion = 0;
 
-onValue(ref(window.database, 'tarwiz/' + code), (snapshot) => {
-    window.questions = snapshot.val().questions;
-    console.log(snapshot.val());
-    var question = document.getElementById('question');
-    var option1 = document.getElementById('option1');
-    var option2 = document.getElementById('option2');
-    var option3 = document.getElementById('option3');
-    var option4 = document.getElementById('option4');
-    var currentQuestion = 0;
+				function startTimer() {
+					timeLeft = 20;
+					document.getElementById("timer").textContent = "Time left: " + timeLeft + "s";
+					if (timer) clearInterval(timer);
+					timer = setInterval(function () {
+						timeLeft--;
+						document.getElementById("timer").textContent = "Time left: " + timeLeft + "s";
+						if (timeLeft <= 0) {
+							clearInterval(timer);
+							handleTimeOut();
+						}
+					}, 1000);
+				}
 
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
+				function handleTimeOut() {
+					document.getElementById("wrongAnswerOverlay").style.display = "block";
+					setTimeout(() => {
+						document.getElementById("wrongAnswerOverlay").style.display = "none";
+					}, 500);
+					wrongfx.play();
+					currentQuestion++;
+					if (currentQuestion < window.questions.length) {
+						updateQuestion();
+						startTimer();
+					} else {
+						alert("You have completed the quiz!");
+						submitScore();
+					}
+				}
 
-    function updateQuestion() {
-    console.log(questions[currentQuestion]['Question']);
-    console.log(question.textContent)
-    question.textContent = window.questions[currentQuestion]['Question'];
-    let answers = [
-        window.questions[currentQuestion]['Correct Answer'],
-        window.questions[currentQuestion]['Wrong Answer 1'],
-        window.questions[currentQuestion]['Wrong Answer 2'],
-        window.questions[currentQuestion]['Wrong Answer 3']
-    ];
-    shuffleArray(answers); // Shuffle the answers to randomize their order
+				function handleAnswer(isCorrect) {
+					clearInterval(timer);
+					if (isCorrect) {
+						currentQuestion++;
+						rightfx.play();
+						score++;
+						document.getElementById("score").textContent = "Score: " + score;
+						if (currentQuestion < window.questions.length) {
+							updateQuestion();
+							document.getElementById("correctAnswerOverlay").style.display = "block";
+							setTimeout(() => {
+								document.getElementById("correctAnswerOverlay").style.display = "none";
+							}, 500);
+						} else {
+							alert("You have completed the quiz!");
+							submitScore();
+						}
+					} else {
+						handleTimeOut();
+					}
+				}
 
-    // Assign answers to buttons and hide if blank
-    [option1, option2, option3, option4].forEach((button, index) => {
-        button.textContent = answers[index];
-        if (answers[index] === undefined) {
-            button.style.display = "none"; // Hide button if answer is blank
-        } else {
-            button.style.display = "inline-block"; // Unhide button
-        }
-    });
+				function updateQuestion() {
+					document.getElementById("currentQuestion").innerText = currentQuestion + 1;
+					document.getElementById("qcount").innerText = window.questions.length;
 
-    option1.onclick = option2.onclick = option3.onclick = option4.onclick = function() {
-        if (this.textContent === window.questions[currentQuestion]['Correct Answer']) {
-            currentQuestion++;
-            score++;
-            document.getElementById('score').textContent = 'Score: ' + score;
-            if (currentQuestion < window.questions.length) {
-                updateQuestion();
-                document.getElementById('correctAnswerOverlay').style.display = "block";
-                // Hide the overlay after 0.5 seconds
-                setTimeout(function() {
-                    document.getElementById('correctAnswerOverlay').style.display = "none";
-                }, 500);
-            } else {
-                alert('You have completed the quiz!');
-                var tr = prompt('Enter your ID here to save your game');
-                if (tr) {
-                    var sessionsRef = ref(window.database, 'tarwiz/' + code + '/sessions');
-                    var newSessionRef = push(sessionsRef);
-                    set(newSessionRef, {
-                        score: score,
-                        timestamp: new Date().toISOString(),
-                        id: tr
-                    });
-                    alert('Your score has been submitted!');
-                    window.location.reload();
-                }
-            }
-        } else {
-            currentQuestion++;
-            if (currentQuestion < window.questions.length) {
-                updateQuestion();
-                document.getElementById('wrongAnswerOverlay').style.display = "block";
-                // Hide the overlay after 0.5 seconds
-                setTimeout(function() {
-                    document.getElementById('wrongAnswerOverlay').style.display = "none";
-                }, 500);
-            }else{
-                alert('You have completed the quiz!');
-                var tr = prompt('Enter your ID here to save your game');
-                if (tr) {
-                    var sessionsRef = ref(window.database, 'tarwiz/' + code + '/sessions');
-                    var newSessionRef = push(sessionsRef);
-                    set(newSessionRef, {
-                        score: score,
-                        timestamp: new Date().toISOString(),
-                        id: tr
-                    });
-                    alert('Your score has been submitted!');
-                    window.location.reload();
-                }
-            }
-        }
-    };
-}
+					// Update progress bar
+					let progressPercentage = ((currentQuestion + 1) / window.questions.length) * 100;
+					document.getElementById("progressBar").style.width = progressPercentage + "%";
+					document.getElementById("progressBar").setAttribute("aria-valuenow", progressPercentage);
 
-updateQuestion(); // Initial question setup
-    
-});
+					questionElement.textContent = window.questions[currentQuestion]["Question"];
+					questionElement.dir = /^[A-Za-z]/.test(window.questions[currentQuestion]["Question"]) ? "ltr" : "rtl";
 
-    </script>
-</body>
+					let answers = [
+						window.questions[currentQuestion]["Correct Answer"],
+						window.questions[currentQuestion]["Wrong Answer 1"],
+						window.questions[currentQuestion]["Wrong Answer 2"],
+						window.questions[currentQuestion]["Wrong Answer 3"],
+					].sort(() => Math.random() - 0.5);
+
+					[option1, option2, option3, option4].forEach((button, index) => {
+						button.textContent = answers[index];
+						button.style.display = answers[index] ? "inline-block" : "none";
+						button.onclick = () => handleAnswer(button.textContent === window.questions[currentQuestion]["Correct Answer"]);
+					});
+
+					startTimer();
+				}
+
+				function submitScore() {
+					var tr = prompt("Enter your ITS ID here to save your game");
+					if (tr) {
+						var sessionsRef = ref(window.database, "tarwiz/" + code + "/sessions");
+						var newSessionRef = push(sessionsRef);
+						set(newSessionRef, {
+							score: score,
+							timestamp: new Date().toISOString(),
+							id: tr,
+						});
+						alert("Your score has been submitted!");
+						window.location.reload();
+					}
+				}
+
+				updateQuestion(); // Initial question setup
+			});
+		</script>
+	</body>
 </html>
