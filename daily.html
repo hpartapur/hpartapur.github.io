@@ -11759,6 +11759,7 @@
 for(let day in dates){
     if(dates[day][1][0]== new Date().getDate() && dates[day][1][1]== new Date().getMonth()+1&& dates[day][1][2]== new Date().getFullYear()){
         console.log(dates[day])
+        document.write(dates[day])
     }
 }
 let url = "https://corsproxy.io/?https%3A%2F%2Faajnodin.com%2F"
@@ -11768,6 +11769,11 @@ fetch(url).then(response => response.text()).then(data => {
     part=data.slice(data.search('Current Qiyaam'))
     qy=part.substr(0,part.search('marquee'))
     document.write(qy)
+
+    part=data.slice(data.search('homeBoxMiqaatMatter'))
+    urs=part.substr(0,part.search('Tulul'))
+    document.write(urs)
+
 
 })
     </script>
