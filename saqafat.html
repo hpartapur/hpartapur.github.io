@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Material Design Buttons</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+		<style>
+			body {
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				margin: 0;
+				background-color: #f5f5f5;
+			}
+			.container {
+				text-align: center;
+			}
+			.btn {
+				margin: 10px;
+				width: 100%;
+				max-width: 200px;
+			}
+			.btn-container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.btn-positive {
+				background-color: #4caf50; /* Green */
+				color: white;
+			}
+			.btn-negative {
+				background-color: #f44336; /* Red */
+				color: white;
+			}
+			.btn-neutral {
+				background-color: #ff9800; /* Orange */
+				color: white;
+			}
+			.login-form {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.login-form input {
+				margin: 5px;
+			}
+			@media (max-width: 600px) {
+				.btn {
+					font-size: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" id="content">
+			<!-- Content will be injected here based on URL parameters -->
+		</div>
+		<br /><br />
+		<div id="logs"></div>
+
+		<script type="module">
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
+
+			function getQueryParams() {
+				const params = new URLSearchParams(window.location.search);
+				return {
+					ITS: params.get("ITS"),
+				};
+			}
+
+			function showLoginForm() {
+				const content = document.getElementById("content");
+				content.innerHTML = `
+                <h1>Login</h1>
+                <div class="login-form">
+                    <input type="text" id="username" placeholder="Username" />
+                    <button class="btn waves-effect waves-light btn-positive" id="loginBtn">Login</button>
+                </div>
+            `;
+
+				document.getElementById("loginBtn").addEventListener("click", () => {
+					const username = document.getElementById("username").value;
+					if (username) {
+						const params = new URLSearchParams(window.location.search);
+						params.set("ITS", username);
+						window.location.search = params.toString(); // Update URL with new query parameter
+					} else {
+						alert("Please enter a username.");
+					}
+				});
+			}
+
+			function showButtons(text, teams) {
+				const content = document.getElementById("content");
+				content.innerHTML = `
+                <h5>${text}</h5>
+                <div class="input-field col s12">
+                    <select id="teamsDropdown">
+                        <option value="" disabled selected>Choose your team</option>
+                        ${teams.map((team) => `<option value="${team}">${team}</option>`).join("")}
+                    </select>
+                    <label>Teams</label>
+                </div>
+                <div class="input-field col s12">
+                    <select id="roundsDropdown">
+                        <option value="" disabled selected>Choose a round</option>
+                        <option value="1">Round 1</option>
+                        <option value="2">Round 2</option>
+                        <option value="3">Round 3</option>
+                        <option value="4">Round 4</option>
+                    </select>
+                    <label>Rounds</label>
+                </div>
+                <div id="buttonsContainer" class="btn-container">
+                    <!-- Buttons will be dynamically added here -->
+                </div>
+            `;
+
+				// Initialize Materialize dropdowns
+				M.FormSelect.init(document.querySelectorAll("select"));
+
+				// Add event listeners for dropdown changes
+				document.getElementById("teamsDropdown").addEventListener("change", (event) => {
+					const selectedTeam = event.target.value;
+					console.log("Selected team:", selectedTeam);
+					window.selectedTeam = selectedTeam;
+				});
+
+				document.getElementById("roundsDropdown").addEventListener("change", (event) => {
+					const selectedRound = event.target.value;
+					console.log("Selected round:", selectedRound);
+					window.selectedRound = selectedRound;
+					updateButtons(selectedRound);
+				});
+
+				// Function to update buttons based on selected round
+				function updateButtons(selectedRound) {
+					const buttonsContainer = document.getElementById("buttonsContainer");
+					buttonsContainer.innerHTML = ""; // Clear existing buttons
+
+					let buttons = [];
+
+					if (selectedRound == "1" || selectedRound == "3") {
+						buttons = [
+							{ value: "+100", class: "btn-positive" },
+							{ value: "-50", class: "btn-negative" },
+						];
+					} else if (selectedRound == "2") {
+						buttons = [
+							{ value: "+500", class: "btn-positive" },
+							{ value: "+200", class: "btn-positive" },
+							{ value: "+100", class: "btn-positive" },
+							{ value: "-50", class: "btn-negative" },
+							{ value: "-100", class: "btn-negative" },
+							{ value: "-250", class: "btn-negative" },
+						];
+					} else if (selectedRound == "4") {
+						const elements = document.getElementsByClassName("select-dropdown dropdown-trigger");
+						for (let i = 0; i < elements.length; i++) {
+							elements[i].style.display = "none"; // Hides the element
+						}
+						// Add input field and submit button
+						const inputField = document.createElement("input");
+						inputField.setAttribute("type", "number");
+						inputField.setAttribute("placeholder", "Enter the team's total score for Round 4");
+						inputField.className = "input-field col s12";
+
+						const submitButton = document.createElement("button");
+						submitButton.className = "btn waves-effect waves-light btn-positive";
+						submitButton.textContent = "Submit";
+
+						const allteams = ["ابيض القلب", "سليم القلب", "دريا دل", "شير دل", "Golden Heart", "Warm Hearted"];
+						const teamdropdown = document.createElement("select");
+						teamdropdown.id = "allTeamDropdown";
+						teamdropdown.style.display = "block";
+						allteams.forEach((team) => {
+							const option = document.createElement("option");
+							option.value = team;
+							option.text = team;
+							teamdropdown.appendChild(option);
+						});
+
+						// Append input field and button to the buttons container
+						buttonsContainer.appendChild(teamdropdown);
+						buttonsContainer.appendChild(inputField);
+						buttonsContainer.appendChild(submitButton);
+
+						// Add event listener for submit button
+						submitButton.addEventListener("click", () => {
+							const inputValue = inputField.value;
+							window.selectedTeam = teamdropdown.value;
+							if (inputValue) {
+								const pushing = {
+									value: inputValue,
+									ITS: window.ITS,
+									round: selectedRound,
+									team: window.selectedTeam,
+									timestamp: new Date().toLocaleTimeString(),
+								};
+								console.log(pushing);
+								const db = window.database;
+								const dataRef = ref(db, "saqafat");
+								push(dataRef, pushing)
+									.then(() => {
+										console.log("Data successfully pushed to Firebase");
+									})
+									.catch((error) => {
+										console.error("Error pushing data to Firebase:", error);
+									});
+								inputField.value = ""; // Clear input field after submission
+							} else {
+								alert("Please enter a value.");
+							}
+						});
+						return; // Exit the function after handling round 4
+					}
+
+					buttons.forEach((button) => {
+						const btnElement = document.createElement("button");
+						btnElement.className = `btn waves-effect waves-light ${button.class}`;
+						btnElement.setAttribute("data-value", button.value);
+						btnElement.textContent = button.value;
+						buttonsContainer.appendChild(btnElement);
+					});
+
+					// Add event listeners to all new buttons
+					buttonsContainer.querySelectorAll("button").forEach((button) => {
+						button.addEventListener("click", () => {
+							const pushing = {
+								value: button.getAttribute("data-value"),
+								ITS: window.ITS,
+								round: window.selectedRound,
+								team: window.selectedTeam,
+								timestamp: new Date().toLocaleTimeString(),
+							};
+							console.log(pushing);
+							const db = window.database;
+							const dataRef = ref(db, "saqafat");
+							push(dataRef, pushing)
+								.then(() => {
+									console.log("Data successfully pushed to Firebase");
+								})
+								.catch((error) => {
+									console.error("Error pushing data to Firebase:", error);
+								});
+						});
+					});
+				}
+			}
+
+			document.addEventListener("DOMContentLoaded", () => {
+				const params = getQueryParams();
+				const ITS = params.ITS;
+				window.ITS = ITS;
+
+				if (ITS === "none") {
+					location.reload(); // Reload the page if ITS is 'none'
+					return;
+				}
+
+				if (ITS) {
+					let title;
+					let teams;
+					switch (ITS) {
+						case "20397305":
+							title = "J Sk Mohammad bh Hamid";
+							teams = ["ابيض القلب", "دريا دل"];
+							break;
+						case "30461192":
+							title = "J M Taha bh Poonawala";
+							teams = ["Golden Heart", "سليم القلب"];
+							break;
+						case "20372307":
+							title = "J Sk Huzaifa bh Haidermota";
+							teams = ["شير دل", "Warm Hearted"];
+							break;
+						case "30440567":
+							title = "Nafisa bai Mulla Taher bhai Arushawala";
+							teams = ["ابيض القلب", "شير دل"];
+							break;
+						case "20372387":
+							title = "Sarrah bai Shaikh Murtaza bhai Qasimji";
+							teams = ["Golden Heart", "سليم القلب"];
+							break;
+						case "40431149":
+							title = "Zahra bai Shaikh Shabbir bhai Jabalpurwala";
+							teams = ["دريا دل", "Warm Hearted"];
+							break;
+						case "admin":
+							title = "Admin User";
+							teams = ["ابيض القلب", "سليم القلب", "دريا دل", "شير دل", "Golden Heart", "Warm Hearted"];
+							break;
+						default:
+							alert("Invalid User");
+							location.replace("https://khardal.net/saqafat.html"); // Reload the page if ITS does not match predefined values
+							return;
+					}
+					showButtons(title, teams);
+					const dataRef = ref(window.database, "saqafat");
+					onValue(dataRef, (snapshot) => {
+						let data = snapshot.val();
+						console.log(data);
+						let table = `<table class="responsive-table"><tr><th>Round</th><th>Team</th><th>Value</th><th>Time</th><th>Action</th></tr>`;
+						for (let key in data) {
+							if (data[key]["ITS"] == window.ITS) {
+								console.log(data[key]);
+								table += `
+                                <tr>
+                                    <td>${data[key]["round"]}</td>
+                                    <td>${data[key]["team"]}</td>
+                                    <td>${data[key]["value"]}</td>
+                                    <td>${data[key]["timestamp"]}</td>
+                                    <td><button class="btn waves-effect waves-light btn-negative" onclick="deleteEntry('${key}')">Delete</button></td>
+                                </tr>`;
+							}
+						}
+						table += `</table>`;
+						document.getElementById("logs").innerHTML = table;
+					});
+				} else {
+					showLoginForm();
+				}
+			});
+
+			// Function to delete an entry
+			function deleteEntry(key) {
+				let confirmed = confirm("Are you sure you want to delete this entry?");
+				if (confirmed) {
+					const dataRef = ref(window.database, "saqafat/" + key);
+					remove(dataRef)
+						.then(() => {
+							console.log("Data successfully deleted from Firebase");
+							// Refresh the logs after deletion
+							const dataRef = ref(window.database, "saqafat");
+							onValue(dataRef, (snapshot) => {
+								let data = snapshot.val();
+								let table = `<table class="responsive-table"><tr><th>Round</th><th>Team</th><th>Value</th><th>Time</th><th>Action</th></tr>`;
+								for (let key in data) {
+									if (data[key]["ITS"] == window.ITS) {
+										table += `
+                                    <tr>
+                                        <td>${data[key]["round"]}</td>
+                                        <td>${data[key]["team"]}</td>
+                                        <td>${data[key]["value"]}</td>
+                                        <td>${data[key]["timestamp"]}</td>
+                                        <td><button class="btn waves-effect waves-light btn-negative" onclick="deleteEntry('${key}')">Delete</button></td>
+                                    </tr>`;
+									}
+								}
+								table += `</table>`;
+								document.getElementById("logs").innerHTML = table;
+							});
+						})
+						.catch((error) => {
+							console.error("Error deleting data from Firebase:", error);
+						});
+				}
+			}
+			window.deleteEntry = deleteEntry;
+		</script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	</body>
+</html>
