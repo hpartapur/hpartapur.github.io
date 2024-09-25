@@ -109,7 +109,7 @@
 
 		<script type="module">
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-			import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+			import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
 			// Your web app's Firebase configuration
 			const firebaseConfig = {
@@ -122,7 +122,8 @@
 			};
 
 			// Initialize Firebase
-			firebase.initializeApp(firebaseConfig);
+			const app = initializeApp(firebaseConfig);
+			window.database = getDatabase(app);
 
 			// Download template functionality
 			document.getElementById("downloadTemplate").addEventListener("click", function () {
@@ -144,19 +145,17 @@
 
 				// Show spinner
 				document.getElementById("spinnerContainer").classList.remove("d-none");
+				const dbRef = ref(getDatabase(), "tarwiz/" + code);
 
 				// Pull data from Firebase
-				firebase
-					.database()
-					.ref("tarwiz")
-					.on("value", function (snapshot) {
-						// Hide spinner
-						document.getElementById("spinnerContainer").classList.add("d-none");
+				onValue(dbRef, (snapshot) => {
+					// Hide spinner
+					document.getElementById("spinnerContainer").classList.add("d-none");
 
-						var data = snapshot.val()[code];
+					var data = snapshot.val();
+					console.log(data);
+					if (data.sessions) {
 						var sessions = Object.values(data.sessions);
-						var questions = data.questions || [];
-
 						// Scores Table
 						var scoreTable = `<h2>Scores</h2><table style='width:40vw;' class="table table-info table-responsive"><tr><th>ID</th><th>Score</th><th>Timestamp</th></tr>`;
 						sessions.forEach((session) => {
@@ -165,31 +164,34 @@
 						scoreTable += `</table>`;
 
 						document.getElementById("result").innerHTML += scoreTable;
+					}
 
-						// Prepare questions table for modal
-						var questionTable = `<table style='width:100%;' class="table table-secondary"><tr><th>Question</th><th>Answer</th><th>Wrong Answers</th></tr>`;
-						questions.forEach((question) => {
-							var wrongAnswers = [];
-							for (let i = 1; i <= 3; i++) {
-								if (question[`Wrong Answer ${i}`]) {
-									wrongAnswers.push(question[`Wrong Answer ${i}`]);
-								}
+					var questions = data.questions || [];
+
+					// Prepare questions table for modal
+					var questionTable = `<table style='width:100%;' class="table table-secondary"><tr><th>Question</th><th>Answer</th><th>Wrong Answers</th></tr>`;
+					questions.forEach((question) => {
+						var wrongAnswers = [];
+						for (let i = 1; i <= 3; i++) {
+							if (question[`Wrong Answer ${i}`]) {
+								wrongAnswers.push(question[`Wrong Answer ${i}`]);
 							}
-							questionTable += `<tr>
+						}
+						questionTable += `<tr>
                                         <td>${question.Question}</td>
                                         <td class='table-success'>${question["Correct Answer"]}</td>
-                                        <td>${wrongAnswers.join(", ")}</td>
+                                        <td class='table-danger'>${wrongAnswers.join(", ")}</td>
                                     </tr>`;
-						});
-						questionTable += `</table>`;
-
-						document.getElementById("questionsTableContainer").innerHTML = questionTable;
-						document.getElementById("previewQuestions").style.display = "block";
-						document.getElementById("copyLink").style.display = "block";
 					});
+					questionTable += `</table>`;
+
+					document.getElementById("questionsTableContainer").innerHTML = questionTable;
+					document.getElementById("previewQuestions").style.display = "block";
+					document.getElementById("copyLink").style.display = "block";
+				});
 
 				document.getElementById("copyLink").addEventListener("click", function () {
-					navigator.clipboard.writeText(window.location.href).then(() => {
+					navigator.clipboard.writeText("https://khardal.net/tarwiz.html?code=" + code).then(() => {
 						alert("Link copied to clipboard!");
 					});
 				});
@@ -212,13 +214,20 @@
 					const worksheet = workbook.Sheets[firstSheetName];
 					const json = XLSX.utils.sheet_to_json(worksheet);
 
-					const questions = json.map((row) => ({
+					const dirtyquestions = json.map((row) => ({
 						Question: row["Question"],
 						"Correct Answer": row["Correct Answer"],
 						"Wrong Answer 1": row["Wrong Answer 1"],
 						"Wrong Answer 2": row["Wrong Answer 2"],
 						"Wrong Answer 3": row["Wrong Answer 3"],
 					}));
+
+					// Remove undefined properties
+					const questions = dirtyquestions.map((question) => {
+						return Object.fromEntries(Object.entries(question).filter(([key, value]) => value !== undefined));
+					});
+
+					console.log(questions);
 
 					const quizData = {
 						title: prompt("Enter quiz title:"),
@@ -230,12 +239,18 @@
 					document.getElementById("spinnerContainer").classList.remove("d-none");
 
 					const newQuizRef = push(ref(getDatabase(), "tarwiz"));
-					newQuizRef.set(quizData).then(() => {
-						// Hide spinner
-						document.getElementById("spinnerContainer").classList.add("d-none");
-						alert("Quiz uploaded successfully!");
-						location.href = `?code=${newQuizRef.key}`;
-					});
+					set(newQuizRef, quizData)
+						.then(() => {
+							// Hide spinner
+							document.getElementById("spinnerContainer").classList.add("d-none");
+							alert("Quiz uploaded successfully!");
+							location.href = `?code=${newQuizRef.key}`;
+						})
+						.catch((error) => {
+							console.error("Error uploading quiz:", error);
+							document.getElementById("spinnerContainer").classList.add("d-none");
+							alert("Error uploading quiz: " + error.message);
+						});
 				};
 				reader.readAsArrayBuffer(file);
 			});
