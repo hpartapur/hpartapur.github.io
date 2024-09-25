@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Foodfest Scoreboard</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide" />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+		<!-- add gradients to each team color bg, and fonts make more exciting, and amke score bigger -->
+		<style>
+			body {
+				background: linear-gradient(135deg, #656ff6 0%, #4c93cd 100%);
+				font-family: "Roboto", sans-serif;
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			h1 {
+				text-align: center;
+				color: #fff;
+				padding: 20px 0;
+				font-size: 3.5rem;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+			}
+			h2 {
+				font-size: 2.1vw;
+			}
+
+			.scoreboard {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 20px;
+				padding: 20px;
+			}
+
+			.team {
+				text-align: center;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				width: 18vw;
+				transition: transform 0.3s ease;
+			}
+			.team.red {
+				background: linear-gradient(135deg, #ffcccc 0%, #ff8585 100%);
+				color: #fff;
+			}
+
+			.team.blue {
+				background: linear-gradient(135deg, #b3d9ff 0%, #85aaff 100%);
+				color: #fff;
+			}
+
+			.team.yellow {
+				background: linear-gradient(135deg, #fff0b3 0%, #ffd985 100%);
+				color: #fff;
+			}
+
+			.team.green {
+				background: linear-gradient(135deg, #b3e6b3 0%, #85d985 100%);
+				color: #fff;
+			}
+
+			.team:hover {
+				transform: translateY(-5px);
+			}
+
+			.score {
+				font-size: 8vw;
+				font-weight: bold;
+				margin: 10px 0;
+			}
+
+			/* Color adjustments for better contrast */
+			.red {
+				color: #e53e3e;
+			}
+			.blue {
+				color: #2b6cb0;
+			}
+			.yellow {
+				color: #d69e2e;
+			}
+			.green {
+				color: #38a169;
+			}
+			.rules {
+				color: white;
+				text-align: center;
+				font-size: 1.6vw;
+				font-family: Audiowide;
+			}
+			strong {
+				font-weight: 800;
+				font-size: 2vw;
+			}
+			.clock {
+				display: flex;
+				margin-left: 30vw;
+			}
+			.time-segment {
+				margin: 1vw;
+				font-size: 2vw;
+				color: rgb(9, 83, 9);
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>👨🏼‍🍳FoodFest1446H🍽️</h1>
+		<div class="scoreboard">
+			<div class="team red">
+				<h2>Team Red🍒</h2>
+				<div class="score red">10</div>
+			</div>
+			<div class="team blue">
+				<h2>Team Blue💦</h2>
+				<div class="score blue">5</div>
+			</div>
+			<div class="team yellow">
+				<h2>Team Yellow🍌</h2>
+				<div class="score yellow">5</div>
+			</div>
+			<div class="team green">
+				<h2>Team Green🍈</h2>
+				<!-- <h5>Marjaan | Zumurrud</h5> -->
+				<div class="score green">20</div>
+			</div>
+		</div>
+		<p class="rules">
+			<b>Deadlines:</b><br />14 Sept for <strong>Teaser🎬</strong> Submission<br />16 Sept for <strong>Siyanat🛠️</strong> Requisitions.<br />17
+			Sept for <strong>Funoon🎨</strong> Requirements <br />Submitting according to deadlines will award your team points. Failure to do so will
+			result in deductions.
+		</p>
+	</body>
+	<center>
+		<div id="countdown" class="clock">
+			<div id="days" class="time-segment"><span class="number">00</span><span class="label"> Days</span></div>
+			<div id="hours" class="time-segment"><span class="number">00</span><span class="label"> Hours</span></div>
+			<div id="minutes" class="time-segment"><span class="number">00</span><span class="label"> Minutes</span></div>
+			<div id="seconds" class="time-segment"><span class="number">00</span><span class="label"> Seconds</span></div>
+		</div>
+		<p class="time-segment">Until FoodFest</p>
+	</center>
+	<script>
+		var countDownDate = new Date("Sep 21, 2024 19:30:00").getTime();
+
+		var countdown = setInterval(function () {
+			var now = new Date().getTime();
+			var distance = countDownDate - now;
+
+			var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+			var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+			var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+			document.getElementById("days").getElementsByClassName("number")[0].innerHTML = days;
+			document.getElementById("hours").getElementsByClassName("number")[0].innerHTML = hours;
+			document.getElementById("minutes").getElementsByClassName("number")[0].innerHTML = minutes;
+			document.getElementById("seconds").getElementsByClassName("number")[0].innerHTML = seconds;
+
+			if (distance < 0) {
+				clearInterval(countdown);
+				document.getElementById("countdown").innerHTML = "EXPIRED";
+			}
+		}, 1000);
+	</script>
+</html>
