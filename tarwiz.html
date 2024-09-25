@@ -151,13 +151,33 @@
 			}
 
 			get(ref(window.database, "tarwiz/" + code)).then((snapshot) => {
-				let quizTitle = snapshot.val().quizTitle;
+				if (snapshot.val()) {
+					console.log("FOUND");
+				} else {
+					alert("This quiz code is either invalid or has been removed.");
+					location.replace("https://khardal.net/tarwiz.html");
+				}
+				let quizTitle = snapshot.val().title;
 				document.getElementById("quizname").innerText = quizTitle;
 				let objquestions = snapshot.val().questions;
-				let qarray = Object.values(objquestions)
-					.sort(() => Math.random() - 0.5)
-					.slice(0, 30);
+				let quizoptions = snapshot.val().options;
+
+				// Apply options based on admin settings
+				let qarray = Object.values(objquestions);
+				if (quizoptions.shuffle) {
+					qarray.sort(() => Math.random() - 0.5);
+				}
+				if (quizoptions.questionLimited) {
+					let limit = parseInt(quizoptions.questionLimit) || 30; // Default limit
+					qarray = qarray.slice(0, limit);
+				}
 				window.questions = qarray;
+
+				// Timer setup
+				if (quizoptions.timeLimited) {
+					timeLeft = parseInt(quizoptions.timeLimit) || 20; // Default time limit
+				}
+
 				var questionElement = document.getElementById("question");
 				var option1 = document.getElementById("option1");
 				var option2 = document.getElementById("option2");
@@ -166,7 +186,6 @@
 				var currentQuestion = 0;
 
 				function startTimer() {
-					timeLeft = 20;
 					document.getElementById("timer").textContent = "Time left: " + timeLeft + "s";
 					if (timer) clearInterval(timer);
 					timer = setInterval(function () {
@@ -188,7 +207,9 @@
 					currentQuestion++;
 					if (currentQuestion < window.questions.length) {
 						updateQuestion();
-						startTimer();
+						if (quizoptions.timeLimited) {
+							startTimer();
+						}
 					} else {
 						alert("You have completed the quiz!");
 						submitScore();
@@ -242,7 +263,11 @@
 						button.onclick = () => handleAnswer(button.textContent === window.questions[currentQuestion]["Correct Answer"]);
 					});
 
-					startTimer();
+					if (quizoptions.timeLimited) {
+						startTimer();
+					} else {
+						document.getElementById("timer").hidden = true;
+					}
 				}
 
 				function submitScore() {
