@@ -42,7 +42,7 @@
 				padding: 15px 30px;
 				margin: 10px;
 				border-radius: 12px;
-				font-size: 1.5em;
+				font-size: 2.5em;
 				cursor: pointer;
 				font-family: "Kanz-al-Marjaan", KM, sans-serif;
 				transition: transform 0.2s, background-color 0.3s;
@@ -86,9 +86,17 @@
 			#wrongAnswerOverlay {
 				background-color: red;
 			}
-			@media (max-width: 768px) {
+			@media (max-width: 1008px) {
+				h1 {
+					font-size: 5rem; /* Adjust font size for mobile */
+				}
 				.buttons {
-					font-size: 50em;
+					font-size: 5rem; /* Increase button size for mobile */
+					padding: 20px 40px; /* Adjust padding for touch targets */
+				}
+				#timer,
+				#score {
+					font-size: 2em; /* Larger score and timer for mobile */
 				}
 			}
 		</style>
