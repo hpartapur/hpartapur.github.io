@@ -208,7 +208,7 @@
 				const deleteButton = document.createElement("button");
 				deleteButton.innerText = "Delete Quiz";
 				deleteButton.className = "btn btn-danger";
-				deleteButton.onclick = () => deleteQuiz(); // Pass the quiz ID
+				deleteButton.onclick = () => deleteQuiz();
 				document.getElementById("result").appendChild(deleteButton); // Append button to result div
 
 				// Show spinner
@@ -221,6 +221,10 @@
 					document.getElementById("spinnerContainer").classList.add("d-none");
 
 					var data = snapshot.val();
+					if (data.options.creatorId != auth.uid) {
+						alert("This account is not admin authorized. Please login with different credentials.");
+						location.replace("https://khardal.net/tarwiz.html");
+					}
 					console.log(data);
 					if (data.sessions) {
 						var sessions = Object.values(data.sessions);
