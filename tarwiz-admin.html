@@ -3,18 +3,18 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Tarwiz Admin</title>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 		<link rel="icon" href="assets/tarwiz.ico" type="image/x-icon" />
-		<!-- <script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js"></script> -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+		<script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js"></script>
+		<script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js"></script>
+		<script type="module" src="https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js"></script>
 	</head>
 	<body>
 		<div class="container mt-4">
 			<h1>Tarwiz Admin</h1>
 
-			<!-- Sign-in Button -->
+			<!-- Authentication Buttons -->
 			<button id="login" class="btn btn-primary mb-3">Sign in with Google</button>
 			<button id="logout" class="btn btn-danger mb-3" style="display: none">Sign out</button>
 
@@ -22,6 +22,7 @@
 				<button id="downloadTemplate" class="btn btn-primary mb-3">Download Quiz Template</button>
 				<input type="file" id="upload" accept=".xlsx, .xls" class="mb-2" />
 				<button id="convert" class="btn btn-success mb-3">Upload and Convert</button>
+				<button id="deletequiz" style="display: none" class="btn btn-danger">DELETE QUIZ</button>
 				<!-- Quiz Options Form -->
 				<div class="mt-4">
 					<h2>Quiz Options</h2>
@@ -48,8 +49,8 @@
 						</div>
 					</form>
 				</div>
-				<button id="export" class="btn btn-warning mb-3" style="display: none">Export to Excel</button>
 
+				<button id="export" class="btn btn-warning mb-3" style="display: none">Export to Excel</button>
 				<button id="previewQuestions" class="btn btn-info mb-3" style="display: none" data-toggle="modal" data-target="#questionsModal">
 					Preview Questions
 				</button>
@@ -78,18 +79,29 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<h6>Step 1: Download the Quiz Template</h6>
-						<p>Click the "Download Quiz Template" button to get the Excel file for quiz preparation.</p>
-						<h6>Step 2: Prepare Your Quiz Data</h6>
-						<p>Open the downloaded template, fill in your quiz questions, and save it in .xlsx or .xls format.</p>
-						<h6>Step 3: Upload Your Quiz</h6>
-						<p>Click "Choose File" to upload your prepared Excel file and then click "Upload and Convert".</p>
-						<h6>Step 4: Enter Quiz Title</h6>
-						<p>When prompted, enter a title for your quiz.</p>
-						<h6>Step 5: Copy the Link</h6>
-						<p>Once the upload is successful, click "Copy Link" to save the link for accessing your quiz.</p>
-						<h6>Step 6: Access an Existing Quiz</h6>
-						<p>To view an existing quiz, append the quiz code to the URL: <code>khardal.net/tarwiz.html?code=YOUR_CODE</code>.</p>
+						<ol>
+							<li>
+								<strong>Download the Quiz Template:</strong> Click the "Download Quiz Template" button to get the Excel file for quiz
+								preparation.
+							</li>
+							<li>
+								<strong>Prepare Your Quiz Data:</strong> Open the downloaded template, fill in your quiz questions, and save it in
+								.xlsx or .xls format.
+							</li>
+							<li>
+								<strong>Upload Your Quiz:</strong> Click "Choose File" to upload your prepared Excel file and then click "Upload and
+								Convert".
+							</li>
+							<li><strong>Enter Quiz Title:</strong> When prompted, enter a title for your quiz.</li>
+							<li>
+								<strong>Copy the Link:</strong> Once the upload is successful, click "Copy Link" to save the link for accessing your
+								quiz.
+							</li>
+							<li>
+								<strong>Access an Existing Quiz:</strong> To view an existing quiz, append the quiz code to the URL:
+								<code>khardal.net/tarwiz.html?code=YOUR_CODE</code>.
+							</li>
+						</ol>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -126,7 +138,7 @@
 				onAuthStateChanged,
 			} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
-			// Your web app's Firebase configuration
+			// Firebase configuration
 			const firebaseConfig = {
 				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
 				authDomain: "khardal.firebaseapp.com",
@@ -142,164 +154,98 @@
 			const auth = getAuth(app);
 			const provider = new GoogleAuthProvider();
 
-			// Sign-in functionality
-			document.getElementById("login").addEventListener("click", () => {
-				signInWithPopup(auth, provider)
-					.then((result) => {
-						const user = result.user;
-						console.log("User signed in:", user);
-						document.getElementById("login").style.display = "none";
-						document.getElementById("logout").style.display = "block";
-						document.getElementById("adminContent").hidden = false;
-					})
-					.catch((error) => {
-						console.error("Error during sign-in:", error);
-					});
+			// UI Elements
+			const elements = {
+				loginButton: document.getElementById("login"),
+				logoutButton: document.getElementById("logout"),
+				adminContent: document.getElementById("adminContent"),
+				downloadTemplateButton: document.getElementById("downloadTemplate"),
+				uploadInput: document.getElementById("upload"),
+				convertButton: document.getElementById("convert"),
+				resultContainer: document.getElementById("result"),
+				spinnerContainer: document.getElementById("spinnerContainer"),
+				questionLimitGroup: document.getElementById("questionLimitGroup"),
+				timeLimitGroup: document.getElementById("timeLimitGroup"),
+				copyLinkButton: document.getElementById("copyLink"),
+				previewQuestionsButton: document.getElementById("previewQuestions"),
+				tutorialModal: document.getElementById("tutorialModal"),
+				questionsTableContainer: document.getElementById("questionsTableContainer"),
+				deleteButton: document.getElementById("deletequiz"),
+			};
+
+			// Event Listeners
+			elements.loginButton.addEventListener("click", signIn);
+			elements.logoutButton.addEventListener("click", signOutUser);
+			elements.downloadTemplateButton.addEventListener("click", downloadTemplate);
+			elements.convertButton.addEventListener("click", uploadQuiz);
+			elements.copyLinkButton.addEventListener("click", copyQuizLink);
+			elements.deleteButton.addEventListener("click", deleteQuiz);
+			document
+				.getElementById("questionlimited")
+				.addEventListener("change", () => toggleVisibility("questionlimited", elements.questionLimitGroup));
+			document.getElementById("timelimited").addEventListener("change", () => toggleVisibility("timelimited", elements.timeLimitGroup));
+
+			// Firebase Auth State Change
+			onAuthStateChanged(auth, (user) => {
+				toggleAuthButtons(!!user);
 			});
 
-			// Sign-out functionality
-			document.getElementById("logout").addEventListener("click", () => {
+			// Functions
+			function signIn() {
+				signInWithPopup(auth, provider)
+					.then((result) => {
+						console.log("User signed in:", result.user);
+						toggleAuthButtons(true);
+					})
+					.catch(console.error);
+			}
+
+			function signOutUser() {
 				signOut(auth)
 					.then(() => {
 						console.log("User signed out.");
-						document.getElementById("login").style.display = "block";
-						document.getElementById("logout").style.display = "none";
-						document.getElementById("adminContent").hidden = true;
+						toggleAuthButtons(false);
+						location.reload();
 					})
-					.catch((error) => {
-						console.error("Error during sign-out:", error);
-					});
-			});
+					.catch(console.error);
+			}
 
-			// Check auth state
-			onAuthStateChanged(auth, (user) => {
-				if (user) {
-					console.log("User is signed in:", user);
-					document.getElementById("login").style.display = "none";
-					document.getElementById("logout").style.display = "block";
-					document.getElementById("adminContent").hidden = false;
-				} else {
-					console.log("No user is signed in.");
-					document.getElementById("login").style.display = "block";
-					document.getElementById("logout").style.display = "none";
-					document.getElementById("adminContent").hidden = true;
-				}
-			});
+			function toggleAuthButtons(isLoggedIn) {
+				elements.loginButton.style.display = isLoggedIn ? "none" : "block";
+				elements.logoutButton.style.display = isLoggedIn ? "block" : "none";
+				elements.adminContent.hidden = !isLoggedIn;
+			}
 
-			// Download template functionality
-			document.getElementById("downloadTemplate").addEventListener("click", function () {
+			function downloadTemplate() {
 				const link = document.createElement("a");
-				link.href = "assets/tarwiz-template.xlsx"; // Replace with the actual path to your template file
-				link.download = "tarwiz-template.xlsx"; // Set the filename
+				link.href = "assets/tarwiz-template.xlsx"; // Update with actual path
+				link.download = "tarwiz-template.xlsx";
 				document.body.appendChild(link);
 				link.click();
 				document.body.removeChild(link);
-			});
-
-			const urlParams = new URLSearchParams(window.location.search);
-			const code = urlParams.get("code");
-
-			if (code) {
-				document.getElementById("convert").style.display = "none";
-				document.getElementById("upload").style.display = "none";
-				document.getElementById("result").innerText = "Code: " + code;
-
-				// Create delete button
-				const deleteButton = document.createElement("button");
-				deleteButton.innerText = "Delete Quiz";
-				deleteButton.className = "btn btn-danger";
-				deleteButton.onclick = () => deleteQuiz();
-				document.getElementById("result").appendChild(deleteButton); // Append button to result div
-
-				// Show spinner
-				document.getElementById("spinnerContainer").classList.remove("d-none");
-				const dbRef = ref(getDatabase(), "tarwiz/" + code);
-
-				// Pull data from Firebase
-				onValue(dbRef, (snapshot) => {
-					// Hide spinner
-					document.getElementById("spinnerContainer").classList.add("d-none");
-
-					var data = snapshot.val();
-					if (data.options.creatorId != auth.uid) {
-						alert("This account is not admin authorized. Please login with different credentials.");
-						location.replace("https://khardal.net/tarwiz.html");
-					}
-					console.log(data);
-					if (data.sessions) {
-						var sessions = Object.values(data.sessions);
-						// Scores Table
-						var scoreTable = `<h2>Scores</h2><table style='width:40vw;' class="table table-info table-responsive"><tr><th>ID</th><th>Score</th><th>Timestamp</th></tr>`;
-						sessions.forEach((session) => {
-							scoreTable += `<tr><td>${session.id}</td><td>${session.score}</td><td>${session.timestamp}</td></tr>`;
-						});
-						scoreTable += `</table>`;
-
-						document.getElementById("result").innerHTML += scoreTable;
-					}
-
-					var questions = data.questions || [];
-
-					// Prepare questions table for modal
-					var questionTable = `<table style='width:100%;' class="table table-secondary"><tr><th>Question</th><th>Answer</th><th>Wrong Answers</th></tr>`;
-					questions.forEach((question) => {
-						var wrongAnswers = [];
-						for (let i = 1; i <= 3; i++) {
-							if (question[`Wrong Answer ${i}`]) {
-								wrongAnswers.push(question[`Wrong Answer ${i}`]);
-							}
-						}
-						questionTable += `<tr>
-			                                     <td>${question.Question}</td>
-			                                     <td class='table-success'>${question["Correct Answer"]}</td>
-			                                     <td class='table-danger'>${wrongAnswers.join(", ")}</td>
-			                                 </tr>`;
-					});
-					questionTable += `</table>`;
-
-					document.getElementById("questionsTableContainer").innerHTML = questionTable;
-					document.getElementById("previewQuestions").style.display = "block";
-					document.getElementById("copyLink").style.display = "block";
-				});
-
-				document.getElementById("copyLink").addEventListener("click", function () {
-					navigator.clipboard.writeText("https://khardal.net/tarwiz.html?code=" + code).then(() => {
-						alert("Link copied to clipboard!");
-					});
-				});
 			}
 
-			document.getElementById("convert").addEventListener("click", function () {
-				const fileInput = document.getElementById("upload");
-				const file = fileInput.files[0];
+			function copyQuizLink() {
+				const code = new URLSearchParams(window.location.search).get("code");
+				navigator.clipboard.writeText(`https://khardal.net/tarwiz.html?code=${code}`).then(() => alert("Link copied to clipboard!"));
+			}
+
+			function toggleVisibility(checkboxId, group) {
+				group.style.display = document.getElementById(checkboxId).checked ? "block" : "none";
+			}
+
+			function uploadQuiz() {
+				const file = elements.uploadInput.files[0];
 
 				if (!file) {
-					alert("Please upload a file.");
-					return;
+					return alert("Please upload a file.");
 				}
 
 				const reader = new FileReader();
-				reader.onload = function (e) {
+				reader.onload = (e) => {
 					const data = new Uint8Array(e.target.result);
 					const workbook = XLSX.read(data, { type: "array" });
-					const firstSheetName = workbook.SheetNames[0];
-					const worksheet = workbook.Sheets[firstSheetName];
-					const json = XLSX.utils.sheet_to_json(worksheet);
-
-					const dirtyquestions = json.map((row) => ({
-						Question: row["Question"],
-						"Correct Answer": row["Correct Answer"],
-						"Wrong Answer 1": row["Wrong Answer 1"],
-						"Wrong Answer 2": row["Wrong Answer 2"],
-						"Wrong Answer 3": row["Wrong Answer 3"],
-					}));
-
-					// Remove undefined properties
-					const questions = dirtyquestions.map((question) => {
-						return Object.fromEntries(Object.entries(question).filter(([key, value]) => value !== undefined));
-					});
-
-					console.log(questions);
+					const questions = parseQuestions(XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]));
 
 					const options = {
 						shuffle: document.getElementById("shuffle").checked,
@@ -311,68 +257,141 @@
 
 					const quizData = {
 						title: prompt("Enter quiz title:"),
-						questions: questions,
+						questions,
 						sessions: {},
-						options: options,
-						creatorId: auth.currentUser.uid, // Store the creator's ID
+						options,
+						creatorId: auth.currentUser.uid,
 					};
-					console.log(auth);
 
-					// Show spinner
-					document.getElementById("spinnerContainer").classList.remove("d-none");
-
-					const newQuizRef = push(ref(getDatabase(), "tarwiz"));
-					set(newQuizRef, quizData)
-						.then(() => {
-							// Hide spinner
-							document.getElementById("spinnerContainer").classList.add("d-none");
-							alert("Quiz uploaded successfully!");
-							location.href = `?code=${newQuizRef.key}`;
-						})
-						.catch((error) => {
-							console.error("Error uploading quiz:", error);
-							document.getElementById("spinnerContainer").classList.add("d-none");
-							alert("Error uploading quiz: " + error.message);
-						});
+					uploadQuizData(quizData);
 				};
 				reader.readAsArrayBuffer(file);
-			});
-			function deleteQuiz() {
+			}
+
+			function parseQuestions(data) {
+				return data
+					.map((row) => ({
+						Question: row["Question"],
+						"Correct Answer": row["Correct Answer"],
+						"Wrong Answer 1": row["Wrong Answer 1"],
+						"Wrong Answer 2": row["Wrong Answer 2"],
+						"Wrong Answer 3": row["Wrong Answer 3"],
+					}))
+					.filter((q) => Object.values(q).some(Boolean));
+			}
+
+			function uploadQuizData(quizData) {
+				toggleSpinner(true);
+				const newQuizRef = push(ref(database, "tarwiz"));
+				set(newQuizRef, quizData)
+					.then(() => {
+						toggleSpinner(false);
+						alert("Quiz uploaded successfully!");
+						location.href = `?code=${newQuizRef.key}`;
+					})
+					.catch((error) => {
+						toggleSpinner(false);
+						alert("Error uploading quiz: " + error.message);
+					});
+			}
+
+			function toggleSpinner(isLoading) {
+				elements.spinnerContainer.classList.toggle("d-none", !isLoading);
+			}
+
+			// Quiz Code Handling
+			const code = new URLSearchParams(window.location.search).get("code");
+			if (code) {
+				setupQuizEditing(code);
+			}
+
+			function setupQuizEditing(code) {
+				elements.convertButton.style.display = "none";
+				elements.uploadInput.style.display = "none";
+				elements.resultContainer.innerText = "Code: " + code;
+
+				// const deleteButton = createDeleteButton(code);
+				// elements.resultContainer.appendChild(deleteButton);
+
+				toggleSpinner(true);
+				onValue(ref(database, "tarwiz/" + code), (snapshot) => {
+					toggleSpinner(false);
+					const data = snapshot.val();
+					if (data.options.creatorId !== auth.uid) {
+						alert("This account is not admin authorized. Please login with different credentials.");
+						location.replace("https://khardal.net/tarwiz.html");
+					}
+					populateResults(data);
+				});
+			}
+
+			// function createDeleteButton(code) {
+			// 	const deleteButton = document.createElement("button");
+			// 	deleteButton.innerText = "Delete Quiz";
+			// 	deleteButton.className = "btn btn-danger";
+			// 	deleteButton.onclick = () => deleteQuiz(code);
+			// 	return deleteButton;
+			// }
+
+			function populateResults(data) {
+				if (data.sessions) {
+					const scoreTable = generateScoreTable(data.sessions);
+					elements.resultContainer.innerHTML += scoreTable;
+				}
+
+				const questions = data.questions || [];
+				const questionTable = generateQuestionsTable(questions);
+				elements.questionsTableContainer.innerHTML = questionTable;
+
+				elements.previewQuestionsButton.style.display = "block";
+				elements.copyLinkButton.style.display = "block";
+				elements.deleteButton.style.display = "block";
+			}
+
+			function generateScoreTable(sessions) {
+				const scoreTableElement = document.getElementById("scoretable");
+				if (scoreTableElement) {
+					scoreTableElement.remove(); //remove existing scoretable
+				}
+				const sessionArray = Object.values(sessions);
+				const rows = sessionArray
+					.map((session) => `<tr><td>${session.id}</td><td>${session.score}</td><td>${session.timestamp}</td></tr>`)
+					.join("");
+				return `<h2>Scores</h2><table id='scoretable' class="table table-info table-responsive"><tr><th>ID</th><th>Score</th><th>Timestamp</th></tr>${rows}</table>`;
+			}
+
+			function generateQuestionsTable(questions) {
+				const rows = questions
+					.map((question) => {
+						const wrongAnswers = [question["Wrong Answer 1"], question["Wrong Answer 2"], question["Wrong Answer 3"]]
+							.filter(Boolean)
+							.join(", ");
+						return `<tr><td>${question.Question}</td><td class='table-success'>${question["Correct Answer"]}</td><td class='table-danger'>${wrongAnswers}</td></tr>`;
+					})
+					.join("");
+				return `<table class="table table-secondary"><tr><th>Question</th><th>Answer</th><th>Wrong Answers</th></tr>${rows}</table>`;
+			}
+
+			function deleteQuiz(code) {
+				console.log("Deleting");
 				if (confirm("Are you sure you want to delete this quiz? This action cannot be undone.")) {
-					const quizRef = ref(getDatabase(), "tarwiz/" + code);
-
-					// Show spinner
-					document.getElementById("spinnerContainer").classList.remove("d-none");
-
-					// Remove the quiz from the database
-					set(quizRef, null)
+					toggleSpinner(true);
+					set(ref(database, "tarwiz/" + code), null)
 						.then(() => {
-							document.getElementById("spinnerContainer").classList.add("d-none");
+							toggleSpinner(false);
 							alert("Quiz deleted successfully!");
 							location.replace("https://khardal.net/tarwiz-admin.html");
 						})
 						.catch((error) => {
-							console.error("Error deleting quiz:", error);
-							document.getElementById("spinnerContainer").classList.add("d-none");
+							toggleSpinner(false);
 							alert("Error deleting quiz: " + error.message);
 						});
 				}
 			}
 
-			// Quiz options visibility
-			document.getElementById("questionlimited").addEventListener("change", function () {
-				const questionLimitGroup = document.getElementById("questionLimitGroup");
-				questionLimitGroup.style.display = this.checked ? "block" : "none";
-			});
-
-			document.getElementById("timelimited").addEventListener("change", function () {
-				const timeLimitGroup = document.getElementById("timeLimitGroup");
-				timeLimitGroup.style.display = this.checked ? "block" : "none";
-			});
-
 			// Initialize visibility based on the initial state of the checkboxes
-			document.getElementById("questionLimitGroup").style.display = document.getElementById("questionlimited").checked ? "block" : "none";
-			document.getElementById("timeLimitGroup").style.display = document.getElementById("timelimited").checked ? "block" : "none";
+			toggleVisibility("questionlimited", elements.questionLimitGroup);
+			toggleVisibility("timelimited", elements.timeLimitGroup);
 		</script>
 
 		<!-- Include Bootstrap JS -->
