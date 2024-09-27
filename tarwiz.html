@@ -4,7 +4,6 @@
 		<title>Tarwiz Quizzes</title>
 		<link rel="icon" href="assets/tarwiz.ico" type="image/x-icon" />
 		<link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
 		<style>
 			/* Basic Reset */
@@ -19,7 +18,6 @@
 			}
 			body {
 				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-				margin: 0;
 				background: url(./assets/musabaqatbg.jpg) center center fixed;
 				background-size: cover;
 				color: #333;
@@ -28,6 +26,7 @@
 			nav {
 				background-color: rgba(0, 0, 0, 0.7);
 				padding: 10px;
+				z-index: 1000;
 			}
 			h1 {
 				margin: 20px 0;
@@ -46,10 +45,9 @@
 				cursor: pointer;
 				font-family: "Kanz-al-Marjaan", KM, sans-serif;
 				transition: transform 0.2s, background-color 0.3s;
-				border: 1vw;
 			}
 			.buttons:hover {
-				transform: scale(1.05);
+				transform: scale(1.12);
 			}
 			#option1 {
 				background-color: #ff4b5c;
@@ -59,13 +57,14 @@
 			}
 			#option3 {
 				background-color: #ffeb3b;
-				color: #333;
+				/* color: #333; */
 			}
 			#option4 {
 				background-color: #2196f3;
 			}
 			#timer,
-			#score {
+			#score,
+			#questioncounter {
 				font-size: 1.2em;
 				color: #fff;
 				margin: 10px;
@@ -80,43 +79,65 @@
 				z-index: 1000;
 				opacity: 0.9;
 			}
+
 			#correctAnswerOverlay {
 				background-color: green;
 			}
 			#wrongAnswerOverlay {
 				background-color: red;
 			}
+			#loading {
+				display: none;
+				font-size: 2em;
+				color: white;
+				margin-top: 20%;
+			}
 			@media (max-width: 1008px) {
 				h1 {
-					font-size: 5rem; /* Adjust font size for mobile */
+					font-size: 5.5rem;
 				}
 				.buttons {
-					font-size: 5rem; /* Increase button size for mobile */
-					padding: 20px 40px; /* Adjust padding for touch targets */
+					font-size: 5rem;
+					padding: 20px 40px;
+				}
+				.buttons:hover {
+					transform: scale(1);
 				}
 				#timer,
 				#score {
-					font-size: 2em; /* Larger score and timer for mobile */
+					font-size: 2em;
 				}
+				#quizname {
+					font-size: 2.5rem;
+				}
+			}
+			#loading {
+				display: none;
+				font-size: 2em;
+				color: white;
+				margin-top: 20%;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
 			}
 		</style>
 	</head>
 	<body>
 		<div id="correctAnswerOverlay" class="overlay"></div>
 		<div id="wrongAnswerOverlay" class="overlay"></div>
-		<nav class="navbar navbar-expand-lg navbar-dark">
+		<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="#" id="quizname">Tarwiz</a>
 				<div class="collapse navbar-collapse">
 					<div class="navbar-nav ms-auto">
 						<h2 class="nav-link" id="score">Score: 0</h2>
 						<h2 class="nav-link" id="timer">Time left: 30s</h2>
-						<h2 class="nav-link">Question <span id="currentQuestion"></span>/<span id="qcount"></span></h2>
+						<h2 class="nav-link" id="questioncounter">Question <span id="currentQuestion"></span>/<span id="qcount"></span></h2>
 					</div>
 				</div>
 			</div>
-			<br />
-			<div class="progress" style="height: 10px; margin: 10px; width: 100%">
+			<div class="progress" style="height: 10px; margin: 10px; width: 40%">
 				<div
 					id="progressBar"
 					class="progress-bar"
@@ -137,12 +158,11 @@
 				<button id="option4" class="buttons"></button>
 			</div>
 		</div>
+		<div id="loading">Loading...</div>
 		<script type="module">
-			let wrongfx = new Audio("/asal_assets/wrong.mp3");
-			let rightfx = new Audio("/asal_assets/points.mp3");
-			var score = 0;
-			var timer;
-			var timeLeft = 20;
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getDatabase, ref, push, get, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
 			const firebaseConfig = {
 				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
 				authDomain: "khardal.firebaseapp.com",
@@ -151,11 +171,9 @@
 				messagingSenderId: "258618544710",
 				appId: "1:258618544710:web:2b734571b863de60dc3047",
 			};
-			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-			import { getDatabase, ref, push, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
 			const app = initializeApp(firebaseConfig);
-			window.database = getDatabase(app);
+			const database = getDatabase(app);
 			const urlParams = new URLSearchParams(window.location.search);
 			const code = urlParams.get("code");
 
@@ -164,144 +182,151 @@
 				window.location.href = "index.html";
 			}
 
-			get(ref(window.database, "tarwiz/" + code)).then((snapshot) => {
-				if (snapshot.val()) {
-					console.log("FOUND");
-				} else {
+			const wrongfx = new Audio("/asal_assets/wrong.mp3");
+			const rightfx = new Audio("/asal_assets/points.mp3");
+			let score = 0,
+				timer,
+				timeLeft = 20,
+				currentQuestion = 0;
+			let questions = [],
+				quizOptions = {};
+
+			document.getElementById("loading").style.display = "block"; // Show loading spinner
+
+			get(ref(database, `tarwiz/${code}`)).then((snapshot) => {
+				document.getElementById("loading").style.display = "none"; // Hide loading spinner
+
+				if (!snapshot.val()) {
 					alert("This quiz code is either invalid or has been removed.");
 					location.replace("https://khardal.net/tarwiz.html");
-				}
-				let quizTitle = snapshot.val().title;
-				document.getElementById("quizname").innerText = quizTitle;
-				let objquestions = snapshot.val().questions;
-				let quizoptions = snapshot.val().options;
-
-				// Apply options based on admin settings
-				let qarray = Object.values(objquestions);
-				if (quizoptions.shuffle) {
-					qarray.sort(() => Math.random() - 0.5);
-				}
-				if (quizoptions.questionLimited) {
-					let limit = parseInt(quizoptions.questionLimit) || 30; // Default limit
-					qarray = qarray.slice(0, limit);
-				}
-				window.questions = qarray;
-
-				// Timer setup
-				if (quizoptions.timeLimited) {
-					timeLeft = parseInt(quizoptions.timeLimit) || 20; // Default time limit
+					return;
 				}
 
-				var questionElement = document.getElementById("question");
-				var option1 = document.getElementById("option1");
-				var option2 = document.getElementById("option2");
-				var option3 = document.getElementById("option3");
-				var option4 = document.getElementById("option4");
-				var currentQuestion = 0;
+				const { title, questions: objQuestions, options } = snapshot.val();
+				document.getElementById("quizname").innerText = title;
+				questions = Object.values(objQuestions);
+				quizOptions = options;
 
-				function startTimer() {
-					document.getElementById("timer").textContent = "Time left: " + timeLeft + "s";
-					if (timer) clearInterval(timer);
-					timeLeft = quizoptions.timeLimit;
-					timer = setInterval(function () {
-						timeLeft--;
-						document.getElementById("timer").textContent = "Time left: " + timeLeft + "s";
-						if (timeLeft <= 0) {
-							clearInterval(timer);
-							handleTimeOut();
-						}
-					}, 1000);
+				applyQuizOptions();
+				updateQuestion();
+			});
+
+			function applyQuizOptions() {
+				if (quizOptions.shuffle) {
+					questions.sort(() => Math.random() - 0.5);
 				}
-
-				function handleTimeOut() {
-					document.getElementById("wrongAnswerOverlay").style.display = "block";
-					setTimeout(() => {
-						document.getElementById("wrongAnswerOverlay").style.display = "none";
-					}, 500);
-					wrongfx.play();
-					currentQuestion++;
-					if (currentQuestion < window.questions.length) {
-						updateQuestion();
-						if (quizoptions.timeLimited) {
-							startTimer();
-						}
-					} else {
-						alert("You have completed the quiz!");
-						submitScore();
-					}
+				if (quizOptions.questionLimited) {
+					const limit = parseInt(quizOptions.questionLimit) || 30;
+					questions = questions.slice(0, limit);
 				}
+				if (quizOptions.timeLimited) {
+					timeLeft = parseInt(quizOptions.timeLimit) || 20;
+				}
+			}
 
-				function handleAnswer(isCorrect) {
-					clearInterval(timer);
-					if (isCorrect) {
-						currentQuestion++;
-						rightfx.play();
-						score++;
-						document.getElementById("score").textContent = "Score: " + score;
-						if (currentQuestion < window.questions.length) {
-							updateQuestion();
-							document.getElementById("correctAnswerOverlay").style.display = "block";
-							setTimeout(() => {
-								document.getElementById("correctAnswerOverlay").style.display = "none";
-							}, 500);
-						} else {
-							alert("You have completed the quiz!");
-							submitScore();
-						}
-					} else {
+			function startTimer() {
+				updateTimerDisplay();
+				if (timer) clearInterval(timer);
+				timeLeft = quizOptions.timeLimit;
+				timer = setInterval(() => {
+					timeLeft--;
+					updateTimerDisplay();
+					if (timeLeft <= 0) {
+						clearInterval(timer);
 						handleTimeOut();
 					}
+				}, 1000);
+			}
+
+			function updateTimerDisplay() {
+				document.getElementById("timer").textContent = `Time left: ${timeLeft}s`;
+			}
+
+			function handleTimeOut() {
+				showOverlay("wrongAnswerOverlay");
+				wrongfx.play();
+				nextQuestion();
+			}
+
+			function handleAnswer(isCorrect) {
+				clearInterval(timer);
+				if (isCorrect) {
+					score++;
+					document.getElementById("score").textContent = `Score: ${score}`;
+					rightfx.play();
+					showOverlay("correctAnswerOverlay");
+				} else {
+					currentQuestion--;
+					handleTimeOut();
 				}
+				nextQuestion();
+			}
 
-				function updateQuestion() {
-					document.getElementById("currentQuestion").innerText = currentQuestion + 1;
-					document.getElementById("qcount").innerText = window.questions.length;
+			function nextQuestion() {
+				currentQuestion++;
+				if (currentQuestion < questions.length) {
+					updateQuestion();
+				} else {
+					alert("You have completed the quiz!");
+					submitScore();
+				}
+			}
 
-					// Update progress bar
-					let progressPercentage = ((currentQuestion + 1) / window.questions.length) * 100;
-					document.getElementById("progressBar").style.width = progressPercentage + "%";
-					document.getElementById("progressBar").setAttribute("aria-valuenow", progressPercentage);
+			function updateQuestion() {
+				const currentQuestionData = questions[currentQuestion];
+				document.getElementById("currentQuestion").innerText = currentQuestion + 1;
+				document.getElementById("qcount").innerText = questions.length;
 
-					questionElement.textContent = window.questions[currentQuestion]["Question"];
-					questionElement.dir = /^[A-Za-z]/.test(window.questions[currentQuestion]["Question"]) ? "ltr" : "rtl";
+				const progressPercentage = ((currentQuestion + 1) / questions.length) * 100;
+				document.getElementById("progressBar").style.width = `${progressPercentage}%`;
+				document.getElementById("progressBar").setAttribute("aria-valuenow", progressPercentage);
 
-					let answers = [
-						window.questions[currentQuestion]["Correct Answer"],
-						window.questions[currentQuestion]["Wrong Answer 1"],
-						window.questions[currentQuestion]["Wrong Answer 2"],
-						window.questions[currentQuestion]["Wrong Answer 3"],
-					].sort(() => Math.random() - 0.5);
+				document.getElementById("question").textContent = currentQuestionData["Question"];
+				document.getElementById("question").dir = /^[A-Za-z]/.test(currentQuestionData["Question"]) ? "ltr" : "rtl";
 
-					[option1, option2, option3, option4].forEach((button, index) => {
-						button.textContent = answers[index];
-						button.style.display = answers[index] ? "inline-block" : "none";
-						button.onclick = () => handleAnswer(button.textContent === window.questions[currentQuestion]["Correct Answer"]);
+				const answers = [
+					currentQuestionData["Correct Answer"],
+					currentQuestionData["Wrong Answer 1"],
+					currentQuestionData["Wrong Answer 2"],
+					currentQuestionData["Wrong Answer 3"],
+				].sort(() => Math.random() - 0.5);
+
+				answers.forEach((answer, index) => {
+					const button = document.getElementById(`option${index + 1}`);
+					button.textContent = answer;
+					button.hidden = answer === undefined;
+					button.onclick = () => handleAnswer(answer === currentQuestionData["Correct Answer"]);
+				});
+
+				if (quizOptions.timeLimited) {
+					startTimer();
+				} else {
+					document.getElementById("timer").hidden = true;
+				}
+			}
+
+			function showOverlay(overlayId) {
+				const overlay = document.getElementById(overlayId);
+				overlay.style.display = "block";
+				setTimeout(() => {
+					overlay.style.display = "none";
+				}, 500);
+			}
+
+			function submitScore() {
+				const id = prompt("Enter your ITS ID here to save your game");
+				if (id) {
+					const sessionsRef = ref(database, `tarwiz/${code}/sessions`);
+					const newSessionRef = push(sessionsRef);
+					set(newSessionRef, {
+						score,
+						timestamp: new Date().toISOString(),
+						id,
 					});
-
-					if (quizoptions.timeLimited) {
-						startTimer();
-					} else {
-						document.getElementById("timer").hidden = true;
-					}
+					alert("Your score has been submitted!");
+					window.location.reload();
 				}
-
-				function submitScore() {
-					var tr = prompt("Enter your ITS ID here to save your game");
-					if (tr) {
-						var sessionsRef = ref(window.database, "tarwiz/" + code + "/sessions");
-						var newSessionRef = push(sessionsRef);
-						set(newSessionRef, {
-							score: score,
-							timestamp: new Date().toISOString(),
-							id: tr,
-						});
-						alert("Your score has been submitted!");
-						window.location.reload();
-					}
-				}
-
-				updateQuestion(); // Initial question setup
-			});
+			}
 		</script>
 	</body>
 </html>
