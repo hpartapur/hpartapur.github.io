@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>People Counting with TensorFlow.js</title>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@latest/dist/coco-ssd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash/4.17.21/lodash.min.js"></script>
+	</head>
+	<body>
+		<video id="video" width="640" height="480" autoplay></video>
+		<canvas id="canvas" width="640" height="480"></canvas>
+		<div id="count"></div>
+
+		<script>
+			const video = document.getElementById("video");
+			const canvas = document.getElementById("canvas");
+			const countElement = document.getElementById("count");
+
+			let model;
+			let isModelLoaded = false;
+
+			async function loadModel() {
+				model = await cocossd.load();
+				isModelLoaded = true;
+			}
+
+			async function detectObjects() {
+				if (!isModelLoaded) {
+					await loadModel();
+				}
+
+				const ctx = canvas.getContext("2d");
+				const predictions = await model.detect(video);
+
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				const personCount = predictions.filter((prediction) => prediction.class === "person").length;
+				countElement.textContent = `People in the audience: ${personCount}`;
+
+				predictions.forEach((prediction) => {
+					ctx.beginPath();
+					ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
+					ctx.stroke();
+				});
+
+				requestAnimationFrame(detectObjects);
+			}
+
+			navigator.mediaDevices
+				.getUserMedia({ video: true })
+				.then((stream) => {
+					video.srcObject = stream;
+					detectObjects();
+				})
+				.catch((error) => {
+					console.error("Error accessing webcam:", error);
+				});
+		</script>
+	</body>
+</html>
