@@ -2,14 +2,21 @@ const video = document.getElementById("webcam");
 const liveView = document.getElementById("liveView");
 const demosSection = document.getElementById("demos");
 const enableWebcamButton = document.getElementById("webcamButton");
+const countDisplay = document.createElement("div"); // Element to display count
+countDisplay.style.position = "absolute";
+countDisplay.style.bottom = "10px";
+countDisplay.style.left = "10px";
+countDisplay.style.backgroundColor = "rgba(255, 111, 0, 0.85)";
+countDisplay.style.color = "#FFF";
+countDisplay.style.padding = "5px";
+countDisplay.style.zIndex = "3";
+liveView.appendChild(countDisplay);
+
 // Check if webcam access is supported.
 function getUserMediaSupported() {
 	return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
-// If webcam supported, add event listener to button for when user
-// wants to activate it to call enableCam function which we will
-// define in the next step.
 if (getUserMediaSupported()) {
 	enableWebcamButton.addEventListener("click", enableCam);
 } else {
@@ -18,62 +25,50 @@ if (getUserMediaSupported()) {
 
 // Enable the live webcam view and start classification.
 function enableCam(event) {
-	// Only continue if the COCO-SSD has finished loading.
 	if (!model) {
 		return;
 	}
 
-	// Hide the button once clicked.
 	event.target.classList.add("removed");
 
-	// getUsermedia parameters to force video but not audio.
 	const constraints = {
 		video: true,
 	};
 
-	// Activate the webcam stream.
 	navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
 		video.srcObject = stream;
 		video.addEventListener("loadeddata", predictWebcam);
 	});
 }
 
-// Store the resulting model in the global scope of our app.
-var model = undefined;
+let model;
 
-// Before we can use COCO-SSD class we must wait for it to finish
-// loading. Machine Learning models can be large and take a moment
-// to get everything needed to run.
-// Note: cocoSsd is an external object loaded from our index.html
-// script tag import so ignore any warning in Glitch.
+// Load the COCO-SSD model.
 cocoSsd.load().then(function (loadedModel) {
 	model = loadedModel;
-	// Show demo section now model is ready to use.
 	demosSection.classList.remove("invisible");
 });
 
-var children = [];
+let children = [];
 
 function predictWebcam() {
-	// Now let's start classifying a frame in the stream.
 	model.detect(video).then(function (predictions) {
-		// Remove any highlighting we did previous frame.
+		// Clear previous detections
 		for (let i = 0; i < children.length; i++) {
 			liveView.removeChild(children[i]);
 		}
 		children.splice(0);
 
-		// Now lets loop through predictions and draw them to the live view if
-		// they have a high confidence score.
+		let personCount = 0; // Counter for persons
+
+		// Loop through predictions
 		for (let n = 0; n < predictions.length; n++) {
-			// If we are over 66% sure we are sure we classified it right, draw it!
-			if (predictions[n].score > 0.66) {
+			// Lower confidence threshold to count blurry or distant people
+			if (predictions[n].score > 0.15 && predictions[n].class === "person") {
+				personCount++; // Increment counter for each detected person
+
 				const p = document.createElement("p");
-				p.innerText =
-					predictions[n].class +
-					" - with " +
-					Math.round(parseFloat(predictions[n].score) * 100) +
-					"% confidence.";
+				p.innerText = predictions[n].class + " - with " + Math.round(parseFloat(predictions[n].score) * 100) + "% confidence.";
 				p.style =
 					"margin-left: " +
 					predictions[n].bbox[0] +
@@ -103,7 +98,9 @@ function predictWebcam() {
 			}
 		}
 
-		// Call this function again to keep predicting when the browser is ready.
+		// Update the person count display
+		countDisplay.innerText = `Number of people: ${personCount}`;
+
 		window.requestAnimationFrame(predictWebcam);
 	});
 }
