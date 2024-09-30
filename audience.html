@@ -1,60 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<title>People Counting with TensorFlow.js</title>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@latest/dist/coco-ssd.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash/4.17.21/lodash.min.js"></script>
+		<title>Audience Count using TensorFlow.js</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<video id="video" width="640" height="480" autoplay></video>
-		<canvas id="canvas" width="640" height="480"></canvas>
-		<div id="count"></div>
+		<h1>Count Audience Members using TensorFlow.js</h1>
+		<p>Wait for the model to load before clicking the button to enable the webcam.</p>
 
-		<script>
-			const video = document.getElementById("video");
-			const canvas = document.getElementById("canvas");
-			const countElement = document.getElementById("count");
+		<section id="demos" class="invisible">
+			<p>Click "Enable Webcam" below and accept access to the webcam when prompted.</p>
 
-			let model;
-			let isModelLoaded = false;
+			<div id="liveView" class="camView">
+				<button id="webcamButton">Enable Webcam</button>
+				<video id="webcam" autoplay muted width="640" height="480"></video>
+				<div id="countDisplay">Count of people: <span id="count">0</span></div>
+			</div>
+		</section>
 
-			async function loadModel() {
-				model = await cocossd.load();
-				isModelLoaded = true;
-			}
-
-			async function detectObjects() {
-				if (!isModelLoaded) {
-					await loadModel();
-				}
-
-				const ctx = canvas.getContext("2d");
-				const predictions = await model.detect(video);
-
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-				const personCount = predictions.filter((prediction) => prediction.class === "person").length;
-				countElement.textContent = `People in the audience: ${personCount}`;
-
-				predictions.forEach((prediction) => {
-					ctx.beginPath();
-					ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
-					ctx.stroke();
-				});
-
-				requestAnimationFrame(detectObjects);
-			}
-
-			navigator.mediaDevices
-				.getUserMedia({ video: true })
-				.then((stream) => {
-					video.srcObject = stream;
-					detectObjects();
-				})
-				.catch((error) => {
-					console.error("Error accessing webcam:", error);
-				});
-		</script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+		<script src="audience.js" defer></script>
 	</body>
+	<style>
+		body {
+			font-family: helvetica, arial, sans-serif;
+			margin: 2em;
+			color: #3d3d3d;
+		}
+		h1 {
+			font-style: italic;
+			color: #ff6f00;
+		}
+		video {
+			display: block;
+		}
+		section {
+			opacity: 1;
+			transition: opacity 500ms ease-in-out;
+		}
+		.invisible {
+			opacity: 0.2;
+		}
+		.camView {
+			position: relative;
+			float: left;
+			width: calc(100% - 20px);
+			margin: 10px;
+			cursor: pointer;
+		}
+		#countDisplay {
+			position: absolute;
+			bottom: 10px;
+			left: 10px;
+			background-color: rgba(255, 111, 0, 0.85);
+			color: #fff;
+			padding: 10px;
+			border-radius: 5px;
+		}
+	</style>
 </html>
