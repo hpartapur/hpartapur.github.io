@@ -25,10 +25,19 @@
 				left: 0;
 				pointer-events: none; /* Allow clicks to go through */
 			}
+			.line {
+				position: absolute;
+				height: 2px;
+				background: red;
+				top: 350px; /* Adjust according to your needs */
+				left: 0;
+				right: 0;
+			}
 		</style>
 	</head>
 	<body>
 		<h1>People Counter in the Hall</h1>
+		<div class="line"></div>
 		<video id="video" autoplay></video>
 		<canvas id="canvas"></canvas>
 		<div id="count">0</div>
@@ -42,7 +51,8 @@
 			const ctx = canvas.getContext("2d");
 
 			let peopleCount = 0;
-			let detectedPeople = new Set();
+			const detectedPeople = new Set();
+			const crossedPeople = new Set();
 			const entranceLineY = 350; // Y-coordinate to detect entry
 
 			// Access the webcam
@@ -75,38 +85,31 @@
 			}
 
 			function handlePredictions(predictions) {
-				let newPeople = new Set();
-
 				predictions.forEach((prediction) => {
 					if (prediction.class === "person" && prediction.score > 0.5) {
-						newPeople.add(prediction.id); // Track detected people
 						drawBoundingBox(prediction);
 						checkEntry(prediction);
 					}
 				});
-
-				// Update the detected people set
-				detectedPeople = newPeople;
 			}
 
 			function drawBoundingBox(prediction) {
 				ctx.beginPath();
 				ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
 				ctx.lineWidth = 2;
-				ctx.strokeStyle = "green";
-				ctx.fillStyle = "green";
+				ctx.strokeStyle = crossedPeople.has(prediction.id) ? "red" : "green"; // Red if crossed
 				ctx.stroke();
 				ctx.fillText(prediction.class, prediction.bbox[0], prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10);
 			}
 
 			function checkEntry(prediction) {
-				// Check if the person's center crosses the entrance line
 				const centerY = prediction.bbox[1] + prediction.bbox[3] / 2; // Y position of center of bounding box
 
-				if (centerY > entranceLineY && !detectedPeople.has(prediction.id)) {
+				// Check if the person has crossed the entrance line and has not been counted yet
+				if (centerY > entranceLineY && !crossedPeople.has(prediction.id)) {
 					peopleCount++;
 					countDisplay.innerText = peopleCount;
-					detectedPeople.add(prediction.id); // Add to tracked people to avoid double counting
+					crossedPeople.add(prediction.id); // Mark as crossed to avoid double counting
 				}
 			}
 		</script>
