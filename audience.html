@@ -9,11 +9,14 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
+				position: relative;
 			}
 			#video {
 				width: 640px;
 				height: 480px;
 				border: 1px solid black;
+				position: relative;
+				z-index: 1;
 			}
 			#counter {
 				font-size: 24px;
@@ -28,6 +31,11 @@
 				background-color: red;
 				z-index: 10;
 			}
+			.bounding-box {
+				position: absolute;
+				border: 2px solid blue;
+				z-index: 2;
+			}
 		</style>
 	</head>
 	<body>
@@ -41,11 +49,10 @@
 		<script>
 			const video = document.getElementById("video");
 			const counterDisplay = document.getElementById("counter");
-			let counter = 0;
-			let lastDetectedPeople = new Set();
 			const thresholdY = 240; // Y-coordinate of the threshold line
-			const detectionInterval = 100; // milliseconds
-			const detectionHistory = [];
+			let counter = 0;
+			let detectedIds = new Set();
+			let lastCrossedIds = new Set();
 
 			async function setupCamera() {
 				const stream = await navigator.mediaDevices.getUserMedia({
@@ -59,28 +66,57 @@
 				});
 			}
 
+			function drawBoundingBox(predictions) {
+				const boundingBoxContainer = document.createElement("div");
+				boundingBoxContainer.style.position = "absolute";
+				boundingBoxContainer.style.width = "640px";
+				boundingBoxContainer.style.height = "480px";
+				document.body.appendChild(boundingBoxContainer);
+
+				// Clear previous boxes
+				boundingBoxContainer.innerHTML = "";
+
+				predictions.forEach((prediction) => {
+					if (prediction.class === "person") {
+						const [x, y, width, height] = prediction.bbox;
+						const boundingBox = document.createElement("div");
+						boundingBox.className = "bounding-box";
+						boundingBox.style.left = `${x}px`;
+						boundingBox.style.top = `${y}px`;
+						boundingBox.style.width = `${width}px`;
+						boundingBox.style.height = `${height}px`;
+						boundingBoxContainer.appendChild(boundingBox);
+					}
+				});
+			}
+
 			async function detectPeople(model) {
 				while (true) {
 					const predictions = await model.detect(video);
-					let currentDetectedPeople = new Set();
+					let currentDetectedIds = new Set();
 
 					predictions.forEach((prediction) => {
 						if (prediction.class === "person") {
-							currentDetectedPeople.add(prediction.id);
+							const id = prediction.id; // Use a unique ID for each person
+							currentDetectedIds.add(id);
 
 							const [x, y, width, height] = prediction.bbox;
 							const centerY = y + height / 2;
 
 							// Check if the person crosses the threshold line
-							if (centerY > thresholdY - 5 && centerY < thresholdY + 5 && !lastDetectedPeople.has(prediction.id)) {
+							if (centerY > thresholdY - 5 && centerY < thresholdY + 5 && !lastCrossedIds.has(id)) {
 								counter++;
 								counterDisplay.innerText = `Count: ${counter}`;
+								lastCrossedIds.add(id); // Mark this person as counted
 							}
 						}
 					});
 
-					lastDetectedPeople = currentDetectedPeople;
-					await new Promise((resolve) => setTimeout(resolve, detectionInterval));
+					// Reset last crossed IDs for next detection cycle
+					lastCrossedIds = new Set([...currentDetectedIds].filter((id) => !lastCrossedIds.has(id)));
+
+					drawBoundingBox(predictions);
+					await new Promise((resolve) => setTimeout(resolve, 100));
 				}
 			}
 
