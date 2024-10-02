@@ -51,7 +51,6 @@
 			const counterDisplay = document.getElementById("counter");
 			const thresholdY = 240; // Y-coordinate of the threshold line
 			let counter = 0;
-			let detectedIds = new Set();
 			let lastCrossedIds = new Set();
 
 			async function setupCamera() {
@@ -67,14 +66,9 @@
 			}
 
 			function drawBoundingBox(predictions) {
-				const boundingBoxContainer = document.createElement("div");
-				boundingBoxContainer.style.position = "absolute";
-				boundingBoxContainer.style.width = "640px";
-				boundingBoxContainer.style.height = "480px";
-				document.body.appendChild(boundingBoxContainer);
-
-				// Clear previous boxes
-				boundingBoxContainer.innerHTML = "";
+				// Clear existing bounding boxes
+				const existingBoxes = document.querySelectorAll(".bounding-box");
+				existingBoxes.forEach((box) => box.remove());
 
 				predictions.forEach((prediction) => {
 					if (prediction.class === "person") {
@@ -85,7 +79,7 @@
 						boundingBox.style.top = `${y}px`;
 						boundingBox.style.width = `${width}px`;
 						boundingBox.style.height = `${height}px`;
-						boundingBoxContainer.appendChild(boundingBox);
+						document.body.appendChild(boundingBox);
 					}
 				});
 			}
@@ -97,7 +91,7 @@
 
 					predictions.forEach((prediction) => {
 						if (prediction.class === "person") {
-							const id = prediction.id; // Use a unique ID for each person
+							const id = prediction.id; // Unique ID for each detected person
 							currentDetectedIds.add(id);
 
 							const [x, y, width, height] = prediction.bbox;
@@ -112,8 +106,8 @@
 						}
 					});
 
-					// Reset last crossed IDs for next detection cycle
-					lastCrossedIds = new Set([...currentDetectedIds].filter((id) => !lastCrossedIds.has(id)));
+					// Update last crossed IDs for the next detection cycle
+					lastCrossedIds = new Set([...lastCrossedIds].filter((id) => currentDetectedIds.has(id)));
 
 					drawBoundingBox(predictions);
 					await new Promise((resolve) => setTimeout(resolve, 100));
