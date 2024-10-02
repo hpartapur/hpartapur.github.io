@@ -4,113 +4,76 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>People Counter</title>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 		<style>
-			body {
-				font-family: Arial, sans-serif;
-				text-align: center;
-				margin-top: 20px;
-			}
-			#count {
-				font-size: 48px;
-				color: #333;
-			}
-			video {
-				width: 100%;
-				max-width: 600px;
-				border: 1px solid black;
-			}
 			canvas {
 				position: absolute;
 				top: 0;
 				left: 0;
-				pointer-events: none; /* Allow clicks to go through */
-			}
-			.line {
-				position: absolute;
-				height: 2px;
-				background: red;
-				top: 350px; /* Adjust according to your needs */
-				left: 0;
-				right: 0;
 			}
 		</style>
 	</head>
 	<body>
-		<h1>People Counter in the Hall</h1>
-		<div class="line"></div>
-		<video id="video" autoplay></video>
-		<canvas id="canvas"></canvas>
-		<div id="count">0</div>
+		<h1>People Counter: <span id="counter">0</span></h1>
+		<video id="video" width="640" height="480" autoplay></video>
+		<canvas id="canvas" width="640" height="480"></canvas>
 
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 		<script>
 			const video = document.getElementById("video");
 			const canvas = document.getElementById("canvas");
-			const countDisplay = document.getElementById("count");
 			const ctx = canvas.getContext("2d");
+			let counter = 0;
+			let lineY = 350;
+			let peopleCrossed = new Set();
 
-			let peopleCount = 0;
-			const detectedPeople = new Set();
-			const crossedPeople = new Set();
-			const entranceLineY = 350; // Y-coordinate to detect entry
+			// Start video stream
+			navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+				video.srcObject = stream;
+				video.play();
+			});
 
-			// Access the webcam
-			navigator.mediaDevices
-				.getUserMedia({
-					video: true,
-				})
-				.then((stream) => {
-					video.srcObject = stream;
-					video.play();
-					detectPeople();
-				})
-				.catch((err) => {
-					console.error("Error accessing webcam: ", err);
+			// Load the model
+			cocoSsd.load().then((model) => {
+				detect(model);
+			});
+
+			function detect(model) {
+				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+				model.detect(canvas).then((predictions) => {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					drawLine();
+					drawPredictions(predictions);
+					detect(model);
 				});
-
-			async function detectPeople() {
-				const model = await cocoSsd.load();
-				console.log("Model loaded.");
-
-				canvas.width = video.videoWidth;
-				canvas.height = video.videoHeight;
-
-				while (true) {
-					const predictions = await model.detect(video);
-					ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
-					handlePredictions(predictions);
-					await tf.nextFrame(); // Yield to allow other operations
-				}
 			}
 
-			function handlePredictions(predictions) {
+			function drawLine() {
+				ctx.strokeStyle = "blue";
+				ctx.lineWidth = 5;
+				ctx.beginPath();
+				ctx.moveTo(0, lineY);
+				ctx.lineTo(canvas.width, lineY);
+				ctx.stroke();
+			}
+
+			function drawPredictions(predictions) {
 				predictions.forEach((prediction) => {
-					if (prediction.class === "person" && prediction.score > 0.5) {
-						drawBoundingBox(prediction);
-						checkEntry(prediction);
+					if (prediction.class === "person") {
+						ctx.beginPath();
+						ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
+						ctx.lineWidth = 2;
+						ctx.strokeStyle = peopleCrossed.has(prediction.id) ? "red" : "green";
+						ctx.stroke();
+
+						// Check if person crosses the line
+						if (prediction.bbox[1] + prediction.bbox[3] > lineY && !peopleCrossed.has(prediction.id)) {
+							counter++;
+							document.getElementById("counter").innerText = counter;
+							peopleCrossed.add(prediction.id);
+						}
 					}
 				});
-			}
-
-			function drawBoundingBox(prediction) {
-				ctx.beginPath();
-				ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
-				ctx.lineWidth = 2;
-				ctx.strokeStyle = crossedPeople.has(prediction.id) ? "red" : "green"; // Red if crossed
-				ctx.stroke();
-				ctx.fillText(prediction.class, prediction.bbox[0], prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10);
-			}
-
-			function checkEntry(prediction) {
-				const centerY = prediction.bbox[1] + prediction.bbox[3] / 2; // Y position of center of bounding box
-
-				// Check if the person has crossed the entrance line and has not been counted yet
-				if (centerY > entranceLineY && !crossedPeople.has(prediction.id)) {
-					peopleCount++;
-					countDisplay.innerText = peopleCount;
-					crossedPeople.add(prediction.id); // Mark as crossed to avoid double counting
-				}
 			}
 		</script>
 	</body>
