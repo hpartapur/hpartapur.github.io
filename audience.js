@@ -1,16 +1,14 @@
-let net;
 let video;
-let webcamButton;
-let countDisplay;
-let countElement;
+let detector;
+let peopleCount = 0;
+const countedIDs = new Set();
 
 async function setupCamera() {
-	video = document.getElementById("webcam");
+	video = document.getElementById("video");
 	const stream = await navigator.mediaDevices.getUserMedia({
 		video: true,
 	});
 	video.srcObject = stream;
-
 	return new Promise((resolve) => {
 		video.onloadedmetadata = () => {
 			resolve(video);
@@ -18,24 +16,22 @@ async function setupCamera() {
 	});
 }
 
-async function detectPeople() {
-	const predictions = await net.detect(video);
-	const peopleCount = predictions.filter((pred) => pred.class === "person").length;
-	countElement.innerText = peopleCount;
-	requestAnimationFrame(detectPeople);
+async function detect() {
+	const predictions = await detector.detect(video);
+	predictions.forEach((prediction) => {
+		if (prediction.class === "person" && !countedIDs.has(prediction.id)) {
+			countedIDs.add(prediction.id);
+			peopleCount++;
+			document.getElementById("peopleCount").innerText = peopleCount;
+		}
+	});
+	requestAnimationFrame(detect);
 }
 
 async function main() {
-	net = await cocoSsd.load();
-	countElement = document.getElementById("count");
-	const webcamButton = document.getElementById("webcamButton");
-
-	webcamButton.addEventListener("click", async () => {
-		await setupCamera();
-		video.play();
-		document.getElementById("demos").classList.remove("invisible");
-		detectPeople();
-	});
+	await setupCamera();
+	detector = await cocoSsd.load();
+	detect();
 }
 
 main();
