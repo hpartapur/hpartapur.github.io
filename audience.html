@@ -4,77 +4,93 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>People Counter</title>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 		<style>
-			canvas {
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			#video {
+				width: 640px;
+				height: 480px;
+				border: 1px solid black;
+			}
+			#counter {
+				font-size: 24px;
+				margin: 10px;
+			}
+			#threshold {
 				position: absolute;
-				top: 0;
+				top: 240px;
 				left: 0;
+				width: 100%;
+				height: 5px;
+				background-color: red;
+				z-index: 10;
 			}
 		</style>
 	</head>
 	<body>
-		<h1>People Counter: <span id="counter">0</span></h1>
-		<video id="video" width="640" height="480" autoplay></video>
-		<canvas id="canvas" width="640" height="480"></canvas>
+		<video id="video" autoplay></video>
+		<div id="counter">Count: 0</div>
+		<div id="threshold"></div>
+
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
 		<script>
 			const video = document.getElementById("video");
-			const canvas = document.getElementById("canvas");
-			const ctx = canvas.getContext("2d");
+			const counterDisplay = document.getElementById("counter");
 			let counter = 0;
-			let lineY = 350;
-			let peopleCrossed = new Set();
+			let lastDetectedPeople = new Set();
+			const thresholdY = 240; // Y-coordinate of the threshold line
+			const detectionInterval = 100; // milliseconds
+			const detectionHistory = [];
 
-			// Start video stream
-			navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+			async function setupCamera() {
+				const stream = await navigator.mediaDevices.getUserMedia({
+					video: true,
+				});
 				video.srcObject = stream;
-				video.play();
-			});
-
-			// Load the model
-			cocoSsd.load().then((model) => {
-				detect(model);
-			});
-
-			function detect(model) {
-				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-				model.detect(canvas).then((predictions) => {
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					drawLine();
-					drawPredictions(predictions);
-					detect(model);
+				return new Promise((resolve) => {
+					video.onloadedmetadata = () => {
+						resolve(video);
+					};
 				});
 			}
 
-			function drawLine() {
-				ctx.strokeStyle = "blue";
-				ctx.lineWidth = 5;
-				ctx.beginPath();
-				ctx.moveTo(0, lineY);
-				ctx.lineTo(canvas.width, lineY);
-				ctx.stroke();
-			}
+			async function detectPeople(model) {
+				while (true) {
+					const predictions = await model.detect(video);
+					let currentDetectedPeople = new Set();
 
-			function drawPredictions(predictions) {
-				predictions.forEach((prediction) => {
-					if (prediction.class === "person") {
-						ctx.beginPath();
-						ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
-						ctx.lineWidth = 2;
-						ctx.strokeStyle = peopleCrossed.has(prediction.id) ? "red" : "green";
-						ctx.stroke();
+					predictions.forEach((prediction) => {
+						if (prediction.class === "person") {
+							currentDetectedPeople.add(prediction.id);
 
-						// Check if person crosses the line
-						if (prediction.bbox[1] + prediction.bbox[3] > lineY && !peopleCrossed.has(prediction.id)) {
-							counter++;
-							document.getElementById("counter").innerText = counter;
-							peopleCrossed.add(prediction.id);
+							const [x, y, width, height] = prediction.bbox;
+							const centerY = y + height / 2;
+
+							// Check if the person crosses the threshold line
+							if (centerY > thresholdY - 5 && centerY < thresholdY + 5 && !lastDetectedPeople.has(prediction.id)) {
+								counter++;
+								counterDisplay.innerText = `Count: ${counter}`;
+							}
 						}
-					}
-				});
+					});
+
+					lastDetectedPeople = currentDetectedPeople;
+					await new Promise((resolve) => setTimeout(resolve, detectionInterval));
+				}
 			}
+
+			async function main() {
+				await setupCamera();
+				const model = await cocoSsd.load();
+				detectPeople(model);
+			}
+
+			main();
 		</script>
 	</body>
 </html>
