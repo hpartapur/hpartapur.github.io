@@ -4,14 +4,62 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>People Counter</title>
-		<link rel="stylesheet" href="style.css" />
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				text-align: center;
+				margin-top: 20px;
+			}
+			#count {
+				font-size: 48px;
+				color: #333;
+			}
+			video {
+				width: 100%;
+				max-width: 600px;
+				border: 1px solid black;
+			}
+		</style>
 	</head>
 	<body>
-		<h1>People Counter</h1>
-		<video id="video" width="640" height="480" autoplay></video>
-		<div id="count">People Counted: <span id="peopleCount">0</span></div>
-		<script src="scripter.js"></script>
+		<h1>People Count in the Hall</h1>
+		<video id="video" autoplay></video>
+		<div id="count">0</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+		<script>
+			const video = document.getElementById("video");
+			const countDisplay = document.getElementById("count");
+			let peopleCount = 0;
+
+			// Access the webcam
+			navigator.mediaDevices
+				.getUserMedia({
+					video: true,
+				})
+				.then((stream) => {
+					video.srcObject = stream;
+					video.play();
+					detectPeople();
+				})
+				.catch((err) => {
+					console.error("Error accessing webcam: ", err);
+				});
+
+			async function detectPeople() {
+				const model = await cocoSsd.load();
+				console.log("Model loaded.");
+
+				// Continuously detect people
+				while (true) {
+					const predictions = await model.detect(video);
+					peopleCount = predictions.filter((prediction) => prediction.class === "person").length;
+
+					countDisplay.innerText = peopleCount;
+					await tf.nextFrame(); // Yield to allow other operations
+				}
+			}
+		</script>
 	</body>
 </html>
