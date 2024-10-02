@@ -4,56 +4,29 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>People Counter</title>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-models/coco-ssd"></script>
 		<style>
-			body {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				position: relative;
-			}
-			#video {
-				width: 640px;
-				height: 480px;
-				border: 1px solid black;
-				position: relative;
-				z-index: 1;
-			}
-			#counter {
-				font-size: 24px;
-				margin: 10px;
-			}
-			#threshold {
+			canvas {
 				position: absolute;
-				top: 240px;
 				left: 0;
-				width: 100%;
-				height: 5px;
-				background-color: red;
-				z-index: 10;
-			}
-			.bounding-box {
-				position: absolute;
-				border: 2px solid blue;
-				z-index: 2;
+				top: 0;
 			}
 		</style>
 	</head>
 	<body>
-		<video id="video" autoplay></video>
-		<div id="counter">Count: 0</div>
-		<div id="threshold"></div>
-
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
+		<h1>People Counter: <span id="counter">0</span></h1>
+		<video id="video" width="640" height="480" autoplay></video>
+		<canvas id="canvas" width="640" height="480"></canvas>
 		<script>
-			const video = document.getElementById("video");
-			const counterDisplay = document.getElementById("counter");
-			const thresholdY = 240; // Y-coordinate of the threshold line
+			let video;
+			let net;
 			let counter = 0;
-			let lastCrossedIds = new Set();
+			let peopleCrossed = new Set();
+			const thresholdLineY = 300;
 
 			async function setupCamera() {
+				video = document.getElementById("video");
 				const stream = await navigator.mediaDevices.getUserMedia({
 					video: true,
 				});
@@ -65,59 +38,56 @@
 				});
 			}
 
-			function drawBoundingBox(predictions) {
-				// Clear existing bounding boxes
-				const existingBoxes = document.querySelectorAll(".bounding-box");
-				existingBoxes.forEach((box) => box.remove());
+			async function loadModel() {
+				net = await cocoSsd.load();
+			}
 
+			async function detect() {
+				const predictions = await net.detect(video);
+				const ctx = document.getElementById("canvas").getContext("2d");
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				ctx.drawImage(video, 0, 0, ctx.canvas.width, ctx.canvas.height);
+				drawThresholdLine(ctx);
+				handleDetections(predictions, ctx);
+				requestAnimationFrame(detect);
+			}
+
+			function drawThresholdLine(ctx) {
+				ctx.beginPath();
+				ctx.moveTo(0, thresholdLineY);
+				ctx.lineTo(ctx.canvas.width, thresholdLineY);
+				ctx.lineWidth = 2;
+				ctx.strokeStyle = "red";
+				ctx.stroke();
+			}
+
+			function handleDetections(predictions, ctx) {
 				predictions.forEach((prediction) => {
 					if (prediction.class === "person") {
 						const [x, y, width, height] = prediction.bbox;
-						const boundingBox = document.createElement("div");
-						boundingBox.className = "bounding-box";
-						boundingBox.style.left = `${x}px`;
-						boundingBox.style.top = `${y}px`;
-						boundingBox.style.width = `${width}px`;
-						boundingBox.style.height = `${height}px`;
-						document.body.appendChild(boundingBox);
+						ctx.beginPath();
+						ctx.rect(x, y, width, height);
+						ctx.lineWidth = 2;
+						ctx.strokeStyle = "blue";
+						ctx.stroke();
+
+						const centerY = y + height / 2;
+						if (centerY > thresholdLineY && !peopleCrossed.has(prediction.id)) {
+							peopleCrossed.add(prediction.id);
+							counter++;
+							document.getElementById("counter").innerText = counter;
+						}
+						if (centerY < thresholdLineY && peopleCrossed.has(prediction.id)) {
+							peopleCrossed.delete(prediction.id);
+						}
 					}
 				});
 			}
 
-			async function detectPeople(model) {
-				while (true) {
-					const predictions = await model.detect(video);
-					let currentDetectedIds = new Set();
-
-					predictions.forEach((prediction) => {
-						if (prediction.class === "person") {
-							const id = prediction.id; // Unique ID for each detected person
-							currentDetectedIds.add(id);
-
-							const [x, y, width, height] = prediction.bbox;
-							const centerY = y + height / 2;
-
-							// Check if the person crosses the threshold line
-							if (centerY > thresholdY - 5 && centerY < thresholdY + 5 && !lastCrossedIds.has(id)) {
-								counter++;
-								counterDisplay.innerText = `Count: ${counter}`;
-								lastCrossedIds.add(id); // Mark this person as counted
-							}
-						}
-					});
-
-					// Update last crossed IDs for the next detection cycle
-					lastCrossedIds = new Set([...lastCrossedIds].filter((id) => currentDetectedIds.has(id)));
-
-					drawBoundingBox(predictions);
-					await new Promise((resolve) => setTimeout(resolve, 100));
-				}
-			}
-
 			async function main() {
 				await setupCamera();
-				const model = await cocoSsd.load();
-				detectPeople(model);
+				await loadModel();
+				detect();
 			}
 
 			main();
