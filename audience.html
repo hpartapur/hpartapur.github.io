@@ -23,7 +23,7 @@
 			let net;
 			let counter = 0;
 			let peopleCrossed = new Set();
-			const thresholdLineY = 300;
+			const thresholdLineY = 300; // Threshold line Y-coordinate
 
 			async function setupCamera() {
 				video = document.getElementById("video");
@@ -71,13 +71,15 @@
 						ctx.strokeStyle = "blue";
 						ctx.stroke();
 
+						// Calculate the center Y of the bounding box
 						const centerY = y + height / 2;
+
+						// Check if the person crosses the threshold line
 						if (centerY > thresholdLineY && !peopleCrossed.has(prediction.id)) {
 							peopleCrossed.add(prediction.id);
 							counter++;
 							document.getElementById("counter").innerText = counter;
-						}
-						if (centerY < thresholdLineY && peopleCrossed.has(prediction.id)) {
+						} else if (centerY < thresholdLineY && peopleCrossed.has(prediction.id)) {
 							peopleCrossed.delete(prediction.id);
 						}
 					}
@@ -90,7 +92,10 @@
 				detect();
 			}
 
-			main();
+			main().catch((err) => {
+				console.error(err);
+				alert("An error occurred while initializing: " + err.message);
+			});
 		</script>
 	</body>
 </html>
