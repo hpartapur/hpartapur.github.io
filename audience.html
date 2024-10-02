@@ -19,19 +19,31 @@
 				max-width: 600px;
 				border: 1px solid black;
 			}
+			canvas {
+				position: absolute;
+				top: 0;
+				left: 0;
+				pointer-events: none; /* Allow clicks to go through */
+			}
 		</style>
 	</head>
 	<body>
-		<h1>People Count in the Hall</h1>
+		<h1>People Counter in the Hall</h1>
 		<video id="video" autoplay></video>
+		<canvas id="canvas"></canvas>
 		<div id="count">0</div>
 
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 		<script>
 			const video = document.getElementById("video");
+			const canvas = document.getElementById("canvas");
 			const countDisplay = document.getElementById("count");
+			const ctx = canvas.getContext("2d");
+
 			let peopleCount = 0;
+			let detectedPeople = new Set();
+			const entranceLineY = 350; // Y-coordinate to detect entry
 
 			// Access the webcam
 			navigator.mediaDevices
@@ -51,13 +63,50 @@
 				const model = await cocoSsd.load();
 				console.log("Model loaded.");
 
-				// Continuously detect people
+				canvas.width = video.videoWidth;
+				canvas.height = video.videoHeight;
+
 				while (true) {
 					const predictions = await model.detect(video);
-					peopleCount = predictions.filter((prediction) => prediction.class === "person").length;
-
-					countDisplay.innerText = peopleCount;
+					ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
+					handlePredictions(predictions);
 					await tf.nextFrame(); // Yield to allow other operations
+				}
+			}
+
+			function handlePredictions(predictions) {
+				let newPeople = new Set();
+
+				predictions.forEach((prediction) => {
+					if (prediction.class === "person" && prediction.score > 0.5) {
+						newPeople.add(prediction.id); // Track detected people
+						drawBoundingBox(prediction);
+						checkEntry(prediction);
+					}
+				});
+
+				// Update the detected people set
+				detectedPeople = newPeople;
+			}
+
+			function drawBoundingBox(prediction) {
+				ctx.beginPath();
+				ctx.rect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3]);
+				ctx.lineWidth = 2;
+				ctx.strokeStyle = "green";
+				ctx.fillStyle = "green";
+				ctx.stroke();
+				ctx.fillText(prediction.class, prediction.bbox[0], prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10);
+			}
+
+			function checkEntry(prediction) {
+				// Check if the person's center crosses the entrance line
+				const centerY = prediction.bbox[1] + prediction.bbox[3] / 2; // Y position of center of bounding box
+
+				if (centerY > entranceLineY && !detectedPeople.has(prediction.id)) {
+					peopleCount++;
+					countDisplay.innerText = peopleCount;
+					detectedPeople.add(prediction.id); // Add to tracked people to avoid double counting
 				}
 			}
 		</script>
