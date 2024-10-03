@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>People Counter</title>
+		<title>Entry Counter</title>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-models/coco-ssd"></script>
 		<style>
@@ -15,15 +15,15 @@
 		</style>
 	</head>
 	<body>
-		<h1>People Counter: <span id="counter">0</span></h1>
+		<h1>Entry Counter: <span id="counter">0</span></h1>
 		<video id="video" width="640" height="480" autoplay></video>
 		<canvas id="canvas" width="640" height="480"></canvas>
 		<script>
 			let video;
 			let net;
 			let counter = 0;
-			let peopleCrossed = new Set();
-			const thresholdLineY = 300; // Threshold line Y-coordinate
+			let peopleInside = new Set();
+			const thresholdLineY = 300; // Threshold line Y-coordinate for entry detection
 
 			async function setupCamera() {
 				video = document.getElementById("video");
@@ -75,12 +75,12 @@
 						const centerY = y + height / 2;
 
 						// Check if the person crosses the threshold line
-						if (centerY > thresholdLineY && !peopleCrossed.has(prediction.id)) {
-							peopleCrossed.add(prediction.id);
+						if (centerY > thresholdLineY && !peopleInside.has(prediction.id)) {
+							peopleInside.add(prediction.id);
 							counter++;
 							document.getElementById("counter").innerText = counter;
-						} else if (centerY < thresholdLineY && peopleCrossed.has(prediction.id)) {
-							peopleCrossed.delete(prediction.id);
+						} else if (centerY < thresholdLineY && peopleInside.has(prediction.id)) {
+							peopleInside.delete(prediction.id);
 						}
 					}
 				});
