@@ -44,15 +44,15 @@
 							<input type="checkbox" id="timelimited" checked />
 						</div>
 						<div class="form-group" id="timeLimitGroup">
-							<label for="timelimit">Time Limit (in minutes)</label>
+							<label for="timelimit">Time Limit (seconds per question)</label>
 							<input type="number" id="timelimit" value="20" min="1" />
 						</div>
 					</form>
 				</div>
 
 				<button id="export" class="btn btn-warning mb-3" style="display: none">Export to Excel</button>
-				<button id="previewQuestions" class="btn btn-info mb-3" style="display: none" data-toggle="modal" data-target="#questionsModal">
-					Preview Questions
+				<button id="viewQuestions" class="btn btn-info mb-3" style="display: none" data-toggle="modal" data-target="#questionsModal">
+					view Questions
 				</button>
 				<button id="copyLink" class="btn btn-info" style="display: none">Copy Link</button>
 				<button class="btn btn-secondary mb-3" data-toggle="modal" data-target="#tutorialModal">Help</button>
@@ -121,7 +121,7 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<div id="questionsTableContainer"></div>
+						<div id="questionsTableContainer" style="font-family: Kanz-al-Marjaan"></div>
 					</div>
 				</div>
 			</div>
@@ -167,7 +167,7 @@
 				questionLimitGroup: document.getElementById("questionLimitGroup"),
 				timeLimitGroup: document.getElementById("timeLimitGroup"),
 				copyLinkButton: document.getElementById("copyLink"),
-				previewQuestionsButton: document.getElementById("previewQuestions"),
+				viewQuestionsButton: document.getElementById("viewQuestions"),
 				tutorialModal: document.getElementById("tutorialModal"),
 				questionsTableContainer: document.getElementById("questionsTableContainer"),
 				deleteButton: document.getElementById("deletequiz"),
@@ -351,7 +351,7 @@
 				const questionTable = generateQuestionsTable(questions);
 				elements.questionsTableContainer.innerHTML = questionTable;
 
-				elements.previewQuestionsButton.style.display = "block";
+				elements.viewQuestionsButton.style.display = "block";
 				elements.copyLinkButton.style.display = "block";
 				elements.deleteButton.style.display = "block";
 			}
