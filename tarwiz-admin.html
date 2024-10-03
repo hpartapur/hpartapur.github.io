@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<div class="container mt-4">
-			<h1>Tarwiz Admin</h1>
+			<h1 id="titlebox">Tarwiz Admin</h1>
 
 			<!-- Authentication Buttons -->
 			<button id="login" class="btn btn-primary mb-3">Sign in with Google</button>
@@ -247,6 +247,8 @@
 					const workbook = XLSX.read(data, { type: "array" });
 					const questions = parseQuestions(XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]));
 
+					console.log(questions);
+
 					const options = {
 						shuffle: document.getElementById("shuffle").checked,
 						questionLimited: document.getElementById("questionlimited").checked,
@@ -257,9 +259,9 @@
 
 					const quizData = {
 						title: prompt("Enter quiz title:"),
-						questions,
+						questions: questions,
 						sessions: {},
-						options,
+						options: options,
 						creatorId: auth.currentUser.uid,
 					};
 
@@ -270,14 +272,19 @@
 
 			function parseQuestions(data) {
 				return data
-					.map((row) => ({
-						Question: row["Question"],
-						"Correct Answer": row["Correct Answer"],
-						"Wrong Answer 1": row["Wrong Answer 1"],
-						"Wrong Answer 2": row["Wrong Answer 2"],
-						"Wrong Answer 3": row["Wrong Answer 3"],
-					}))
-					.filter((q) => Object.values(q).some(Boolean));
+					.map((row) => {
+						// Create an object with the desired keys
+						const parsedQuestion = {
+							Question: row["Question"],
+							"Correct Answer": row["Correct Answer"],
+							"Wrong Answer 1": row["Wrong Answer 1"],
+							"Wrong Answer 2": row["Wrong Answer 2"],
+							"Wrong Answer 3": row["Wrong Answer 3"],
+						};
+						// Filter out any undefined values
+						return Object.fromEntries(Object.entries(parsedQuestion).filter(([key, value]) => value !== undefined));
+					})
+					.filter((q) => Object.values(q).some(Boolean)); // Keep only non-empty questions
 			}
 
 			function uploadQuizData(quizData) {
@@ -338,6 +345,7 @@
 					const scoreTable = generateScoreTable(data.sessions);
 					elements.resultContainer.innerHTML += scoreTable;
 				}
+				document.getElementById("titlebox").innerText = data.title;
 
 				const questions = data.questions || [];
 				const questionTable = generateQuestionsTable(questions);
@@ -372,8 +380,8 @@
 				return `<table class="table table-secondary"><tr><th>Question</th><th>Answer</th><th>Wrong Answers</th></tr>${rows}</table>`;
 			}
 
-			function deleteQuiz(code) {
-				console.log("Deleting");
+			function deleteQuiz() {
+				console.log(code);
 				if (confirm("Are you sure you want to delete this quiz? This action cannot be undone.")) {
 					toggleSpinner(true);
 					set(ref(database, "tarwiz/" + code), null)
