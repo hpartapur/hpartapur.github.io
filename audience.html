@@ -3,99 +3,66 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Entry Counter</title>
+		<title>People Counter</title>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-models/coco-ssd"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 		<style>
-			canvas {
-				position: absolute;
-				left: 0;
-				top: 0;
+			body {
+				text-align: center;
+			}
+			video {
+				width: 80%;
 			}
 		</style>
 	</head>
 	<body>
-		<h1>Entry Counter: <span id="counter">0</span></h1>
-		<video id="video" width="640" height="480" autoplay></video>
-		<canvas id="canvas" width="640" height="480"></canvas>
+		<h1>People Counter</h1>
+		<h2>Count: <span id="counter">0</span></h2>
+		<video id="video" autoplay playsinline></video>
+		<canvas id="canvas" style="display: none"></canvas>
 		<script>
-			let video;
-			let net;
+			const video = document.getElementById("video");
+			const counterDisplay = document.getElementById("counter");
 			let counter = 0;
-			let peopleInside = new Set();
-			const thresholdLineY = 300; // Threshold line Y-coordinate for entry detection
-
-			async function setupCamera() {
-				video = document.getElementById("video");
-				const stream = await navigator.mediaDevices.getUserMedia({
-					video: true,
-				});
-				video.srcObject = stream;
-				return new Promise((resolve) => {
-					video.onloadedmetadata = () => {
-						resolve(video);
-					};
-				});
-			}
+			let peopleSet = new Set();
 
 			async function loadModel() {
-				net = await cocoSsd.load();
+				return await cocoSsd.load();
 			}
 
-			async function detect() {
-				const predictions = await net.detect(video);
-				const ctx = document.getElementById("canvas").getContext("2d");
-				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-				ctx.drawImage(video, 0, 0, ctx.canvas.width, ctx.canvas.height);
-				drawThresholdLine(ctx);
-				handleDetections(predictions, ctx);
-				requestAnimationFrame(detect);
-			}
-
-			function drawThresholdLine(ctx) {
-				ctx.beginPath();
-				ctx.moveTo(0, thresholdLineY);
-				ctx.lineTo(ctx.canvas.width, thresholdLineY);
-				ctx.lineWidth = 2;
-				ctx.strokeStyle = "red";
-				ctx.stroke();
-			}
-
-			function handleDetections(predictions, ctx) {
+			function updateCounter(predictions) {
+				const currentPeople = new Set();
 				predictions.forEach((prediction) => {
 					if (prediction.class === "person") {
-						const [x, y, width, height] = prediction.bbox;
-						ctx.beginPath();
-						ctx.rect(x, y, width, height);
-						ctx.lineWidth = 2;
-						ctx.strokeStyle = "blue";
-						ctx.stroke();
-
-						// Calculate the center Y of the bounding box
-						const centerY = y + height / 2;
-
-						// Check if the person crosses the threshold line
-						if (centerY > thresholdLineY && !peopleInside.has(prediction.id)) {
-							peopleInside.add(prediction.id);
-							counter++;
-							document.getElementById("counter").innerText = counter;
-						} else if (centerY < thresholdLineY && peopleInside.has(prediction.id)) {
-							peopleInside.delete(prediction.id);
-						}
+						currentPeople.add(prediction.id);
 					}
 				});
+
+				// Update the counter based on new detections
+				currentPeople.forEach((personId) => {
+					if (!peopleSet.has(personId)) {
+						counter++;
+						peopleSet.add(personId);
+					}
+				});
+
+				counterDisplay.innerText = counter;
 			}
 
-			async function main() {
-				await setupCamera();
-				await loadModel();
-				detect();
+			async function detectPeople(model) {
+				const predictions = await model.detect(video);
+				updateCounter(predictions);
+				requestAnimationFrame(() => detectPeople(model));
 			}
 
-			main().catch((err) => {
-				console.error(err);
-				alert("An error occurred while initializing: " + err.message);
-			});
+			async function startVideo() {
+				const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+				video.srcObject = stream;
+				const model = await loadModel();
+				detectPeople(model);
+			}
+
+			startVideo();
 		</script>
 	</body>
 </html>
