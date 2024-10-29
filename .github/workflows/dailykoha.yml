@@ -1,0 +1,19 @@
+name: Run Daily Script
+on:
+  schedule:
+    - cron: "*/15 * * * *" #Run Every 15 minutes
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Run Script
+        run: koha.py
