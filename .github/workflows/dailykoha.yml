@@ -23,7 +23,7 @@ jobs:
       # Step 3: Install Dependencies (if any)
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt || echo "No requirements.txt found"
+          pip install requests
 
       # Step 4: Run the Python Script
       - name: Run Script
