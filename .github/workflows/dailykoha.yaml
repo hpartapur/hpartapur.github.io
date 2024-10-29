@@ -1,0 +1,30 @@
+name: Run Hourly Python Script
+
+# Schedule to run the workflow every hour
+on:
+  schedule:
+    - cron: "45 * * * *" # This runs every hour, on the hour (UTC)
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' # Replace with the version you need (e.g., '3.9')
+
+      # Step 3: Install Dependencies (if any)
+      - name: Install Dependencies
+        run: |
+          pip install requests
+
+      # Step 4: Run the Python Script
+      - name: Run Script
+        run: python koha.py # Ensure "python" is specified before the script name
