@@ -1,9 +1,9 @@
-name: Run Daily Python Script
+name: Run Hourly Python Script
 
-# Schedule to run the workflow daily
+# Schedule to run the workflow every hour
 on:
   schedule:
-    - cron: "0 0 * * *" # This runs daily at midnight (UTC)
+    - cron: "0 * * * *" # This runs every hour, on the hour (UTC)
 
 jobs:
   run-script:
@@ -27,4 +27,4 @@ jobs:
 
       # Step 4: Run the Python Script
       - name: Run Script
-        run: koha.py
+        run: python koha.py # Ensure "python" is specified before the script name
