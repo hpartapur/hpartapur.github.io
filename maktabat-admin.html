@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous" />
+		<title>Maktabat Approval Page</title>
+		<style>
+			@font-face {
+				font-family: KM;
+				src: url(/assets/Kanz-al-Marjaan.ttf);
+			}
+			body {
+				font-family: KM, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background-color: #f4f4f4;
+			}
+			.container {
+				max-width: 800px;
+				margin: auto;
+				background: white;
+				border-radius: 8px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+				padding: 20px;
+			}
+			h2 {
+				text-align: center;
+				color: #007bff;
+			}
+			.entry {
+				border-bottom: 1px solid #ccc;
+				padding: 15px 0;
+			}
+			.entry:last-child {
+				border-bottom: none;
+			}
+			.entry-details {
+				margin-bottom: 10px;
+			}
+			button {
+				padding: 8px 12px;
+				background-color: #007bff;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: #0056b3;
+			}
+			.status {
+				display: inline-block;
+				margin-right: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h2>All Entries for Approval</h2>
+			<div id="data-container"></div>
+		</div>
+
+		<script type="module">
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+			const firebaseConfig = {
+				apiKey: "AIzaSyB9b0KZWXWHHYcEsPD7T7WtuZsJXHXQIfM",
+				authDomain: "maktabatextra.firebaseapp.com",
+				databaseURL: "https://maktabatextra-default-rtdb.asia-southeast1.firebasedatabase.app",
+				projectId: "maktabatextra",
+				storageBucket: "maktabatextra.firebasestorage.app",
+				messagingSenderId: "346797018668",
+				appId: "1:346797018668:web:97ed59229b06cedff30b89",
+				measurementId: "G-TJ3NMGXQX7",
+			};
+
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			const database = getDatabase(app);
+			const dbRef = ref(database, "entries");
+
+			// Fetch and display all entries
+			const fetchEntries = () => {
+				onValue(dbRef, (snapshot) => {
+					const data = snapshot.val();
+					const container = document.getElementById("data-container");
+					container.innerHTML = ""; // Clear previous entries
+
+					if (data) {
+						Object.entries(data).forEach(([key, entry]) => {
+							const services = entry.Services;
+							const selectedServices = Object.keys(services).filter((service) => services[service].selected);
+
+							const entryDiv = document.createElement("div");
+							entryDiv.className = "entry";
+
+							entryDiv.innerHTML = `
+                            <div class="entry-details">
+                                <strong>ITS:</strong> ${entry.ITS}<br>
+                                <strong>Full Name:</strong> ${entry.Fullname}<br>
+                                <strong>Email:</strong> ${entry.Email}<br>
+                                <strong>Mobile:</strong> ${entry.Mobile}<br>
+                                <strong>Jamaat:</strong> ${entry.Jamaat}<br>
+                                <strong>Library Approval:</strong> ${entry.LibraryApproval ? "Approved" : "Pending"}
+                            </div>
+                            <strong>Selected Services:</strong>
+                        `;
+
+							selectedServices.forEach((service) => {
+								const paymentDone = services[service].payment_done;
+								const paymentStatus = paymentDone === true ? "Paid" : "Not Paid";
+
+								entryDiv.innerHTML += `
+                                <div>
+                                    <span class="status">${service}: ${paymentStatus}</span>
+                                </div>
+                            `;
+							});
+
+							// Show button if LibraryApproval is not true
+							if (!entry.LibraryApproval) {
+								entryDiv.innerHTML += `
+                                <button onclick="approveLibrary('${key}', this)">Approve Library</button>
+                            `;
+							}
+
+							container.appendChild(entryDiv);
+						});
+					} else {
+						container.innerHTML = "<p>No entries found.</p>";
+					}
+				});
+			};
+
+			// Function to approve Library
+			window.approveLibrary = (entryId, button) => {
+				const approvalRef = ref(database, `entries/${entryId}/LibraryApproval`);
+				set(approvalRef, true)
+					.then(() => {
+						alert("Library approval set successfully!");
+						button.parentElement.innerHTML += "<span style='color: green;'> Approved</span>"; // Show approved status
+						button.style.display = "none"; // Hide the button after approval
+					})
+					.catch((error) => {
+						console.error("Error updating library approval: ", error);
+						alert("Error updating library approval. Please try again.");
+					});
+			};
+
+			// Fetch entries on page load
+			fetchEntries();
+		</script>
+	</body>
+</html>
