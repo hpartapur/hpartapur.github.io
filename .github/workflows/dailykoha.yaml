@@ -28,3 +28,6 @@ jobs:
       # Step 4: Run the Python Script
       - name: Run Script
         run: python koha.py # Ensure "python" is specified before the script name
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
