@@ -347,6 +347,8 @@
 		function newWord() {
 			starttime = new Date();
 			questioned = questions[Math.floor(Math.random() * questions.length)];
+			let questionAudio = new Audio("/rabt/numbers/Slide41.m4a");
+			questionAudio.play();
 			while (answered.indexOf(questioned["Word"]) !== -1) {
 				questioned = questions[Math.floor(Math.random() * questions.length)];
 			}
