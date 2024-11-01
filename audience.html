@@ -3,29 +3,66 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Crowd Density Estimation</title>
+		<title>People Counter</title>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/yolo"></script>
-		<!-- Add YOLO script -->
 		<style>
-			video {
-				width: 100%;
-				height: auto;
-				position: absolute;
+			body {
+				text-align: center;
 			}
-			canvas {
-				position: absolute;
-				left: 0;
-				top: 0;
-				pointer-events: none; /* Prevent interaction */
+			video {
+				width: 80%;
 			}
 		</style>
 	</head>
 	<body>
-		<h1>Crowd Density Estimation in Auditorium</h1>
+		<h1>People Counter</h1>
+		<h2>Count: <span id="counter">0</span></h2>
 		<video id="video" autoplay playsinline></video>
-		<canvas id="canvas"></canvas>
-		<script src="scripter.js"></script>
+		<canvas id="canvas" style="display: none"></canvas>
+		<script>
+			const video = document.getElementById("video");
+			const counterDisplay = document.getElementById("counter");
+			let counter = 0;
+			let peopleSet = new Set();
+
+			async function loadModel() {
+				return await cocoSsd.load();
+			}
+
+			function updateCounter(predictions) {
+				const currentPeople = new Set();
+				predictions.forEach((prediction) => {
+					if (prediction.class === "person") {
+						currentPeople.add(prediction.id);
+					}
+				});
+
+				// Update the counter based on new detections
+				currentPeople.forEach((personId) => {
+					if (!peopleSet.has(personId)) {
+						counter++;
+						peopleSet.add(personId);
+					}
+				});
+
+				counterDisplay.innerText = counter;
+			}
+
+			async function detectPeople(model) {
+				const predictions = await model.detect(video);
+				updateCounter(predictions);
+				requestAnimationFrame(() => detectPeople(model));
+			}
+
+			async function startVideo() {
+				const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+				video.srcObject = stream;
+				const model = await loadModel();
+				detectPeople(model);
+			}
+
+			startVideo();
+		</script>
 	</body>
 </html>
