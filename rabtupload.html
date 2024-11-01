@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Image Upload Page</title>
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+				margin: 0;
+				font-family: Arial, sans-serif;
+				background-color: #f0f0f0;
+			}
+			.upload-box {
+				width: 80%;
+				height: 50%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				border: 2px solid black;
+				background-color: lightgray;
+				padding: 20px;
+				border-radius: 10px;
+			}
+			.file-input {
+				margin-top: 20px;
+				padding: 10px;
+				font-size: 18px;
+			}
+			.upload-button {
+				margin-top: 20px;
+				padding: 10px 20px;
+				font-size: 18px;
+				background-color: lightblue;
+				border: none;
+				cursor: pointer;
+				border-radius: 5px;
+			}
+			.upload-button:hover {
+				background-color: blue;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="upload-box">
+			<h2>Upload Image to Firebase Storage</h2>
+			<input type="file" id="fileInput" class="file-input" accept="image/*" />
+			<button class="upload-button" id="uploadButton">Upload Image</button>
+			<div id="uploadStatus"></div>
+		</div>
+
+		<script type="module">
+			// Import Firebase SDKs
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+			import {
+				getStorage,
+				ref as storageRef,
+				uploadBytesResumable,
+				getDownloadURL,
+			} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
+
+			const firebaseConfig = {
+				apiKey: "AIzaSyCooPWsrh3yFb4eat6dg2_VFAIIPF_ET50",
+				authDomain: "khardal.firebaseapp.com",
+				projectId: "khardal",
+				storageBucket: "khardal.appspot.com",
+				messagingSenderId: "258618544710",
+				appId: "1:258618544710:web:2b734571b863de60dc3047",
+			};
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			const storage = getStorage(app);
+
+			// File input and upload button elements
+			const fileInput = document.getElementById("fileInput");
+			const uploadButton = document.getElementById("uploadButton");
+			const uploadStatus = document.getElementById("uploadStatus");
+
+			uploadButton.addEventListener("click", () => {
+				const file = fileInput.files[0];
+				if (!file) {
+					uploadStatus.innerText = "Please select a file to upload!";
+					return;
+				}
+
+				// Create a storage reference
+				const fileRef = storageRef(storage, "uploads/" + file.name);
+
+				// Upload the file
+				const uploadTask = uploadBytesResumable(fileRef, file);
+
+				// Monitor upload progress
+				uploadTask.on(
+					"state_changed",
+					(snapshot) => {
+						const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+						uploadStatus.innerText = `Upload is ${progress}% done`;
+					},
+					(error) => {
+						uploadStatus.innerText = `Upload failed: ${error}`;
+					},
+					() => {
+						// Upload completed successfully, get the download URL
+						getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+							uploadStatus.innerHTML = `Upload completed! <br/> File URL: <a href="${downloadURL}" target="_blank">${downloadURL}</a>`;
+						});
+					}
+				);
+			});
+		</script>
+	</body>
+</html>
