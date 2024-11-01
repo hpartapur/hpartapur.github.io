@@ -46,6 +46,8 @@
 				border-radius: 5vw;
 				margin: 0.1vw;
 				width: 30vw;
+				font-family: Al-Kanz;
+				font-size: 25vw;
 				/* width: 30%; */
 			}
 			.button:hover {
@@ -60,11 +62,10 @@
 			<span id="word" style="font-size: 16vh">Word</span>
 		</div>
 		<div class="button-container">
-			<button class="button">
-				<img />
-			</button>
-			<button class="button"><img /></button>
-			<button class="button"><img /></button>
+			<button class="button"></button>
+			<button class="button"></button>
+			<button class="button"></button>
+			<button class="button"></button>
 		</div>
 	</body>
 	<script type="module">
@@ -359,7 +360,7 @@
 
 			options = [];
 			options.push(questioned["Photo"]);
-			while (options.length < 3) {
+			while (options.length < 4) {
 				var option = questions[Math.floor(Math.random() * questions.length)]["Photo"];
 				if (options.indexOf(option) === -1) {
 					options.push(option);
@@ -367,9 +368,10 @@
 			}
 			options.sort(() => Math.random() - 0.5);
 			document.querySelectorAll(".button").forEach((button, index) => {
-				button.querySelector("img").src = options[index];
-				button.querySelector("img").style.width = "25vw";
-				button.querySelector("img").style.height = "25vw";
+				let number = options[index].slice(20, -4);
+				button.innerText = number;
+				button.style.width = "25vw";
+				button.style.height = "25vw";
 			});
 			document.getElementById("word").innerText = questioned["Word"];
 		}
@@ -440,7 +442,7 @@
 					wrongs.push(questioned["Word"]);
 				}
 			});
-			button.querySelector("img").src = options[index];
+			// button.querySelector("img").src = options[index];
 		});
 	</script>
 </html>
