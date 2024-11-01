@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>الساعة العربية</title>
+		<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+		<style>
+			body {
+				font-family: "Amiri", serif;
+				background: linear-gradient(to bottom, #283048, #859398);
+				color: #fff;
+				text-align: center;
+				direction: rtl;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			}
+
+			h1 {
+				font-size: 2.5em;
+				color: #f0e6d2;
+				margin: 20px;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+			}
+
+			.clock-container {
+				display: flex;
+				gap: 30px;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.clock {
+				background: rgba(255, 255, 255, 0.15);
+				backdrop-filter: blur(10px);
+				border-radius: 15px;
+				padding: 20px;
+				width: 200px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				transition: transform 0.3s ease;
+			}
+
+			.clock:hover {
+				transform: scale(1.05);
+			}
+
+			#nairobi {
+				background: rgba(255, 255, 255, 0.25);
+				width: 250px;
+				padding: 30px;
+				margin-bottom: 20px;
+			}
+
+			h2 {
+				font-size: 1.8em;
+				margin: 0;
+				color: #f0e6d2;
+				text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+			}
+
+			.time {
+				font-size: 1.5em;
+				margin-top: 10px;
+				color: #e0f7fa;
+				font-weight: bold;
+			}
+
+			.toggle-button {
+				margin-top: 20px;
+				background-color: #333;
+				color: #fff;
+				padding: 10px 20px;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				font-size: 1em;
+			}
+			.toggle-button:hover {
+				background-color: #555;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>الساعة العربية</h1>
+
+		<div id="nairobi" class="clock">
+			<h2>الوقت في نيروبي</h2>
+			<div class="time" id="timeNairobi">جار التحميل...</div>
+		</div>
+
+		<div class="clock-container">
+			<div id="india" class="clock">
+				<h2>الوقت في الهند</h2>
+				<div class="time" id="timeIndia">جار التحميل...</div>
+			</div>
+
+			<div id="pakistan" class="clock">
+				<h2>الوقت في باكستان</h2>
+				<div class="time" id="timePakistan">جار التحميل...</div>
+			</div>
+		</div>
+
+		<button class="toggle-button" onclick="toggleNumerals()">تبديل الأرقام</button>
+
+		<script>
+			let useArabicNumerals = true;
+
+			function updateTime() {
+				const indiaTime = new Date().toLocaleString(useArabicNumerals ? "ar-EG" : "en-US", {
+					timeZone: "Asia/Kolkata",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+				const nairobiTime = new Date().toLocaleString(useArabicNumerals ? "ar-EG" : "en-US", {
+					timeZone: "Africa/Nairobi",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+				const pakistanTime = new Date().toLocaleString(useArabicNumerals ? "ar-EG" : "en-US", {
+					timeZone: "Asia/Karachi",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+
+				document.getElementById("timeIndia").textContent = indiaTime;
+				document.getElementById("timeNairobi").textContent = nairobiTime;
+				document.getElementById("timePakistan").textContent = pakistanTime;
+			}
+
+			function toggleNumerals() {
+				useArabicNumerals = !useArabicNumerals;
+				updateTime();
+			}
+
+			// Update time every second
+			setInterval(updateTime, 1000);
+			updateTime();
+		</script>
+	</body>
+</html>
