@@ -3,8 +3,7 @@ name: Weekly Tashjee Email
 # Schedule to run the workflow every hour
 on:
   schedule:
-    - cron: "15 13 * * 2" # This runs every hour, on the 45th minute (UTC)
-
+    - cron: "40 10 * * 2"
 jobs:
   run-scripts:
     runs-on: ubuntu-latest
