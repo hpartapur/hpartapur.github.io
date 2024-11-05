@@ -1,5 +1,7 @@
 import requests
+from requests.auth import HTTPBasicAuth
 import json
+import pandas as pd
 # Define URLs and payload
 login_url = 'https://library-admin.ajsn.co.ke/'
 api_endpoint = 'https://library-admin.ajsn.co.ke/api/v1/patrons?_per_page=2000'
@@ -11,19 +13,24 @@ api_endpoint = 'https://library-admin.ajsn.co.ke/api/v1/patrons?_per_page=2000'
 # update={'address': '', 'address2': '', 'altaddress_address': '', 'altaddress_address2': '', 'altaddress_city': '', 'altaddress_country': '', 'altaddress_email': 'ami_sons@yahoo.com', 'altaddress_notes': '', 'altaddress_phone': '+96555549786', 'altaddress_postal_code': '', 'altaddress_state': '', 'altaddress_street_number': '', 'altaddress_street_type': '', 'altcontact_address': '', 'altcontact_address2': '', 'altcontact_city': '', 'altcontact_country': '', 'altcontact_firstname': '', 'altcontact_phone': '', 'altcontact_postal_code': '', 'altcontact_state': '', 'altcontact_surname': '','autorenew_checkouts': True, 'cardnumber': '1426303383', 'category_id': 'CT', 'check_previous_checkout': '', 'city': '', 'country': 'Nairobi', 'date_enrolled': '2023-10-17', 'date_of_birth': '1998-02-09', 'date_renewed': None, 'email': '24385@jameasaifiyah.edu', 'expiry_date': '2030-01-01', 'fax': '', 'firstname': '', 'gender': 'M', 'incorrect_address': False, 'initials': '', 'lang': '', 'last_seen': None, 'library_id': 'AJSN', 'login_attempts': 0, 'middle_name': None, 'mobile': '+96566649786', 'opac_notes': '', 'other_name': '', 'overdrive_auth_token': '', 'patron_card_lost': False, 'patron_id': 662, 'phone': '', 'postal_code': '', 'privacy': 0, 'privacy_guarantor_checkouts': 0, 'privacy_guarantor_fines': False, 'pronouns': None, 'protected': False, 'relationship_type': None,  'secondary_email': 'ami_sons@yahoo.com', 'secondary_phone': '+919998378553', 'sms_number': '', 'sms_provider_id': None, 'staff_notes': '', 'state': '', 'statistics_1': '', 'statistics_2': '', 'street_number': '', 'street_type': '', 'surname': 'M Qasim Sh Hasanali Bhai Kaydawala', 'title': '', 'updated_on': '2023-10-17T13:20:39+03:00', 'userid': '30485755'}
 
 # addition = {'address': '', 'address2': '', 'altaddress_address': '', 'altaddress_address2': '', 'altaddress_city': '', 'altaddress_country': '', 'altaddress_email': 'hptest@gmail.com', 'altaddress_notes': '', 'altaddress_phone': '+919919199191', 'altaddress_postal_code': '', 'altaddress_state': '', 'altaddress_street_number': '', 'altaddress_street_type': '', 'altcontact_address': '', 'altcontact_address2': '', 'altcontact_city': '', 'altcontact_country': '', 'altcontact_firstname': '', 'altcontact_phone': '', 'altcontact_postal_code': '', 'altcontact_state': '', 'altcontact_surname': '',  'autorenew_checkouts': True, 'cardnumber': '110101010101001001', 'category_id': 'CGA', 'check_previous_checkout': '', 'city': '', 'country': 'Nairobi', 'date_enrolled': '2023-10-17', 'date_of_birth': '1998-11-09', 'date_renewed': None, 'email': 'hptests@jameasaifiyah.edu', 'expiry_date': '2030-01-01', 'fax': '', 'firstname': '', 'gender': 'M', 'incorrect_address': False, 'initials': '', 'lang': '', 'last_seen': None, 'library_id': 'AJSN', 'login_attempts': 0, 'middle_name': None, 'mobile': '+254715480437', 'opac_notes': '', 'other_name': '', 'overdrive_auth_token': '', 'patron_card_lost': False, 'patron_id': 759999, 'phone': '', 'postal_code': '', 'privacy': 0, 'privacy_guarantor_checkouts': 0, 'privacy_guarantor_fines': False, 'pronouns': None, 'protected': False, 'relationship_type': None, 'secondary_email': 'hptesttest@gmail.com', 'secondary_phone': '+967777735252', 'sms_number': '', 'sms_provider_id': None, 'staff_notes': '', 'state': '', 'statistics_1': '', 'statistics_2': '', 'street_number': '', 'street_type': '', 'surname': 'Hatim P TEst', 'title': '', 'updated_on': '2023-10-17T13:21:03+03:00', 'userid': '777777777'}
-login_url = 'https://library-admin.ajsn.co.ke/'
-api_endpoint = 'https://library-admin.ajsn.co.ke/api/v1/patrons?_per_page=2000'
 
 
-session = requests.Session()
-session.cookies.set('CGISESSID', 'ac10ed41e9888bc3dad9a6c316550c5c')
-response = session.get(api_endpoint)
+# Replace 'username' and 'password' with your actual credentials
+username = '30495513'
+password = '30495513'
+
+# Perform a GET request with Basic Authentication
+response = requests.get(api_endpoint, auth=HTTPBasicAuth(username, password))
+
+# Check the response status
+if response.status_code == 200:
+    print("Request was successful")
+    kohadata=response.json()
+else:
+    print(f"Failed to retrieve data. Status code: {response.status_code}")
+    print(response.text)
 
 
-print("Authenticated request status code:", response.status_code)
-# print("Authenticated request text:", response.text)
-
-kohadata=response.json()
 
 # print(kohadata)
 # print(len(kohadata))
@@ -56,44 +63,71 @@ malaf=jhs_response.json()
 
 missing_users=[]
 
+# Create an empty DataFrame with appropriate column names
+columns = ['userid', 'patron_surname', 'user_surname', 'patron_category', 'user_category','patron_cardnumber', 'user_cardnumber']
+df = pd.DataFrame(columns=columns)
+
 for user in malaf:
     present = False
     for patron in kohadata:
         if patron['userid'] == user['userid']:
             present=True
-            # if patron ['cardnumber'] != user['cardnumber'] or patron['surname'] != user['surname'] or patron
+            userdata=[]
+            userdata.append(user['userid'])
+            userdata.append(patron['surname'])
+            userdata.append(user['surname'])
+            userdata.append(patron['category_id'])
+            userdata.append(user['categorycode'])
+            userdata.append(patron['cardnumber'])
+            userdata.append(user['cardnumber'])
+            df.loc[len(df)] = userdata
             break
     if present == False:
         missing_users.append(user)
+        userdata=[]
+        userdata.append(user['userid'])
+        userdata.append("")
+        userdata.append(user['surname'])
+        userdata.append("")
+        userdata.append(user['categorycode'])
+        userdata.append("")
+        userdata.append(user['cardnumber'])
+        df.loc[len(df)] = userdata
 
-print(len(missing_users))
+print(df)
 
-import os
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
-def send_email(subject, body):
-    sender_email = "24653@jameasaifiyah.edu"
-    receiver_email = "24653@jameasaifiyah.edu"
-    password = "Nairobi@24653"
+# Save to Excel
+df.to_excel('user_data.xlsx', index=False)
+# print(len(missing_users))
 
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    msg['Subject'] = subject
+# print(df)
+# count = 0
+# for index, row in df.iterrows():
+#     if row[1] != row[2] or row[3]!=row[4]:
+#         count +=1
+# print(count)
 
-    msg.attach(MIMEText(body, 'plain'))
+# for patron in kohadata:
+#     if patron['userid'] == "30495513":
+#         print(patron)
+# for patron in malaf:
+#     if patron['userid'] == "30495513":
+#         print(patron)
 
-    try:
-        with smtplib.SMTP('smtp.example.com', 587) as server:
-            server.starttls()
-            server.login(sender_email, password)
-            server.send_message(msg)
-        print("Email sent successfully.")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
+for index, row in df.iterrows():
+    if row['patron_cardnumber'] != row['user_cardnumber']:
+        print(row)
+        newcard=row['user_cardnumber']
 
-# At the end of your script, after processing
-summary = "Users detected"
-send_email("Daily Summary", summary)
+update_link = "https://library-admin.ajsn.co.ke/api/v1/patrons?userid=78652171"
+update_response = requests.get(update_link, auth=HTTPBasicAuth(username, password))
+x=update_response.json()
+print(x)
+# print(x[0]['surname'])
+# print(x[0]['cardnumber'])
+x[0]['cardnumber'] = newcard
+print(x)
+# update_response = requests.put(update_link, auth=HTTPBasicAuth(username, password),json=x)
+# print(update_response.status_code)
+# print(update_response.text)
