@@ -33,11 +33,11 @@ def send_email(sender_email, receiver_email, cc_email, subject, body, smtp_serve
 # Usage
 if __name__ == "__main__":
     sender_email = "24653@jameasaifiyah.edu"  # Your email address
-    receiver_email = "24653@jameasaifiyah.edu"  # Primary recipient's email address
+    receiver_email = "yskagalwala@jameasaifiyah.edu"  # Primary recipient's email address
     cc_email = "cc1@example.com, cc2@example.com"  # Comma-separated list of CC recipients' emails
     subject = "Tashjee Request"
     body = """Taslimaat Janab,
-    This is a request for Tashjee for the following Talabat in AVIT.
+    This is a humble request for Tashjee for the following Talabat in AVIT.
     26776 - Hatim Lilya
     25323 - Husain Bhai Tabha
     26356 - Ibrahim BS Moiny
