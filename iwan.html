@@ -42,8 +42,9 @@
 	</head>
 	<body>
 		<h1>Teachable Machine Image Model</h1>
-		<p>Click the button below to start the webcam and make predictions using the model.</p>
-		<button type="button" id="start-button" onclick="init()">Start</button>
+		<p>Select a camera to start:</p>
+		<button type="button" onclick="init('user')">Front Camera</button>
+		<button type="button" onclick="init('environment')">Back Camera</button>
 		<div id="webcam-container"></div>
 		<div id="label-container"></div>
 		<div id="message-container"></div>
@@ -54,32 +55,23 @@
 		<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
 		<script type="text/javascript">
-			const URL = "https://teachablemachine.withgoogle.com/models/xz_aS7qUk";
+			const URL = "https://teachablemachine.withgoogle.com/models/xz_aS7qUk/";
 
 			let model, webcam, labelContainer, maxPredictions;
 
 			// Messages for each class
 			const classMessages = {
-				// Sahat: "Sāhat, is south of the masjid and inspired by courtyards like al-Jāmiʿ al-Azhar and al-Jāmiʿ al-Anwar. The original Aljamea-tus-Saifiyah campus in Surat had an open courtyard and Nairobi Jamea follows a hypo-style layout. Its size is 60 x 40 mtrs.",
 				Wajehat:
-					"Architecture design is inspired by Jamea Anwar. It incorporates protrusions, a distinct feature of Fatimi style architecture. Protrusions in the masjid serve a symbolic purpose, representing the qibla and Imam.",
-				// "Wooden doors":
-				// 	"History: Doors (Turkish Pine) were gifted to Jami al-Azhar by Imam Hakim A.S. during Jami al-Anwar’s construction. The pair of doors containing Imam Hakim’s name was installed in Anwar’s primary doorway. Design: Seven individual wooden carved panels.",
-				// Minara: "These were styled after the minarets of Jamea Anwar, envisioned as shining beacons in front of the Fatimi walls. They showcase exquisite Islamic stonework, Arabesque designs, and Kufic inscriptions. The minarets' design is based on two rotated squares, incorporating Fatimi motifs.",
-				// Shorofaat:
-				// "The shorofaat, ornamental details with aesthetic intricacy, are prominently featured on the wajehat. Influenced by Anwar's architectural traditions, they contribute to the visual richness and cultural heritage of the design.",
-				"Arches and Grilles":
-					"The arches feature a design inspired by the horseshoe arches of Mahdiyya. Two types of stones, the yellow stone on the arches' perimeters and the stone of bir, are of Misri origin. The grills within the arches draw inspiration from Azhar and use GFRC (glass fiber reinforced concrete).",
-				"Chaar Baagh":
-					"The four gardens within the sahat follow a Persian 'baagh' design and symbolize the four anhaar (rivers) of Jannah (paradise). These gardens are named Tasneem, Kafur, Kausar, and Salsabil by Aqa Maula.",
-				Bir: "This Bir imitates the one in Jame Al-Anwar. Within it is stored barakat from various holy places, such as Zamzam, the original Bir, and the mausoleum of Moulana Abbas Alamdar.",
-				Unclear: "Please try a different angle",
+					"Architecture design is inspired by Jamea Anwar. It incorporates protrusions, a distinct feature of Fatimi style architecture.",
+				"Arches and Grilles": "The arches feature a design inspired by the horseshoe arches of Mahdiyya. They are constructed using GFRC.",
+				"Chaar Baagh": "The four gardens symbolize the four rivers of Jannah and follow a Persian 'baagh' design.",
+				Bir: "This Bir imitates the one in Jame Al-Anwar, containing barakat from various holy places.",
+				Unclear: "Please try a different angle.",
 			};
 
-			async function init() {
-				const button = document.getElementById("start-button");
-				button.disabled = true;
-				button.textContent = "Loading...";
+			async function init(cameraFacingMode) {
+				// Reset and disable buttons
+				document.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
 
 				try {
 					const modelURL = URL + "model.json";
@@ -89,23 +81,31 @@
 					model = await tmImage.load(modelURL, metadataURL);
 					maxPredictions = model.getTotalClasses();
 
-					// Set up the webcam
-					const flip = true; // whether to flip the webcam
-					webcam = new tmImage.Webcam(300, 300, flip); // width, height, flip
+					// Set up the webcam with the selected facing mode
+					const constraints = {
+						video: {
+							width: 300,
+							height: 300,
+							facingMode: cameraFacingMode, // 'user' for front, 'environment' for back
+						},
+					};
+					webcam = new tmImage.Webcam(300, 300, false, constraints); // No flip since constraints handle it
 					await webcam.setup(); // request access to the webcam
 					await webcam.play();
 					window.requestAnimationFrame(loop);
 
 					// Append webcam and labels to the DOM
-					document.getElementById("webcam-container").appendChild(webcam.canvas);
+					const webcamContainer = document.getElementById("webcam-container");
+					webcamContainer.innerHTML = ""; // Clear previous webcam instance
+					webcamContainer.appendChild(webcam.canvas);
+
 					labelContainer = document.getElementById("label-container");
+					labelContainer.innerHTML = ""; // Clear previous labels
 					labelContainer.appendChild(document.createElement("div")); // For the top prediction
-					button.textContent = "Running...";
 				} catch (error) {
 					console.error("Error initializing model or webcam:", error);
 					alert("Failed to initialize. Please check your permissions or try again.");
-					button.disabled = false;
-					button.textContent = "Start";
+					document.querySelectorAll("button").forEach((btn) => (btn.disabled = false));
 				}
 			}
 
