@@ -3,57 +3,116 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Teachable Machine Image Model</title>
+		<title>Saahat: Image Recognition</title>
 		<style>
+			/* General styles */
 			body {
-				font-family: Arial, sans-serif;
+				font-family: "Roboto", sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: #f9f9f9;
+				color: #333;
 				text-align: center;
-				margin: 20px;
 			}
-			#webcam-container {
-				margin: 20px auto;
+			header {
+				background: linear-gradient(90deg, #0056b3, #007bff);
+				color: white;
+				padding: 20px 10px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+			header h1 {
+				margin: 0;
+				font-size: 2em;
+			}
+			header p {
+				margin: 5px 0 0;
+				font-size: 1.1em;
+			}
+
+			main {
+				padding: 20px;
+			}
+
+			/* Buttons */
+			.buttons {
+				display: flex;
+				justify-content: center;
+				gap: 15px;
+				margin-bottom: 20px;
 			}
 			button {
-				padding: 10px 20px;
-				background-color: #007bff;
+				padding: 12px 20px;
+				background-color: #0056b3;
 				color: white;
 				border: none;
-				border-radius: 5px;
+				border-radius: 8px;
+				font-size: 1em;
 				cursor: pointer;
+				transition: all 0.3s ease;
 			}
 			button:hover {
-				background-color: #0056b3;
+				background-color: #003d82;
 			}
-			#label-container div {
-				margin-top: 10px;
-				font-size: 20px;
+
+			/* Webcam and content */
+			#webcam-container {
+				margin: 20px auto;
+				display: flex;
+				justify-content: center;
+			}
+			video {
+				width: 90%;
+				max-width: 400px;
+				border: 3px solid #007bff;
+				border-radius: 12px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			#label-container {
+				margin-top: 20px;
+				font-size: 1.3em;
 				font-weight: bold;
+				color: #04c50d;
 			}
 			#message-container {
 				margin-top: 20px;
-				font-size: 16px;
-				line-height: 1.5;
-				color: #333;
+				padding: 15px;
+				font-size: 2vh;
+				background-color: #fff;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+				border-radius: 12px;
 				text-align: left;
 				display: inline-block;
-				max-width: 600px;
+				max-width: 90%;
+				color: #444;
 			}
-			video {
-				border: 1px solid #ccc;
-				border-radius: 10px;
+
+			footer {
+				margin-top: 40px;
+				padding: 10px 20px;
+				background-color: #333;
+				color: white;
+				font-size: 0.9em;
 			}
 		</style>
 	</head>
 	<body>
-		<h1>Teachable Machine Image Model</h1>
-		<p>Select a camera to start:</p>
-		<button type="button" onclick="init('user')">Front Camera</button>
-		<button type="button" onclick="init('environment')">Back Camera</button>
-		<div id="webcam-container">
-			<video id="webcam" autoplay playsinline></video>
-		</div>
-		<div id="label-container"></div>
-		<div id="message-container"></div>
+		<header>
+			<h1>Saahat: Intelligent Recognition</h1>
+			<p>Experience the rich heritage of Saahat through cutting-edge technology.</p>
+		</header>
+
+		<main>
+			<p>Start the camera to identify architectural and cultural features of Saahat.</p>
+			<div class="buttons">
+				<button type="button" onclick="init('user')">Front Camera</button>
+				<button type="button" onclick="init('environment')">Back Camera</button>
+			</div>
+			<div id="webcam-container">
+				<video id="webcam" autoplay playsinline></video>
+			</div>
+			<div id="label-container"></div>
+			<div id="message-container"></div>
+		</main>
 
 		<!-- Include TensorFlow.js -->
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -65,32 +124,30 @@
 
 			let model, video, labelContainer, maxPredictions;
 
-			// Messages for each class
 			const classMessages = {
 				Sahat: "Sāhat, located south of the masjid, is inspired by courtyards like al-Jāmiʿ al-Azhar and al-Jāmiʿ al-Anwar. The original Aljamea-tus-Saifiyah campus in Surat had an open courtyard, and the Nairobi Jamea follows a hypo-style layout. Its size is 60 x 40 meters.",
 				Wajehat:
 					"The architectural design is inspired by Jamea Anwar, incorporating protrusions, a distinct feature of Fatimi style architecture. The protrusions in the masjid serve a symbolic purpose, representing the qibla and Imam. The shorofaat, ornamental details known for their aesthetic intricacy, are prominently featured on the wajehat. These elements are influenced by Anwar's architectural traditions, contributing to the visual richness and cultural heritage of the design. The minarets are styled after those of Jame Anwar and feature exquisite Islamic stonework, Arabesque designs, and Kufic inscriptions. Both minarets incorporate Fatimi motifs, based on two rotated squares.",
 				"Arches and Grilles":
 					"The arches are inspired by the horseshoe arches of Mahdiyya, constructed with two types of stones: yellow stone on the arches' perimeters and Misri-origin stone from the bir. The grills within the arches draw inspiration from the architectural styles of Azhar, constructed using GFRC (glass fiber reinforced concrete).",
-				"Persian Char Bagh":
+				"Chaar Baagh":
 					"Sāhat, located south of the masjid, follows a hypo-style layout similar to courtyards like al-Jāmiʿ al-Azhar and al-Jāmiʿ al-Anwar. The four gardens within the sahat follow a Persian 'baagh' design and symbolize the four rivers (anhaar) of Jannah (paradise). These gardens are named Tasneem, Kafur, Kausar, and Salsabil, in alignment with the concept of the four rivers of Jamea, a tradition established by Aqa Maula.",
 				Bir: "This Bir is a direct imitation of the one in Jame Al-Anwar. It contains the barakat of 16 different holy places: 1) Zamzam, 2) Bir e Hakimi, 3) Moulana Abbas Zareeh entrance, 4) Well of Sydna Hatim, 5) Well of Sydna Idris in Shibaam, 6) Well of Sydna Yusuf Najmuddin in Sidhpur, 7) Jubbe Maryam Sydna Hebatullah, 8) Well of Al Jamea Tus Saifiyah Surat, 9) Shifa of Sydna Mufaddal Saifuddin, 10) Well near Pakhti of Syedi Fakhruddin Al Shaheed, 11) Well of Moulaya Raja in Morbi, 12) House of Syedi Hasanji Badshah, 13) House of Syedi AbdulQadir Hakimuddin, 14) Well of Kaka Akela and Kaka Akeli, 15) Well in Mazar of Moulaya Nuruddin, 16) Well of Moulaya Najamkhan.",
+				Unclear: "Unclear: Please adjust the camera angle or lighting.",
 				Tiles: "The use of locally sourced stones, including Machakos tiles in the sahat, contributes to eco-friendly architecture by minimizing transportation-related carbon emissions. Additionally, the yellow stone used on the arches' perimeters and the stone of the bir are of Misri origin.",
 			};
 
 			async function init(facingMode) {
 				try {
-					// Stop the previous video stream if it exists
+					// Stop any active video stream
 					if (video && video.srcObject) {
 						const tracks = video.srcObject.getTracks();
 						tracks.forEach((track) => track.stop());
 					}
 
-					// Access the webcam with the specified facing mode
+					// Access the webcam with the selected facing mode
 					const constraints = {
-						video: {
-							facingMode: facingMode, // "user" for front, "environment" for back
-						},
+						video: { facingMode: facingMode },
 					};
 					const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
@@ -107,14 +164,14 @@
 					}
 
 					labelContainer = document.getElementById("label-container");
-					labelContainer.innerHTML = ""; // Clear previous labels
-					labelContainer.appendChild(document.createElement("div")); // For the top prediction
+					labelContainer.innerHTML = ""; // Clear any previous labels
+					labelContainer.appendChild(document.createElement("div")); // Display for the top prediction
 
-					// Start prediction loop
+					// Begin prediction loop
 					predictLoop();
 				} catch (error) {
-					console.error("Error accessing webcam:", error);
-					alert("Failed to access the camera. Please check your permissions or try again.");
+					console.error("Error accessing the camera:", error);
+					alert("Unable to access the camera. Please check permissions or try again.");
 				}
 			}
 
@@ -127,9 +184,9 @@
 				const topPrediction = prediction.reduce((best, current) => (current.probability > best.probability ? current : best));
 
 				// Display the top prediction
-				labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${topPrediction.probability.toFixed(2)}`;
+				labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${topPrediction.probability.toFixed(2) * 100 + "% Confidence"}`;
 
-				// Display the corresponding message if available
+				// Display the corresponding message
 				const messageContainer = document.getElementById("message-container");
 				messageContainer.innerHTML = classMessages[topPrediction.className] || "";
 
