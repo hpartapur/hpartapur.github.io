@@ -38,6 +38,10 @@
 				display: inline-block;
 				max-width: 600px;
 			}
+			video {
+				border: 1px solid #ccc;
+				border-radius: 10px;
+			}
 		</style>
 	</head>
 	<body>
@@ -45,7 +49,9 @@
 		<p>Select a camera to start:</p>
 		<button type="button" onclick="init('user')">Front Camera</button>
 		<button type="button" onclick="init('environment')">Back Camera</button>
-		<div id="webcam-container"></div>
+		<div id="webcam-container">
+			<video id="webcam" autoplay playsinline></video>
+		</div>
 		<div id="label-container"></div>
 		<div id="message-container"></div>
 
@@ -54,10 +60,10 @@
 		<!-- Include Teachable Machine Image Library -->
 		<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
-		<script type="text/javascript">
+		<script>
 			const URL = "https://teachablemachine.withgoogle.com/models/xz_aS7qUk/";
 
-			let model, webcam, labelContainer, maxPredictions;
+			let model, video, labelContainer, maxPredictions;
 
 			// Messages for each class
 			const classMessages = {
@@ -69,54 +75,50 @@
 				Unclear: "Please try a different angle.",
 			};
 
-			async function init(cameraFacingMode) {
-				// Reset and disable buttons
-				document.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
-
+			async function init(facingMode) {
 				try {
-					const modelURL = URL + "model.json";
-					const metadataURL = URL + "metadata.json";
+					// Stop the previous video stream if it exists
+					if (video && video.srcObject) {
+						const tracks = video.srcObject.getTracks();
+						tracks.forEach((track) => track.stop());
+					}
 
-					// Load the model and metadata
-					model = await tmImage.load(modelURL, metadataURL);
-					maxPredictions = model.getTotalClasses();
-
-					// Set up the webcam with the selected facing mode
+					// Access the webcam with the specified facing mode
 					const constraints = {
 						video: {
-							width: 300,
-							height: 300,
-							facingMode: cameraFacingMode, // 'user' for front, 'environment' for back
+							facingMode: facingMode, // "user" for front, "environment" for back
 						},
 					};
-					webcam = new tmImage.Webcam(300, 300, false, constraints); // No flip since constraints handle it
-					await webcam.setup(); // request access to the webcam
-					await webcam.play();
-					window.requestAnimationFrame(loop);
+					const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-					// Append webcam and labels to the DOM
-					const webcamContainer = document.getElementById("webcam-container");
-					webcamContainer.innerHTML = ""; // Clear previous webcam instance
-					webcamContainer.appendChild(webcam.canvas);
+					// Attach the stream to the video element
+					video = document.getElementById("webcam");
+					video.srcObject = stream;
+
+					// Load the model if not already loaded
+					if (!model) {
+						const modelURL = URL + "model.json";
+						const metadataURL = URL + "metadata.json";
+						model = await tmImage.load(modelURL, metadataURL);
+						maxPredictions = model.getTotalClasses();
+					}
 
 					labelContainer = document.getElementById("label-container");
 					labelContainer.innerHTML = ""; // Clear previous labels
 					labelContainer.appendChild(document.createElement("div")); // For the top prediction
+
+					// Start prediction loop
+					predictLoop();
 				} catch (error) {
-					console.error("Error initializing model or webcam:", error);
-					alert("Failed to initialize. Please check your permissions or try again.");
-					document.querySelectorAll("button").forEach((btn) => (btn.disabled = false));
+					console.error("Error accessing webcam:", error);
+					alert("Failed to access the camera. Please check your permissions or try again.");
 				}
 			}
 
-			async function loop() {
-				webcam.update(); // update the webcam frame
-				await predict();
-				window.requestAnimationFrame(loop);
-			}
+			async function predictLoop() {
+				if (!video || !video.srcObject) return;
 
-			async function predict() {
-				const prediction = await model.predict(webcam.canvas);
+				const prediction = await model.predict(video);
 
 				// Find the class with the highest confidence
 				const topPrediction = prediction.reduce((best, current) => (current.probability > best.probability ? current : best));
@@ -127,6 +129,9 @@
 				// Display the corresponding message if available
 				const messageContainer = document.getElementById("message-container");
 				messageContainer.innerHTML = classMessages[topPrediction.className] || "";
+
+				// Continue the prediction loop
+				requestAnimationFrame(predictLoop);
 			}
 		</script>
 	</body>
