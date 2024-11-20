@@ -4,84 +4,22 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Teachable Machine Image Model</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				text-align: center;
-				background-color: #f4f4f9;
-				color: #333;
-				margin: 0;
-				padding: 0;
-			}
-
-			h1 {
-				margin-top: 20px;
-				color: #0078d7;
-			}
-
-			#webcam-container {
-				margin: 20px auto;
-				border: 2px solid #0078d7;
-				border-radius: 10px;
-				width: 220px;
-				height: 220px;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				overflow: hidden;
-			}
-
-			#label-container {
-				margin-top: 20px;
-				padding: 10px;
-				border: 1px solid #0078d7;
-				border-radius: 8px;
-				background-color: #fff;
-				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-				width: 300px;
-				margin-left: auto;
-				margin-right: auto;
-			}
-
-			button {
-				background-color: #0078d7;
-				color: white;
-				border: none;
-				padding: 10px 20px;
-				border-radius: 5px;
-				cursor: pointer;
-				font-size: 16px;
-				margin-top: 20px;
-			}
-
-			button:hover {
-				background-color: #005a9e;
-			}
-		</style>
 	</head>
 	<body>
-		<h1>Teachable Machine Image Classifier</h1>
-		<div id="webcam-container">Webcam not started</div>
-		<div id="label-container">Click "Start" to begin</div>
+		<div>Teachable Machine Image Model</div>
 		<button type="button" onclick="init()">Start</button>
+		<div id="webcam-container"></div>
+		<div id="label-container"></div>
 
 		<!-- Include TensorFlow.js -->
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 		<!-- Include Teachable Machine Image Library -->
 		<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
-		<script>
-			const URL = "https://teachablemachine.withgoogle.com/models/ic5LXl9cFE/";
-			let model, webcam, labelContainer, maxPredictions;
+		<script type="text/javascript">
+			const URL = "https://teachablemachine.withgoogle.com/models/oHRtd8tHD/";
 
-			// Random text options
-			const randomTexts = [
-				"Looks like something interesting!",
-				"That’s a strong match!",
-				"This seems familiar.",
-				"High confidence detected!",
-				"A perfect match!",
-			];
+			let model, webcam, labelContainer, maxPredictions;
 
 			async function init() {
 				const modelURL = URL + "model.json";
@@ -98,9 +36,12 @@
 				await webcam.play();
 				window.requestAnimationFrame(loop);
 
-				// Append webcam to the DOM
-				document.getElementById("webcam-container").innerHTML = "";
+				// Append webcam and labels to the DOM
 				document.getElementById("webcam-container").appendChild(webcam.canvas);
+				labelContainer = document.getElementById("label-container");
+				for (let i = 0; i < maxPredictions; i++) {
+					labelContainer.appendChild(document.createElement("div"));
+				}
 			}
 
 			async function loop() {
@@ -111,19 +52,10 @@
 
 			async function predict() {
 				const prediction = await model.predict(webcam.canvas);
-				let resultHTML = "";
-
-				// Filter predictions with confidence above 70%
-				prediction.forEach((p) => {
-					if (p.probability > 0.7) {
-						const randomText = randomTexts[Math.floor(Math.random() * randomTexts.length)];
-						resultHTML += `<div><strong>${p.className}</strong>: ${(p.probability * 100).toFixed(
-							2
-						)}%<br><em>${randomText}</em></div><hr>`;
-					}
-				});
-
-				labelContainer.innerHTML = resultHTML || "No high-confidence predictions yet.";
+				for (let i = 0; i < maxPredictions; i++) {
+					const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+					labelContainer.childNodes[i].innerHTML = classPrediction;
+				}
 			}
 		</script>
 	</body>
