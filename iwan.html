@@ -28,12 +28,9 @@
 				margin: 5px 0 0;
 				font-size: 1.1em;
 			}
-
 			main {
 				padding: 20px;
 			}
-
-			/* Buttons */
 			.buttons {
 				display: flex;
 				justify-content: center;
@@ -53,8 +50,6 @@
 			button:hover {
 				background-color: #003d82;
 			}
-
-			/* Webcam and content */
 			#webcam-container {
 				margin: 20px auto;
 				display: flex;
@@ -66,6 +61,13 @@
 				border: 3px solid #007bff;
 				border-radius: 12px;
 				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			#image-display {
+				margin: 20px auto;
+				max-width: 300px;
+				border-radius: 10px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				display: none;
 			}
 			#label-container {
 				margin-top: 20px;
@@ -85,7 +87,6 @@
 				max-width: 90%;
 				color: #444;
 			}
-
 			footer {
 				margin-top: 40px;
 				padding: 10px 20px;
@@ -98,7 +99,7 @@
 	<body>
 		<header>
 			<h1>Saahat: Intelligent Recognition</h1>
-			<p>Experience the rich heritage of Saahat through cutting-edge technology.</p>
+			<p>Explore the rich heritage of Saahat, powered by Machine Learning Technology</p>
 		</header>
 
 		<main>
@@ -110,6 +111,7 @@
 			<div id="webcam-container">
 				<video id="webcam" autoplay playsinline></video>
 			</div>
+			<img id="image-display" />
 			<div id="label-container"></div>
 			<div id="message-container"></div>
 		</main>
@@ -124,6 +126,18 @@
 
 			let model, video, labelContainer, maxPredictions;
 
+			const classImages = {
+				Wajehat: "ml_images/wajehat.jpg",
+				"Arches and Grilles": "ml_images/Arches.png",
+				"Chaar Baagh": "ml_images/Charbagh.jpg",
+				Bir: "ml_images/bir.png",
+				Unclear: "ml_images/unclear.jpg",
+				Tiles: "ml_images/tiles.jpg",
+				Ceiling: "ml_images/ceiling.jpg",
+				"Talib Ilm": "ml_images/talib ilm.jpeg",
+				Fountains: "ml_images/fountain.jpg",
+			};
+
 			const classMessages = {
 				Sahat: "Sāhat, located south of the masjid, is inspired by courtyards like al-Jāmiʿ al-Azhar and al-Jāmiʿ al-Anwar. The original Aljamea-tus-Saifiyah campus in Surat had an open courtyard, and the Nairobi Jamea follows a hypo-style layout. Its size is 60 x 40 meters.",
 				Wajehat:
@@ -135,27 +149,27 @@
 				Bir: "This Bir is a direct imitation of the one in Jame Al-Anwar. It contains the barakat of 16 different holy places: 1) Zamzam, 2) Bir e Hakimi, 3) Moulana Abbas Zareeh entrance, 4) Well of Sydna Hatim, 5) Well of Sydna Idris in Shibaam, 6) Well of Sydna Yusuf Najmuddin in Sidhpur, 7) Jubbe Maryam Sydna Hebatullah, 8) Well of Al Jamea Tus Saifiyah Surat, 9) Shifa of Sydna Mufaddal Saifuddin, 10) Well near Pakhti of Syedi Fakhruddin Al Shaheed, 11) Well of Moulaya Raja in Morbi, 12) House of Syedi Hasanji Badshah, 13) House of Syedi AbdulQadir Hakimuddin, 14) Well of Kaka Akela and Kaka Akeli, 15) Well in Mazar of Moulaya Nuruddin, 16) Well of Moulaya Najamkhan.",
 				Unclear: "Unclear: Please adjust the camera angle or lighting.",
 				Tiles: "The use of locally sourced stones, including Machakos tiles in the sahat, contributes to eco-friendly architecture by minimizing transportation-related carbon emissions. Additionally, the yellow stone used on the arches' perimeters and the stone of the bir are of Misri origin.",
+				Ceiling:
+					"This ceiling was added later, in order to protect from windchill. It uses ETFE, a futuristic material which accommodates enough sunlight for the trees to grow, but protects against the elements. The addition of the ceiling makes Sahat the first ETFE-room in Africa.",
+				Fountains: "The presence of water fountains in sahat provide a pleasant gurgling noise that calms the senses.",
+				"Talib Ilm": "This is a taalib ilm, a different qism of 'mabani being developed by skillful architects in Aljamea. ",
 			};
 
 			async function init(facingMode) {
 				try {
-					// Stop any active video stream
 					if (video && video.srcObject) {
 						const tracks = video.srcObject.getTracks();
 						tracks.forEach((track) => track.stop());
 					}
 
-					// Access the webcam with the selected facing mode
 					const constraints = {
 						video: { facingMode: facingMode },
 					};
 					const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-					// Attach the stream to the video element
 					video = document.getElementById("webcam");
 					video.srcObject = stream;
 
-					// Load the model if not already loaded
 					if (!model) {
 						const modelURL = URL + "model.json";
 						const metadataURL = URL + "metadata.json";
@@ -164,14 +178,14 @@
 					}
 
 					labelContainer = document.getElementById("label-container");
-					labelContainer.innerHTML = ""; // Clear any previous labels
-					labelContainer.appendChild(document.createElement("div")); // Display for the top prediction
+					labelContainer.innerHTML = "";
 
-					// Begin prediction loop
+					labelContainer.appendChild(document.createElement("div"));
+
 					predictLoop();
 				} catch (error) {
 					console.error("Error accessing the camera:", error);
-					alert("Unable to access the camera. Please check permissions or try again.");
+					alert("Unable to access the camera.");
 				}
 			}
 
@@ -180,17 +194,22 @@
 
 				const prediction = await model.predict(video);
 
-				// Find the class with the highest confidence
 				const topPrediction = prediction.reduce((best, current) => (current.probability > best.probability ? current : best));
 
-				// Display the top prediction
-				labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${topPrediction.probability.toFixed(2) * 100 + "% Confidence"}`;
+				labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${(topPrediction.probability * 100).toFixed(2)}% Confidence`;
 
-				// Display the corresponding message
 				const messageContainer = document.getElementById("message-container");
 				messageContainer.innerHTML = classMessages[topPrediction.className] || "";
 
-				// Continue the prediction loop
+				const imageDisplay = document.getElementById("image-display");
+				const imageSrc = classImages[topPrediction.className];
+				if (imageSrc) {
+					imageDisplay.src = imageSrc;
+					imageDisplay.style.display = "block";
+				} else {
+					imageDisplay.style.display = "none";
+				}
+
 				requestAnimationFrame(predictLoop);
 			}
 		</script>
