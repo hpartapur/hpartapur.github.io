@@ -27,6 +27,7 @@ jobs:
           pip install requests  # Include any additional dependencies for both scripts
           pip install pandas
           pip install openpyxl
+          pip install tqdm
 
       # Step 4: Run koha.py
       - name: Run koha.py
