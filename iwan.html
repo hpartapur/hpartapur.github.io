@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Saahat: Image Recognition</title>
+		<style>
+			/* General styles */
+			body {
+				font-family: "Roboto", sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: #f9f9f9;
+				color: #333;
+				text-align: center;
+			}
+			header {
+				background: linear-gradient(90deg, #0056b3, #007bff);
+				color: white;
+				padding: 20px 10px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+			header h1 {
+				margin: 0;
+				font-size: 2em;
+			}
+			header p {
+				margin: 5px 0 0;
+				font-size: 1.1em;
+			}
+			main {
+				padding: 20px;
+			}
+			.buttons {
+				display: flex;
+				justify-content: center;
+				gap: 15px;
+				margin-bottom: 20px;
+			}
+			button {
+				padding: 12px 20px;
+				background-color: #0056b3;
+				color: white;
+				border: none;
+				border-radius: 8px;
+				font-size: 1em;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+			button:hover {
+				background-color: #003d82;
+			}
+			#webcam-container {
+				margin: 20px auto;
+				display: flex;
+				justify-content: center;
+			}
+			video {
+				width: 90%;
+				max-width: 400px;
+				border: 3px solid #007bff;
+				border-radius: 12px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			#image-display {
+				margin: 20px auto;
+				max-width: 300px;
+				border-radius: 10px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				display: none;
+			}
+			#label-container {
+				margin-top: 20px;
+				font-size: 1.3em;
+				font-weight: bold;
+				color: #04c50d;
+			}
+			#message-container {
+				margin-top: 20px;
+				padding: 15px;
+				font-size: 2vh;
+				background-color: #fff;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+				border-radius: 12px;
+				text-align: left;
+				display: inline-block;
+				max-width: 90%;
+				color: #444;
+			}
+			footer {
+				margin-top: 40px;
+				padding: 10px 20px;
+				background-color: #0b116e;
+				color: white;
+				font-size: 2em;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>🔎Manazir🔍</h1>
+			<p>Explore the rich heritage of Saahat, powered by Intelligent Recognition Machine Learning Technology</p>
+		</header>
+
+		<main>
+			<p>Start the camera to identify architectural and cultural features of Saahat.</p>
+			<div class="buttons">
+				<button type="button" onclick="init('user')">Front Camera</button>
+				<button type="button" onclick="init('environment')">Back Camera</button>
+			</div>
+
+			<div id="webcam-container">
+				<video id="webcam" autoplay playsinline></video>
+			</div>
+			<div id="label-container"></div>
+			<img id="image-display" />
+			<div id="message-container"></div>
+		</main>
+
+		<!-- Include TensorFlow.js -->
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+		<!-- Include Teachable Machine Image Library -->
+		<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+		<script>
+			const URL = "https://teachablemachine.withgoogle.com/models/xz_aS7qUk/";
+
+			let model, video, labelContainer, maxPredictions;
+
+			const classImages = {
+				Wajehat: "ml_images/wajehat.jpg",
+				"Arches and Grilles": "ml_images/Arches.png",
+				"Chaar Baagh": "ml_images/Charbagh.jpg",
+				Bir: "ml_images/Bir.png",
+				Unclear: "ml_images/unclear.jpg",
+				Tiles: "ml_images/tiles.jpg",
+				Ceiling: "ml_images/ceiling.jpg",
+				"Talib Ilm": "ml_images/talib ilm.jpeg",
+				Fountains: "ml_images/fountain.jpg",
+			};
+
+			const classMessages = {
+				Sahat: "Sāhat, located south of the masjid, is inspired by courtyards like al-Jāmiʿ al-Azhar and al-Jāmiʿ al-Anwar. The original Aljamea-tus-Saifiyah campus in Surat had an open courtyard, and the Nairobi Jamea follows a hypo-style layout. Its size is 60 x 40 meters.",
+				Wajehat:
+					"The architectural design is inspired by Jamea Anwar, incorporating protrusions, a distinct feature of Fatimi style architecture. The protrusions in the masjid serve a symbolic purpose, representing the qibla and Imam. The shorofaat, ornamental details known for their aesthetic intricacy, are prominently featured on the wajehat. These elements are influenced by Anwar's architectural traditions, contributing to the visual richness and cultural heritage of the design. The minarets are styled after those of Jame Anwar and feature exquisite Islamic stonework, Arabesque designs, and Kufic inscriptions. Both minarets incorporate Fatimi motifs, based on two rotated squares.",
+				"Arches and Grilles":
+					"The arches are inspired by the horseshoe arches of Mahdiyya, constructed with two types of stones: yellow stone on the arches' perimeters and Misri-origin stone from the bir. The grills within the arches draw inspiration from the architectural styles of Azhar, constructed using GFRC (glass fiber reinforced concrete).",
+				"Chaar Baagh":
+					"Sāhat, located south of the masjid, follows a hypo-style layout similar to courtyards like al-Jāmiʿ al-Azhar and al-Jāmiʿ al-Anwar. The four gardens within the sahat follow a Persian 'baagh' design and symbolize the four rivers (anhaar) of Jannah (paradise). These gardens are named Tasneem, Kafur, Kausar, and Salsabil, in alignment with the concept of the four rivers of Jamea, a tradition established by Aqa Maula.",
+				Bir: "This Bir is a direct imitation of the one in Jame Al-Anwar. It contains the barakat of 16 different holy places: 1) Zamzam, 2) Bir e Hakimi, 3) Moulana Abbas Zareeh entrance, 4) Well of Sydna Hatim, 5) Well of Sydna Idris in Shibaam, 6) Well of Sydna Yusuf Najmuddin in Sidhpur, 7) Jubbe Maryam Sydna Hebatullah, 8) Well of Al Jamea Tus Saifiyah Surat, 9) Shifa of Sydna Mufaddal Saifuddin, 10) Well near Pakhti of Syedi Fakhruddin Al Shaheed, 11) Well of Moulaya Raja in Morbi, 12) House of Syedi Hasanji Badshah, 13) House of Syedi AbdulQadir Hakimuddin, 14) Well of Kaka Akela and Kaka Akeli, 15) Well in Mazar of Moulaya Nuruddin, 16) Well of Moulaya Najamkhan.",
+				Unclear: "Unclear: Please adjust the camera angle or lighting.",
+				Tiles: "The use of locally sourced stones, including Machakos tiles in the sahat, contributes to eco-friendly architecture by minimizing transportation-related carbon emissions. Additionally, the yellow stone used on the arches' perimeters and the stone of the bir are of Misri origin.",
+				Ceiling:
+					"This ceiling was added later, in order to protect from windchill. It uses ETFE, a futuristic material which accommodates enough sunlight for the trees to grow, but protects against the elements. The addition of the ceiling makes Sahat the first ETFE-room in Africa.",
+				Fountains: "The presence of water fountains in sahat provide a pleasant gurgling noise that calms the senses.",
+				"Talib Ilm": "This is a taalib ilm, a different qism of 'mabani being developed by skillful architects in Aljamea. ",
+			};
+
+			async function init(facingMode) {
+				try {
+					if (video && video.srcObject) {
+						const tracks = video.srcObject.getTracks();
+						tracks.forEach((track) => track.stop());
+					}
+
+					const constraints = {
+						video: { facingMode: facingMode },
+					};
+					const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+					video = document.getElementById("webcam");
+					video.srcObject = stream;
+
+					if (!model) {
+						const modelURL = URL + "model.json";
+						const metadataURL = URL + "metadata.json";
+						model = await tmImage.load(modelURL, metadataURL);
+						maxPredictions = model.getTotalClasses();
+					}
+
+					labelContainer = document.getElementById("label-container");
+					labelContainer.innerHTML = "";
+
+					labelContainer.appendChild(document.createElement("div"));
+
+					predictLoop();
+				} catch (error) {
+					console.error("Error accessing the camera:", error);
+					alert("Unable to access the camera.");
+				}
+			}
+
+			async function predictLoop() {
+				if (!video || !video.srcObject) return;
+
+				const prediction = await model.predict(video);
+
+				const topPrediction = prediction.reduce((best, current) => (current.probability > best.probability ? current : best));
+
+				labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${(topPrediction.probability * 100).toFixed(2)}% `;
+				// labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${(topPrediction.probability * 100).toFixed(2)}% Confidence`;
+				const messageContainer = document.getElementById("message-container");
+				messageContainer.innerHTML = classMessages[topPrediction.className] || "";
+
+				const imageDisplay = document.getElementById("image-display");
+				const imageSrc = classImages[topPrediction.className];
+				if (imageSrc) {
+					imageDisplay.src = imageSrc;
+					imageDisplay.style.display = "block";
+				} else {
+					imageDisplay.style.display = "none";
+				}
+
+				requestAnimationFrame(predictLoop);
+			}
+		</script>
+		<footer>
+			<img width="80px" src="ml_images/qrcode.png" />Grab a Tab!📱Try🔎Manazir🔍 AI Machine Learning Tour<img
+				width="80px"
+				src="ml_images/qrcode.png"
+			/>
+		</footer>
+	</body>
+</html>

@@ -1,12 +1,12 @@
-name: Run Hourly Python Script
+name: Run Hourly Python Scripts
 
 # Schedule to run the workflow every hour
 on:
   schedule:
-    - cron: "45 * * * *" # This runs every hour, on the hour (UTC)
+    - cron: "45 * * * *" # This runs every hour, on the 45th minute (UTC)
 
 jobs:
-  run-script:
+  run-scripts:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,8 +23,15 @@ jobs:
       # Step 3: Install Dependencies (if any)
       - name: Install Dependencies
         run: |
-          pip install requests
+          pip install -r requirements.txt # Use requirements.txt if you have one, otherwise manually install any necessary dependencies
+          pip install requests  # Include any additional dependencies for both scripts
+          pip install pandas
+          pip install openpyxl
+          pip install tqdm
 
-      # Step 4: Run the Python Script
-      - name: Run Script
-        run: python koha.py # Ensure "python" is specified before the script name
+      # Step 4: Run koha.py
+      - name: Run koha.py
+        run: python koha.py # Ensure you're running the correct script
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}

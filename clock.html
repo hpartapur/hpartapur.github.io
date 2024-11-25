@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+		<style>
+			body {
+				font-family: "Amiri", serif;
+				background: linear-gradient(135deg, #1e3c72, #2a5298);
+				color: #ffffff;
+				text-align: center;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				padding: 20px;
+				overflow: hidden;
+			}
+
+			.focused-clock {
+				width: 400px;
+				padding: 40px;
+				margin-bottom: 30px;
+				background: rgba(255, 255, 255, 0.2);
+				border-radius: 20px;
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+				transition: transform 0.3s ease, box-shadow 0.3s ease;
+			}
+
+			.clock-container {
+				display: flex;
+				gap: 30px;
+				justify-content: center;
+				align-items: center;
+				flex-wrap: nowrap;
+			}
+
+			.clock {
+				background: rgba(255, 255, 255, 0.15);
+				backdrop-filter: blur(12px);
+				border-radius: 20px;
+				padding: 30px;
+				width: 250px;
+				box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+				transition: transform 0.3s ease, box-shadow 0.3s ease;
+				cursor: pointer;
+			}
+
+			.clock:hover {
+				transform: scale(1.1);
+				box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+			}
+
+			h2 {
+				font-size: 1.8em;
+				margin: 0;
+				color: #f8f9fa;
+				text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+			}
+
+			.time {
+				font-size: 1.6em;
+				margin-top: 15px;
+				color: #e0f7fa;
+				font-weight: bold;
+				text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Focused Clock -->
+		<div id="focusedClock" class="focused-clock" style="display: none"></div>
+
+		<!-- Clock Container -->
+		<div class="clock-container" id="clockContainer">
+			<div id="nairobi" class="clock" onclick="focusClock('نيروبي', 'timeNairobi', 'nairobi')">
+				<h2>نيروبي</h2>
+				<div class="time" id="timeNairobi">جار التحميل...</div>
+			</div>
+			<div id="india" class="clock" onclick="focusClock('الهند', 'timeIndia', 'india')">
+				<h2>الهند</h2>
+				<div class="time" id="timeIndia">جار التحميل...</div>
+			</div>
+			<div id="pakistan" class="clock" onclick="focusClock('باكستان', 'timePakistan', 'pakistan')">
+				<h2>باكستان</h2>
+				<div class="time" id="timePakistan">جار التحميل...</div>
+			</div>
+			<div id="yemen" class="clock" onclick="focusClock('اليمن', 'timeYemen', 'yemen')">
+				<h2>اليمن</h2>
+				<div class="time" id="timeYemen">جار التحميل...</div>
+			</div>
+		</div>
+
+		<script>
+			let currentlyFocusedClockId = null; // Track the currently focused clock
+
+			function updateTime() {
+				const indiaTime = new Date().toLocaleString("en-US", {
+					timeZone: "Asia/Kolkata",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+				const nairobiTime = new Date().toLocaleString("en-US", {
+					timeZone: "Africa/Nairobi",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+				const pakistanTime = new Date().toLocaleString("en-US", {
+					timeZone: "Asia/Karachi",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+				const yemenTime = new Date().toLocaleString("en-US", {
+					timeZone: "Asia/Aden",
+					hour: "numeric",
+					minute: "numeric",
+					second: "numeric",
+				});
+
+				// Update the clocks
+				document.getElementById("timeIndia").textContent = indiaTime;
+				document.getElementById("timeNairobi").textContent = nairobiTime;
+				document.getElementById("timePakistan").textContent = pakistanTime;
+				document.getElementById("timeYemen").textContent = yemenTime;
+
+				// If a clock is currently focused, update its displayed time
+				if (currentlyFocusedClockId) {
+					const focusedClock = document.getElementById("focusedClock");
+					focusedClock.innerHTML = `<h2>${currentlyFocusedClockId}</h2><div class="time">${
+						document.getElementById("time" + currentlyFocusedClockId).textContent
+					}</div>`;
+				}
+			}
+
+			function focusClock(cityName, timeId, clockId) {
+				const focusedClock = document.getElementById("focusedClock");
+				const selectedClock = document.getElementById(clockId);
+
+				// Move the selected clock to the focused section
+				selectedClock.style.display = "none";
+				focusedClock.style.display = "block";
+				currentlyFocusedClockId = timeId; // Store the focused clock's timeId for future reference
+
+				// Copy the selected clock's content to the focused section
+				focusedClock.innerHTML = `<h2>${cityName}</h2><div class="time">${document.getElementById(timeId).textContent}</div>`;
+
+				// Restore the previously focused clock to the bottom row
+				if (focusedClock.dataset.previousClockId) {
+					const previousClock = document.getElementById(focusedClock.dataset.previousClockId);
+					previousClock.style.display = "block";
+				}
+
+				// Save the current focused clock ID for future restoration
+				focusedClock.dataset.previousClockId = clockId;
+			}
+
+			// Update time every second
+			setInterval(updateTime, 1000);
+			updateTime();
+		</script>
+	</body>
+</html>

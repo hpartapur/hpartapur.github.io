@@ -1,12 +1,11 @@
-name: Run Hourly Python Script
+name: Weekly Tashjee Email
 
 # Schedule to run the workflow every hour
 on:
   schedule:
-    - cron: "0 * * * *" # This runs every hour, on the hour (UTC)
-
+  - cron: "0 18 * * 4"
 jobs:
-  run-script:
+  run-scripts:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,8 +22,11 @@ jobs:
       # Step 3: Install Dependencies (if any)
       - name: Install Dependencies
         run: |
-          pip install requests
+          pip install -r requirements.txt # Use requirements.txt if you have one, otherwise manually install any necessary dependencies
 
-      # Step 4: Run the Python Script
-      - name: Run Script
-        run: python koha.py # Ensure "python" is specified before the script name
+      # Step 4: Run mailer.py
+      - name: Run mailer.py
+        run: python mailer.py # Ensure you're running the correct script
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
