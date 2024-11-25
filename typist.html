@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Arabic Typing Game</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+			body {
+				font-family: Kanz-al-Marjaan;
+			}
+			#display {
+				font-size: 24px;
+				font-weight: bold;
+			}
+			#typed {
+				font-size: 18px;
+				color: gray;
+			}
+		</style>
+	</head>
+	<body>
+		<h2 id="display"></h2>
+		<div id="typing-area">
+			<h2 id="typed"></h2>
+		</div>
+		<script type="module">
+			const words = "انسس ثثححي ته شخص نو ايم كظظوو هتو كه يه جانتو نتهي هر وات نسس";
+
+			document.getElementById("display").innerText = words;
+
+			let typed = "";
+
+			document.addEventListener("keydown", (event) => {
+				let score = 0;
+				if ((event.keyCode >= 97 && event.keyCode <= 250) || (event.keyCode >= 65 && event.keyCode <= 90)) {
+					typed += event.key;
+				}
+				if (event.keyCode == 32) {
+					typed += " ";
+					const correctWords = words.split(" ");
+					const typedWords = typed.split(" ");
+					for (let word in typedWords) {
+						let correct = true;
+						for (let letter in word) {
+							if (typedWords[word][letter] == correctWords[word][letter]) {
+								score++;
+							} else {
+								correct = false;
+							}
+						}
+					}
+					console.log(`Score: ${score}`);
+				}
+				if (event.keyCode == 8) {
+					typed = typed.substring(0, typed.length - 1);
+				}
+
+				document.getElementById("typed").innerText = typed;
+			});
+		</script>
+	</body>
+</html>
