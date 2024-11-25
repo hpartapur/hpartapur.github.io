@@ -3,7 +3,7 @@ name: Run Hourly Python Scripts
 # Schedule to run the workflow every hour
 on:
   schedule:
-    - cron: "45 * * * *" # This runs every hour, on the 45th minute (UTC)
+    - cron: "0 3 * * *" # This runs at 3:00 AM UTC every day
 
 jobs:
   run-scripts:
