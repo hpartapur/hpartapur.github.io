@@ -56,7 +56,8 @@ columns = ['UserId',
            'Koha_TRNO','Malaf_TRNO', 
            'Koha_Class',
            'Malaf_Class',
-           "All_Matching"
+           "All_Matching",
+           "Mismatches"
            ]
 df = pd.DataFrame(columns=columns)
 #Go through Malaf patrons, and compare that data with data from Koha
@@ -109,43 +110,57 @@ for user in tqdm(malaf, desc="Processing Users", unit="user", colour="green"):
             userdata.append(user['Class'])
             #Now compare the columns to check if there are any changes needed. If so, change the AllMatching column to False
             matching = True
+            mismatches=""
             if userdata[2] != userdata[3]:
                 matching = False
                 print(userdata[2], userdata[3])
+                mismatches+="Surname,"
             if userdata[4] != userdata[5]:
                 matching = False
                 print(userdata[4], userdata[5])
+                mismatches+="Category,"
             if userdata[6] != userdata[7]:
                 matching = False
                 print(userdata[6], userdata[7])
+                mismatches+="Cardnumber,"
             if userdata[8] != userdata[9]:
                 matching = False
                 print(userdata[8], userdata[9])
+                mismatches+="Email,"
             if userdata[10] != userdata[11]:
                 matching = False
                 print(userdata[10], userdata[11])
+                mismatches+="DOB,"
             if userdata[12] != userdata[13]:
                 matching = False
                 print(userdata[12], userdata[13])
+                mismatches+="Gender,"
             if userdata[14] != userdata[15]:
                 matching = False
                 print(userdata[14], userdata[15])
+                mismatches+="FatherEmail,"
             if userdata[16] != userdata[17]:
                 matching = False
                 print(userdata[16], userdata[17])
+                mismatches+="FatherPhone,"
             if userdata[18] != userdata[19]:
                 matching = False
                 print(userdata[18], userdata[19])
+                mismatches+="MotherEmail,"
             if userdata[20] != userdata[21]:
                 matching = False
                 print(userdata[20], userdata[21])
+                mismatches+="MotherPhone,"
             if userdata[22] != userdata[23]:
                 matching = False
                 print(userdata[22], userdata[23])
+                mismatches+="TRNO,"
             if userdata[24] != userdata[25] and userdata[5].startswith("S-"):
                 matching = False
                 print(userdata[24], userdata[25])
+                mismatches+="Class,"
             userdata.append(matching)
+            userdata.append(mismatches)
             df.loc[len(df)] = userdata
             if matching == False:
                 print(user['surname'], matching)
@@ -159,7 +174,7 @@ print(df)
 df.to_excel('Koha_Malaf.xlsx', index=False)
 #Filter to find those who have inconsistencies between Malaf and Koha Data and need to be updated
 outdated = df[df['All_Matching'] == False]
-print(outdated)
+print(outdated.to_string())
 print("Outdated Patrons: ",len(outdated))
 
 
@@ -283,7 +298,7 @@ def send_email(sender_email, receiver_email, cc_email, subject, body, smtp_serve
     finally:
         server.quit()
 
-
+list_of_updates = outdated.to_csv(index=False)
 new_patron_surnames = [patron['surname'] for patron in missing_users]
 deactivated_patron_surnames = [patron['surname'] for patron in extra_users]
 updated_patron_surnames = [row['Koha_Surname'] for _, row in outdated.iterrows()]
@@ -295,6 +310,7 @@ if __name__ == "__main__":
     subject = "Koha Script Report"
     body= f"""
     Execution Summary:
+    Execution Summary:
     - Total Patrons in Koha: {len(kohadata)}
     - Total Patrons in Malaf: {len(malaf)}
     - Outdated Patrons Updated: {len(outdated)}
@@ -304,16 +320,20 @@ if __name__ == "__main__":
 Outdated Patrons Updated:
 {'\n'.join(updated_patron_surnames)}
 
+Details:
+{list_of_updates}
+
 New Patrons Added:
 {'\n'.join(new_patron_surnames)}
 
 Patrons Deactivated:
 {'\n'.join(deactivated_patron_surnames)}
-
     """
+
+    print(body)
     # For Gmail SMTP server
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    password ="" # Your email account password (or app password if using 2FA)
-    password = os.getenv('EMAIL_PASS')
+    password ="Nairobi@24653" # Your email account password (or app password if using 2FA)
+    # password = os.getenv('EMAIL_PASS')
     send_email(sender_email, receiver_email, cc_email, subject, body, smtp_server, smtp_port, password)
