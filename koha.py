@@ -334,6 +334,6 @@ Patrons Deactivated:
     # For Gmail SMTP server
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    password ="Nairobi@24653" # Your email account password (or app password if using 2FA)
-    # password = os.getenv('EMAIL_PASS')
+
+    password = os.getenv('EMAIL_PASS')
     send_email(sender_email, receiver_email, cc_email, subject, body, smtp_server, smtp_port, password)
