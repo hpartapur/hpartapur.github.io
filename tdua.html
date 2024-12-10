@@ -23,12 +23,13 @@
 			}
 			.table {
 				font-family: KM;
-				font-size: 2vw;
+				font-size: 3vw;
 				text-align: right;
 				width: 80vw;
 				position: absolute;
 				left: 10vw;
 				opacity: 0; /* Initially hidden */
+				font-weight: 700;
 			}
 			.table-row {
 				opacity: 0; /* Initially hidden for rows */
@@ -61,10 +62,11 @@
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
-				let table = `<table dir='rtl' class='table table-warning table-striped table-bordered'><thead class='thead-dark'><tr><th>اسم</th><th>تلاوة</th></tr></thead><tbody>`;
+				let table = `<table dir='rtl' class='table table-warning table-striped table-bordered'><thead class='thead-dark'><tr><th>الاسم</th><th>تلاوة</th></tr></thead><tbody>`;
 				console.log(data);
 				const daydisplay = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Monday"];
 				const todisplay = daydisplay[new Date().getDay()];
+				console.log(todisplay);
 				let rowDelay = 0;
 
 				data.forEach((day) => {
@@ -73,7 +75,7 @@
 
 						if (/\d/.test(day["FirstDua_FullName"])) {
 							table += `<tr class="table-row" style="animation-delay: ${rowDelay}s;">
-                            <td><img class="profile" src='https://nairobi.jameasaifiyah.edu/Malaf/Photos/${day["FirstDua_ITS"]}.jpg'>${day["FirstDua_FullName"]}</td>
+                            <td><img class="profile" src='https://nairobi.jameasaifiyah.edu/Malaf/Photos/${day["FirstDua_ITS"]}.jpg'>  ${day["FirstDua_FullName"]}</td>
                             <td><br>${day["FirstDua"]}</td>
                         </tr>`;
 							rowDelay += delay; // Increment delay for the next row
@@ -81,7 +83,7 @@
 
 						if (/\d/.test(day["Quran_FullName"])) {
 							table += `<tr class="table-row" style="animation-delay: ${rowDelay}s;">
-                            <td><img class="profile" src='https://nairobi.jameasaifiyah.edu/Malaf/Photos/${day["Quran_ITS"]}.jpg'>${day["Quran_FullName"]}</td>
+                            <td><img class="profile" src='https://nairobi.jameasaifiyah.edu/Malaf/Photos/${day["Quran_ITS"]}.jpg'>  ${day["Quran_FullName"]}</td>
                             <td><br>${day["Quran"]}</td>
                         </tr>`;
 							rowDelay += delay; // Increment delay for the next row
@@ -89,7 +91,7 @@
 
 						if (/\d/.test(day["DailyDua_FullName"])) {
 							table += `<tr class="table-row" style="animation-delay: ${rowDelay}s;">
-                            <td><img class="profile" src='https://nairobi.jameasaifiyah.edu/Malaf/Photos/${day["DailyDua_ITS"]}.jpg'>${day["DailyDua_FullName"]}</td>
+                            <td><img class="profile" src='https://nairobi.jameasaifiyah.edu/Malaf/Photos/${day["DailyDua_ITS"]}.jpg'>  ${day["DailyDua_FullName"]}</td>
                             <td><br>دعاء ${day["DailyDua"]}</td>
                         </tr>`;
 							rowDelay += delay; // Increment delay for the next row
