@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Room Percent Prediction</title>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+				max-width: 1200px;
+				margin: auto;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+			}
+			th,
+			td {
+				border: 1px solid #ddd;
+				padding: 12px;
+				text-align: center;
+				font-size: 5vw;
+			}
+			th {
+				background-color: #f4f4f4;
+			}
+			.High {
+				background-color: #dc6464;
+				color: white;
+			}
+			.Medium {
+				background-color: #f7b731;
+				color: white;
+			}
+			.Low {
+				background-color: #2d98da;
+				color: white;
+			}
+			.Extremely-High {
+				background-color: #ea1700;
+				color: white;
+			}
+			.progress-bar-container {
+				position: relative;
+				width: 100%;
+				height: 30px;
+				background-color: #ddd;
+			}
+			.progress-bar {
+				width: 0%;
+				height: 100%;
+				background-color: #4caf50;
+				text-align: center;
+				color: white;
+			}
+			#status {
+				font-size: 1.2em;
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Room Percent Prediction</h1>
+		<div id="status">Fetching data...</div>
+		<div class="progress-bar-container">
+			<div id="progress-bar" class="progress-bar"></div>
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Room Number</th>
+					<th>Average of Last 5 Days</th>
+					<th>Predicted Absenteeism</th>
+				</tr>
+			</thead>
+			<tbody id="room-table"></tbody>
+		</table>
+
+		<script>
+			const dataUrl =
+				"https://corsproxy.io/?https%3A%2F%2Fapi.codetabs.com%2Fv1%2Fproxy%2F%3Fquest%3Dhttps%3A%2F%2Fnairobi.jameasaifiyah.edu%2FJameawebservice%2Fapi%2Fnairobi%2FFajrAbsentRoomwise%3Ftoken%3DPo19azSdO0J0Wqi6fpGcdSQu5";
+
+			// Helper function to safely parse numeric values
+			function safeParse(value, defaultValue = 0) {
+				const parsed = parseFloat(value);
+				return isNaN(parsed) ? defaultValue : parsed;
+			}
+
+			// Helper function to normalize percentage data
+			function normalize(value, min, max) {
+				return (value - min) / (max - min);
+			}
+
+			// Group data by room number
+			function groupByRoom(data) {
+				const groupedData = {};
+
+				data.forEach((entry) => {
+					const roomNo = entry.RoomNo;
+					const percent = safeParse(entry.Percent);
+					const date = new Date(entry.G_Dt_DateFormate);
+
+					if (!groupedData[roomNo]) {
+						groupedData[roomNo] = [];
+					}
+
+					groupedData[roomNo].push({ roomNo, percent, date });
+				});
+
+				return Object.values(groupedData);
+			}
+
+			// Function to calculate the moving average for the last 14 days
+			function calculateMovingAverage(data) {
+				const last5Days = data.slice(-44); // Last 14 days data
+				const total = last5Days.reduce((sum, entry) => sum + entry.percent, 0);
+				return total / last5Days.length;
+			}
+
+			// Classification of absenteeism (ExtremelyHigh, High, Medium, Low)
+			function classifyAbsenteeism(averagePercent) {
+				if (averagePercent > 0.75) return "Extremely-High"; // > 75%
+				if (averagePercent > 0.55) return "High"; // > 50%
+				if (averagePercent > 0.3) return "Medium"; // > 20%
+				return "Low"; // <= 20%
+			}
+
+			async function trainModel(groupedData) {
+				const model = tf.sequential();
+				model.add(tf.layers.dense({ inputShape: [1], units: 1 }));
+				model.compile({ optimizer: "sgd", loss: "meanSquaredError" });
+
+				for (const roomData of groupedData) {
+					roomData.sort((a, b) => a.date - b.date); // Sort by date
+					const averages = roomData.map((entry) => entry.percent);
+					const avgLast5 = calculateMovingAverage(roomData);
+
+					// Prepare training data
+					const xs = tf.tensor2d([avgLast5], [1, 1]);
+					const ys = tf.tensor1d([avgLast5]);
+
+					// Train model
+					await model.fit(xs, ys, { epochs: 5 });
+				}
+				return model;
+			}
+
+			async function fetchAndPredict() {
+				const tableBody = document.getElementById("room-table");
+				const progressBar = document.getElementById("progress-bar");
+				const statusElement = document.getElementById("status");
+
+				try {
+					statusElement.textContent = "Fetching data...";
+					const response = await fetch(dataUrl);
+					const data = await response.json();
+
+					const groupedData = groupByRoom(data);
+
+					// Update progress bar and training status
+					const model = await trainModel(groupedData);
+
+					statusElement.textContent = "Generating predictions...";
+
+					tableBody.innerHTML = "";
+					let roomCount = 0;
+					const totalRooms = groupedData.length;
+
+					// Make predictions for each room
+					groupedData.forEach((roomData) => {
+						const roomNo = roomData[0].roomNo;
+						const avgPercent = calculateMovingAverage(roomData);
+						const predictedClass = classifyAbsenteeism(avgPercent);
+
+						const row = document.createElement("tr");
+						row.classList.add(predictedClass);
+						row.innerHTML = `
+              <td>${roomNo}</td>
+              <td>${(avgPercent * 100).toFixed(1)}%</td>
+              <td>${predictedClass}</td>
+            `;
+						tableBody.appendChild(row);
+
+						roomCount++;
+						progressBar.style.width = (roomCount / totalRooms) * 100 + "%";
+					});
+
+					statusElement.textContent = "Predictions generated.";
+				} catch (error) {
+					console.error("Error:", error);
+					statusElement.textContent = "An error occurred.";
+				}
+			}
+
+			fetchAndPredict();
+		</script>
+	</body>
+</html>
