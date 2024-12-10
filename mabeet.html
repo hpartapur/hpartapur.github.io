@@ -116,7 +116,7 @@
 
 			// Function to calculate the moving average for the last 14 days
 			function calculateMovingAverage(data) {
-				const last5Days = data.slice(-44); // Last 14 days data
+				const last5Days = data.slice(-4); // Last 14 days data
 				const total = last5Days.reduce((sum, entry) => sum + entry.percent, 0);
 				return total / last5Days.length;
 			}
