@@ -64,7 +64,7 @@
 			}
 			#spinner {
 				z-index: 20;
-
+				position: absolute;
 				display: none;
 				margin: 20px auto;
 			}
@@ -117,9 +117,10 @@
 		<main>
 			<p>Start the camera to identify architectural and cultural features of Masjid.</p>
 			<div class="buttons">
-				<button type="button" onclick="init('user')">Front Camera</button>
-				<button type="button" onclick="init('environment')">Back Camera</button>
+				<button type="button" onclick="init('user')">Front Camera 🤳🏼</button>
+				<button type="button" onclick="init('environment')">Back Camera 📷</button>
 			</div>
+			<button type="button" id="freeze-button" onclick="toggleFreeze()">Freeze Frame</button>
 
 			<div id="webcam-container">
 				<div id="spinner">
@@ -212,9 +213,9 @@
 				const prediction = await model.predict(video);
 				const topPrediction = prediction.reduce((best, current) => (current.probability > best.probability ? current : best));
 
-				if (topPrediction.probability >= 0.9) {
+				if (topPrediction.probability >= 0.89) {
 					labelContainer.firstChild.innerHTML = `${topPrediction.className}: ${(topPrediction.probability * 100).toFixed(2)}%`;
-
+					labelContainer.firstChild.style.color = "#04c50d";
 					const messageContainer = document.getElementById("message-container");
 					messageContainer.innerHTML = classMessages[topPrediction.className] || "";
 
@@ -227,15 +228,50 @@
 						imageDisplay.style.display = "none";
 					}
 				} else {
-					labelContainer.firstChild.innerHTML = ""; // Clear label if probability is below threshold
+					labelContainer.firstChild.innerHTML = "No Feature Detected"; // Clear label if probability is below threshold
+					labelContainer.firstChild.style.color = "red";
 					const messageContainer = document.getElementById("message-container");
-					messageContainer.innerHTML = ""; // Clear message if probability is below threshold
+					messageContainer.innerHTML =
+						"No architectural feature is detected. Try adjusting distance, angle, or try another architectural feature."; // Clear message if probability is below threshold
 					const imageDisplay = document.getElementById("image-display");
 					imageDisplay.style.display = "none"; // Hide image if probability is below threshold
 				}
 
 				// Wait for 1 second before running the next prediction
-				setTimeout(predictLoop, 400);
+				setTimeout(predictLoop, 700);
+			}
+			let isFrozen = false; // Track whether the frame is frozen
+			const freezeButton = document.getElementById("freeze-button");
+
+			function toggleFreeze() {
+				const canvas = document.createElement("canvas");
+				const context = canvas.getContext("2d");
+				const video = document.getElementById("webcam");
+				const imageDisplay = document.getElementById("image-display");
+
+				if (!isFrozen) {
+					// Freeze the frame
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+					// Display the captured frame
+					imageDisplay.src = canvas.toDataURL("image/png");
+					imageDisplay.style.display = "block";
+
+					// Pause the video
+					video.pause();
+					freezeButton.innerText = "Unfreeze Video▶️";
+					freezeButton.style.backgroundColor = "green";
+				} else {
+					// Resume the video
+					video.play();
+					imageDisplay.style.display = "none"; // Hide the frozen frame
+					freezeButton.innerText = "Freeze Video⏸️";
+					freezeButton.style.backgroundColor = "red";
+				}
+
+				isFrozen = !isFrozen; // Toggle the frozen state
 			}
 		</script>
 	</body>
