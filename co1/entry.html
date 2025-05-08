@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Teacher Marks Entry</title>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<style>
+			body {
+				font-family: sans-serif;
+				margin: 20px;
+				background-color: #f0f4f8;
+			}
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+				background-color: white;
+				padding: 30px;
+				border-radius: 12px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
+			form {
+				margin-bottom: 20px;
+				padding: 25px;
+				border: 1px solid #e0e0e0;
+				border-radius: 12px;
+				background-color: #f8f8f8;
+			}
+			form h2 {
+				color: #2c3e50;
+				margin-bottom: 25px;
+				text-align: center;
+				font-size: 24px;
+			}
+			label {
+				display: block;
+				margin-bottom: 8px;
+				color: #34495e;
+				font-weight: 500;
+			}
+			input,
+			select {
+				width: 100%;
+				padding: 12px;
+				margin-bottom: 20px;
+				border: 1px solid #cfd8dc;
+				border-radius: 6px;
+				box-sizing: border-box;
+				transition: border-color 0.3s ease;
+				background-color: #ffffff;
+				color: #2c3e50;
+			}
+			input:focus,
+			select:focus {
+				outline: none;
+				border-color: #42a5f5;
+				box-shadow: 0 0 5px rgba(66, 153, 225, 0.3);
+			}
+			button {
+				padding: 12px 25px;
+				background-color: #42a5f5;
+				color: white;
+				border: none;
+				border-radius: 6px;
+				cursor: pointer;
+				transition: background-color 0.3s ease, box-shadow 0.3s ease;
+				margin-top: 15px;
+				font-weight: 500;
+			}
+			button:hover {
+				background-color: #1e88e5;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 30px;
+				background-color: white;
+				border-radius: 12px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				border: 1px solid #e0e0e0;
+			}
+			th,
+			td {
+				border: 1px solid #e0e0e0;
+				padding: 15px;
+				text-align: left;
+				color: #34495e;
+			}
+			th {
+				background-color: #f0f0f0;
+				color: #2c3e50;
+				font-weight: bold;
+			}
+			tbody tr:nth-child(odd) {
+				background-color: #f8f8f8;
+			}
+			tbody tr:nth-child(even) {
+				background-color: #ffffff;
+			}
+			/* General message display area (can be created dynamically or have a dedicated div) */
+			.message-area {
+				margin-top: 25px;
+				padding: 15px;
+				font-weight: 500;
+				border-radius: 6px;
+				text-align: center;
+				border: 1px solid;
+			}
+			.message-success {
+				background-color: #e6f4ea;
+				color: #1a7e34;
+				border-color: #66bb6a;
+			}
+			.message-error {
+				background-color: #fde6e8;
+				color: #c62828;
+				border-color: #e57373;
+			}
+			.message-info {
+				/* Added for info messages */
+				background-color: #e3f2fd;
+				color: #1565c0;
+				border-color: #64b5f6;
+			}
+			#marks-display-area {
+				display: block; /* Will be controlled by hidden/visible */
+				margin-top: 30px;
+				padding: 25px;
+				border: 1px solid #e0e0e0;
+				border-radius: 12px;
+				background-color: #f8f8f8;
+			}
+			#assessment-subject-dropdown-container {
+				margin-bottom: 25px;
+			}
+			#assessment-subject-dropdown {
+				padding: 12px;
+				font-size: 16px;
+			}
+			#assessment-subject-dropdown option {
+				padding: 10px;
+				font-size: 14px;
+			}
+			.empty-marks-input {
+				background-color: #ffe0e0;
+			}
+			.auth-container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 20px;
+				padding: 20px;
+				border: 1px solid #e0e0e0;
+				border-radius: 8px;
+				background-color: #f8f8f8;
+			}
+			.auth-button {
+				/* General auth button style */
+				padding: 10px 20px;
+				background-color: #42a5f5;
+				color: white;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				margin: 10px;
+				transition: background-color 0.3s ease, box-shadow 0.3s ease;
+			}
+			.auth-button:hover {
+				background-color: #1e88e5;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			}
+			#sign-out-button {
+				/* Specific style for sign-out */
+				background-color: #f44336;
+			}
+			#sign-out-button:hover {
+				background-color: #d32f2f;
+			}
+			.hidden {
+				display: none !important; /* Added !important to ensure override */
+			}
+			.visible {
+				display: block; /* or flex, or whatever the default is */
+			}
+			#global-message-area {
+				/* A dedicated area for global messages */
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Teacher Marks Entry</h1>
+
+			<div id="global-message-area"></div>
+			<div class="auth-container">
+				<button id="sign-in-button" class="auth-button">Sign In with Google</button>
+				<div id="user-section" class="hidden">
+					<div id="user-info">
+						<p>Logged in as: <span id="user-email"></span></p>
+					</div>
+					<button id="sign-out-button" class="auth-button">Sign Out</button>
+				</div>
+			</div>
+
+			<div id="app-content" class="hidden">
+				<div id="assessment-subject-dropdown-container">
+					<label for="assessment-subject-dropdown">Select Assessment Subject:</label>
+					<select id="assessment-subject-dropdown">
+						<option value="">Loading...</option>
+					</select>
+				</div>
+				<div id="marks-display-area">
+					<h2 id="marks-heading">Scores Entered</h2>
+					<form id="marks-form">
+						<table id="marks-table">
+							<thead>
+								<tr>
+									<th>Student TRNO</th>
+									<th>Student Name</th>
+									<th>Class ID</th>
+									<th>Subject Name</th>
+									<th>Marks Obtained</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td colspan="5">No marks to display</td>
+								</tr>
+							</tbody>
+						</table>
+						<button type="submit">Save Marks</button>
+					</form>
+					<div id="marks-message-area" class="message-area" style="display: none"></div>
+				</div>
+			</div>
+		</div>
+		<script>
+			// --- DOM Elements ---
+			const signInButton = document.getElementById("sign-in-button");
+			const signOutButton = document.getElementById("sign-out-button");
+			const userSection = document.getElementById("user-section");
+			const userInfo = document.getElementById("user-info");
+			const userEmailSpan = document.getElementById("user-email");
+			const appContent = document.getElementById("app-content");
+			const assessmentDropdownContainer = document.getElementById("assessment-subject-dropdown-container");
+			const assessmentDropdown = document.getElementById("assessment-subject-dropdown");
+			const marksDisplayArea = document.getElementById("marks-display-area");
+			const marksForm = document.getElementById("marks-form");
+			const marksTableBody = document.querySelector("#marks-table tbody");
+			const marksHeading = document.getElementById("marks-heading");
+			const globalMessageArea = document.getElementById("global-message-area");
+			const marksMessageArea = document.getElementById("marks-message-area");
+
+			// --- Supabase Initialization ---
+			const supabaseUrl = "https://urlburhufcpkpfcoyflh.supabase.co";
+			const supabaseKey =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybGJ1cmh1ZmNwa3BmY295ZmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMzY1MzYsImV4cCI6MjA2MTYxMjUzNn0.17VTbejLDJyI9hkHPiuoiy5jcZmLdgiJ16GuhkiOd08";
+			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+			// --- Global State ---
+			let currentTeacherId = null; // Store teacher ID globally when logged in
+
+			// --- Helper Functions ---
+			/**
+			 * Displays a message to the user.
+			 * @param {string} message - The message to display.
+			 * @param {string} type - The type of message ('success', 'error', or 'info').
+			 * @param {HTMLElement} targetElement - The HTML element to display the message in.
+			 */
+			function showMessage(message, type = "success", targetElement = globalMessageArea) {
+				targetElement.textContent = message;
+				targetElement.className = `message-area message-${type}`; // Ensure base class and type class
+				targetElement.style.display = "block";
+
+				// Optionally hide after some time
+				// setTimeout(() => {
+				//     targetElement.style.display = 'none';
+				//     targetElement.textContent = '';
+				//     targetElement.className = 'message-area';
+				// }, 5000);
+			}
+
+			function clearMessage(targetElement = globalMessageArea) {
+				targetElement.textContent = "";
+				targetElement.style.display = "none";
+				targetElement.className = "message-area";
+			}
+
+			// --- Authentication Functions ---
+			async function signInWithGoogle() {
+				const { error } = await supabase.auth.signInWithOAuth({
+					provider: "google",
+					options: {
+						redirectTo: window.location.origin + window.location.pathname, // Redirect to the current page
+					},
+				});
+				if (error) {
+					console.error("Error signing in:", error);
+					showMessage(`Error signing in: ${error.message}`, "error");
+				}
+			}
+
+			async function signOut() {
+				console.log("Signing out...");
+				const { error } = await supabase.auth.signOut();
+				if (error) {
+					console.error("Error signing out:", error);
+					showMessage(`Error signing out: ${error.message}`, "error");
+				} else {
+					// UI updates are handled by onAuthStateChange
+					console.log("Signed out successfully. onAuthStateChange will handle UI.");
+				}
+			}
+
+			// --- Data Fetching and Processing ---
+			async function getTeacherIdByEmail(email) {
+				const { data, error } = await supabase.from("Teachers").select("TeacherID").eq("Email", email).single();
+				if (error) {
+					console.error("Error fetching teacher ID:", error);
+					showMessage("Error fetching teacher data. Your email might not be registered as a teacher.", "error");
+					return null;
+				}
+				if (data) {
+					return data.TeacherID;
+				} else {
+					showMessage("Teacher account not found for this email. Please contact administrator.", "error");
+					return null;
+				}
+			}
+
+			async function getUniqueAssessmentSubjectIds(teacherId) {
+				if (!teacherId) return [];
+				const { data, error } = await supabase
+					.from("Marks")
+					.select("AssessmentSubjectID, Subjects(Name)") // Fetch subject name for display
+					.eq("TeacherID", teacherId);
+
+				if (error) {
+					console.error("Error fetching unique AssessmentSubjectIDs:", error);
+					showMessage("Error fetching assessment subjects.", "error", marksMessageArea);
+					return [];
+				}
+				if (data) {
+					const uniqueEntries = [];
+					const seenIds = new Set();
+					data.forEach((item) => {
+						if (!seenIds.has(item.AssessmentSubjectID)) {
+							// Try to get a more descriptive name if Subjects.Name is available
+							let subjectDisplayName = `Assessment ID: ${item.AssessmentSubjectID}`;
+							if (item.Subjects && item.Subjects.Name) {
+								subjectDisplayName = `${item.Subjects.Name} (ID: ${item.AssessmentSubjectID})`;
+							} else {
+								// Fallback if subject name is not directly available or relation is not setup as expected
+								// You might need another query here if Subjects.Name is not directly joined in this query.
+								// For now, using ID.
+								console.warn(`Subject name not found for AssessmentSubjectID: ${item.AssessmentSubjectID}. Displaying ID only.`);
+							}
+
+							uniqueEntries.push({
+								id: item.AssessmentSubjectID,
+								name: subjectDisplayName,
+							});
+							seenIds.add(item.AssessmentSubjectID);
+						}
+					});
+					return uniqueEntries;
+				}
+				return [];
+			}
+
+			function populateAssessmentSubjectDropdown(assessmentSubjectEntries) {
+				assessmentDropdown.innerHTML = ""; // Clear previous options
+
+				if (!assessmentSubjectEntries || assessmentSubjectEntries.length === 0) {
+					const option = document.createElement("option");
+					option.value = "";
+					option.textContent = "No subjects found for you";
+					assessmentDropdown.appendChild(option);
+					marksDisplayArea.classList.add("hidden"); // Hide marks if no subjects
+					return;
+				}
+
+				const defaultOption = document.createElement("option");
+				defaultOption.value = "";
+				defaultOption.textContent = "Select an Assessment Subject";
+				assessmentDropdown.appendChild(defaultOption);
+
+				assessmentSubjectEntries.forEach((entry) => {
+					const option = document.createElement("option");
+					option.value = entry.id;
+					option.textContent = entry.name;
+					assessmentDropdown.appendChild(option);
+				});
+				assessmentDropdownContainer.classList.remove("hidden");
+			}
+
+			async function getMarksByTeacherAndSubject(teacherId, assessmentSubjectId) {
+				if (!teacherId || !assessmentSubjectId) {
+					displayMarks([]); // Clear table if IDs are missing
+					return [];
+				}
+				const { data, error } = await supabase
+					.from("Marks")
+					.select("MarkID, TRNO, Students(Name), ClassID, SubjectID, MarksObtained, Subjects(Name)")
+					.eq("TeacherID", teacherId)
+					.eq("AssessmentSubjectID", assessmentSubjectId);
+
+				if (error) {
+					console.error("Error fetching marks:", error);
+					showMessage("Error fetching marks.", "error", marksMessageArea);
+					return [];
+				}
+				return data || [];
+			}
+
+			function displayMarks(marksData) {
+				marksTableBody.innerHTML = ""; // Clear previous marks
+				clearMessage(marksMessageArea);
+
+				if (!marksData || marksData.length === 0) {
+					const selectedSubject = assessmentDropdown.value;
+					if (selectedSubject) {
+						// Only show "no marks" if a subject was actually selected
+						showMessage("No marks found for this selection.", "info", marksMessageArea);
+					} else {
+						showMessage("Select an assessment to view marks.", "info", marksMessageArea);
+					}
+					const noDataRow = marksTableBody.insertRow();
+					const noDataCell = noDataRow.insertCell();
+					noDataCell.colSpan = 5; // Adjusted colspan
+					noDataCell.textContent = "No marks to display or select an assessment.";
+					marksHeading.textContent = "Scores Entered";
+					marksDisplayArea.classList.remove("hidden"); // Ensure it's visible
+					return;
+				}
+
+				marksData.sort((a, b) => a.TRNO.localeCompare(b.TRNO));
+
+				let nonNullCount = 0;
+				marksData.forEach((markEntry) => {
+					const row = marksTableBody.insertRow();
+					row.insertCell().textContent = markEntry.TRNO;
+					row.insertCell().textContent = markEntry.Students?.Name || "N/A"; // Handle missing student name
+					row.insertCell().textContent = markEntry.ClassID;
+					row.insertCell().textContent = markEntry.Subjects?.Name || "N/A"; // Handle missing subject name
+
+					const marksObtainedCell = row.insertCell();
+					const marksInput = document.createElement("input");
+					marksInput.type = "number";
+					marksInput.value = markEntry.MarksObtained !== null ? markEntry.MarksObtained : "";
+					marksInput.name = `marks-${markEntry.MarkID}`;
+					marksInput.dataset.markId = markEntry.MarkID; // Store MarkID for easier access
+
+					if (markEntry.MarksObtained === null) {
+						marksInput.classList.add("empty-marks-input");
+					} else {
+						nonNullCount++;
+					}
+					marksObtainedCell.appendChild(marksInput);
+				});
+				marksHeading.textContent = `${nonNullCount} / ${marksData.length} Scores Entered`;
+				marksDisplayArea.classList.remove("hidden");
+			}
+
+			async function handleSaveMarks(event) {
+				event.preventDefault();
+				if (!currentTeacherId) {
+					showMessage("Not logged in or teacher ID not found. Cannot save.", "error", marksMessageArea);
+					return;
+				}
+
+				const inputElements = marksForm.querySelectorAll("input[data-mark-id]");
+				const updates = [];
+				let allUpdatesSuccessful = true;
+
+				inputElements.forEach((input) => {
+					const markID = input.dataset.markId;
+					// Ensure value is either a number or null. Empty string becomes null.
+					const marksObtainedValue = input.value.trim();
+					const marksObtained = marksObtainedValue === "" ? null : parseInt(marksObtainedValue, 10);
+
+					// Basic validation (optional, can be expanded)
+					if (marksObtainedValue !== "" && isNaN(marksObtained)) {
+						showMessage(`Invalid mark for Mark ID ${markID}. Please enter a number or leave blank.`, "error", marksMessageArea);
+						allUpdatesSuccessful = false; // Prevent saving if any input is bad
+						input.focus();
+						return; // Don't add to updates if invalid
+					}
+
+					updates.push({
+						MarkID: parseInt(markID),
+						MarksObtained: marksObtained,
+					});
+				});
+
+				if (!allUpdatesSuccessful) return; // Stop if there was a validation error
+
+				if (updates.length === 0) {
+					showMessage("No marks to update.", "info", marksMessageArea);
+					return;
+				}
+
+				showMessage("Saving marks...", "info", marksMessageArea);
+
+				// Using Promise.all for concurrent updates
+				const updatePromises = updates.map((update) =>
+					supabase.from("Marks").update({ MarksObtained: update.MarksObtained }).eq("MarkID", update.MarkID)
+				);
+
+				try {
+					const results = await Promise.all(updatePromises);
+					results.forEach((result) => {
+						if (result.error) {
+							console.error("Error updating marks:", result.error);
+							allUpdatesSuccessful = false;
+						}
+					});
+
+					if (allUpdatesSuccessful) {
+						showMessage("Marks updated successfully!", "success", marksMessageArea);
+					} else {
+						showMessage("Some marks failed to update. Please check console and try again.", "error", marksMessageArea);
+					}
+				} catch (error) {
+					console.error("Error in batch update process:", error);
+					showMessage("A critical error occurred while saving marks.", "error", marksMessageArea);
+					allUpdatesSuccessful = false;
+				}
+
+				// Refresh marks display if successful
+				if (allUpdatesSuccessful) {
+					const selectedAssessmentSubjectId = assessmentDropdown.value;
+					if (selectedAssessmentSubjectId) {
+						const marksData = await getMarksByTeacherAndSubject(currentTeacherId, selectedAssessmentSubjectId);
+						displayMarks(marksData);
+					}
+				}
+			}
+
+			async function handleDropdownChange() {
+				clearMessage(marksMessageArea);
+				const selectedAssessmentSubjectId = assessmentDropdown.value;
+				if (!selectedAssessmentSubjectId) {
+					marksTableBody.innerHTML = '<tr><td colspan="5">Select an assessment subject to view marks.</td></tr>';
+					marksHeading.textContent = "Scores Entered";
+					return;
+				}
+				if (!currentTeacherId) {
+					showMessage("User not properly identified. Please sign in again.", "error");
+					return;
+				}
+				const marksData = await getMarksByTeacherAndSubject(currentTeacherId, selectedAssessmentSubjectId);
+				displayMarks(marksData);
+			}
+
+			// --- UI Update Function ---
+			async function updateUI(user) {
+				clearMessage(); // Clear global messages on auth change
+
+				if (user) {
+					console.log("User is logged in:", user);
+					userEmailSpan.textContent = user.email;
+					signInButton.classList.add("hidden");
+					userSection.classList.remove("hidden");
+					appContent.classList.remove("hidden");
+
+					currentTeacherId = await getTeacherIdByEmail(user.email);
+					if (!currentTeacherId) {
+						showMessage("Failed to identify you as a registered teacher. Please contact support.", "error");
+						await signOut(); // Sign out if teacher ID not found
+						return; // Stop further processing for this user
+					}
+
+					console.log("Teacher ID:", currentTeacherId);
+					const assessmentSubjectEntries = await getUniqueAssessmentSubjectIds(currentTeacherId);
+					populateAssessmentSubjectDropdown(assessmentSubjectEntries);
+					// Initial load of marks if a subject is pre-selected or first in list (optional)
+					if (assessmentDropdown.options.length > 1 && assessmentDropdown.value) {
+						// if more than "Select..." and a value exists
+						handleDropdownChange();
+					} else if (assessmentDropdown.options.length > 0 && assessmentDropdown.options[0].value) {
+						// If there are subjects but none selected, perhaps select the first one automatically
+						// assessmentDropdown.value = assessmentDropdown.options[0].value;
+						// await handleDropdownChange();
+						// For now, let user select explicitly
+						displayMarks([]); // Show empty table initially
+					} else {
+						displayMarks([]); // Show empty table if no subjects
+					}
+				} else {
+					console.log("User is signed out.");
+					userEmailSpan.textContent = "";
+					signInButton.classList.remove("hidden");
+					userSection.classList.add("hidden");
+					appContent.classList.add("hidden");
+					assessmentDropdownContainer.classList.add("hidden");
+					marksDisplayArea.classList.add("hidden");
+					currentTeacherId = null;
+					marksTableBody.innerHTML = '<tr><td colspan="5">Please sign in to manage marks.</td></tr>';
+					marksHeading.textContent = "Scores Entered";
+				}
+			}
+
+			// --- Event Listeners Setup ---
+			// These are attached once when the script loads.
+			// The functions they call will handle logic based on the current state.
+			signInButton.addEventListener("click", signInWithGoogle);
+			signOutButton.addEventListener("click", signOut);
+			marksForm.addEventListener("submit", handleSaveMarks);
+			assessmentDropdown.addEventListener("change", handleDropdownChange);
+
+			// --- Main Initialization ---
+			// Listen for authentication state changes
+			// This will also fire on initial page load with the current session or null
+			supabase.auth.onAuthStateChange(async (event, session) => {
+				console.log("Auth state change event:", event, "Session:", session);
+				const user = session?.user;
+				console.log("Current user:", user);
+				updateUI(user); // Call the centralized UI update function
+			});
+
+			// No need for an explicit DOMContentLoaded and main() if onAuthStateChange handles initial load.
+			// If you have other setup that needs to happen strictly after DOM load and *before* onAuthStateChange might fire
+			// (which is rare for auth-dependent apps), you could wrap the onAuthStateChange subscription in DOMContentLoaded.
+			// However, Supabase SDK usually handles this well.
+			// document.addEventListener("DOMContentLoaded", () => {
+			// supabase.auth.onAuthStateChange...
+			// });
+		</script>
+	</body>
+</html>
