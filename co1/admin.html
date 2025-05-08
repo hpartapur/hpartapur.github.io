@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Admin Page</title>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<style>
+			body {
+				font-family: sans-serif;
+				margin: 20px;
+				background-color: #f9f9f9;
+			}
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			form {
+				margin-bottom: 20px;
+				padding: 20px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				background-color: white;
+			}
+			form h2 {
+				color: #1a202c;
+				margin-bottom: 20px;
+				text-align: center;
+			}
+			label {
+				display: block;
+				margin-bottom: 5px;
+				color: #4a5568;
+				font-weight: bold;
+			}
+			input,
+			select {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 15px;
+				border: 1px solid #e2e8f0;
+				border-radius: 4px;
+				box-sizing: border-box;
+			}
+			button {
+				padding: 10px 20px;
+				background-color: #4caf50;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+				margin-top: 10px;
+			}
+			button:hover {
+				background-color: #45a049;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+				background-color: white;
+				border-radius: 8px;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			}
+			th,
+			td {
+				border: 1px solid #e2e8f0;
+				padding: 12px;
+				text-align: left;
+			}
+			th {
+				background-color: #f7fafc;
+				color: #2d3748;
+				font-weight: bold;
+			}
+			tbody tr:nth-child(odd) {
+				background-color: #edf2f7;
+			}
+			#message {
+				margin-top: 20px;
+				padding: 10px;
+				font-weight: bold;
+				border-radius: 4px;
+				text-align: center;
+			}
+			.message-success {
+				background-color: #f0fdf4;
+				color: #15803d;
+				border: 1px solid #16a34a;
+			}
+			.message-error {
+				background-color: #fee2e2;
+				color: #b91c1c;
+				border: 1px solid #dc2626;
+			}
+			.teacher-class-assignment {
+				margin-bottom: 15px;
+				padding: 10px;
+				border: 1px solid #e2e8f0;
+				border-radius: 4px;
+				background-color: #f7fafc;
+			}
+
+			details {
+				margin-bottom: 20px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				background-color: white;
+				padding: 10px;
+			}
+
+			details summary {
+				padding: 10px;
+				cursor: pointer;
+				font-weight: bold;
+				color: #1a202c;
+				border-bottom: 1px solid #e2e8f0;
+			}
+
+			details form {
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Admin Page</h1>
+
+			<details>
+				<summary>Create Subject</summary>
+				<form id="create-subject-form">
+					<label for="subject-name">Subject Name:</label>
+					<input type="text" id="subject-name" name="subject-name" required />
+					<button type="submit">Create Subject</button>
+				</form>
+			</details>
+
+			<details>
+				<summary>Create Teacher</summary>
+				<form id="create-teacher-form">
+					<label for="teacher-name">Teacher Name:</label>
+					<input type="text" id="teacher-name" name="teacher-name" required />
+					<label for="teacher-email">Teacher Email:</label>
+					<input type="email" id="teacher-email" name="teacher-email" required />
+					<button type="submit">Create Teacher</button>
+				</form>
+			</details>
+
+			<details>
+				<summary>Create Student</summary>
+				<form id="create-student-form">
+					<label for="student-trno">Student TRNO:</label>
+					<input type="text" id="student-trno" name="student-trno" required />
+					<label for="student-name">Student Name:</label>
+					<input type="text" id="student-name" name="student-name" required />
+					<label for="student-gender">Student Gender:</label>
+					<select id="student-gender" name="student-gender" required>
+						<option value="M">Male</option>
+						<option value="F">Female</option>
+					</select>
+					<label for="student-darajah">Student Darajah:</label>
+					<select id="student-darajah" name="student-darajah" required>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+					</select>
+					<label for="student-class">Student Class:</label>
+					<select id="student-class" name="student-class" required></select>
+					<button type="submit">Create Student</button>
+				</form>
+			</details>
+
+			<details>
+				<summary>Create Assessment</summary>
+				<form id="create-assessment-form">
+					<h2>Create Assessment</h2>
+					<label for="assessment-darajah">Darajah (Standard):</label>
+					<select id="assessment-darajah" name="assessment-darajah" required>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+					</select>
+					<label for="assessment-week">Week:</label>
+					<input type="number" id="assessment-week" name="assessment-week" required />
+					<div id="assessment-subjects-container">
+						<h2>Assessment Subjects</h2>
+					</div>
+					<button id="add-assessment-subject" type="button">Add Subject</button>
+					<button type="submit">Create Assessment</button>
+				</form>
+			</details>
+
+			<div id="message"></div>
+		</div>
+
+		<script>
+			// Initialize Supabase
+			const supabaseUrl = "https://urlburhufcpkpfcoyflh.supabase.co";
+			const supabaseKey =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybGJ1cmh1ZmNwa3BmY295ZmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMzY1MzYsImV4cCI6MjA2MTYxMjUzNn0.17VTbejLDJyI9hkHPiuoiy5jcZmLdgiJ16GuhkiOd08";
+			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+			// --- Helper Functions ---
+
+			/**
+			 * Displays a message to the user.
+			 * @param {string} message - The message to display.
+			 * @param {string} type - The type of message ('success' or 'error').
+			 */
+			function showMessage(message, type = "success") {
+				const messageElement = document.getElementById("message");
+				messageElement.textContent = message;
+				messageElement.className = `message-${type}`; // Apply CSS class
+			}
+
+			// --- Subject Management ---
+			/**
+			 * Handles the submission of the "Create Subject" form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleCreateSubject(event) {
+				event.preventDefault();
+				const subjectName = document.getElementById("subject-name").value;
+
+				const { data, error } = await supabase.from("Subjects").insert([{ Name: subjectName }]);
+
+				if (error) {
+					console.error("Error creating subject:", error);
+					showMessage("Error creating subject.", "error");
+				} else {
+					showMessage(`Subject "${subjectName}" created successfully!`);
+					document.getElementById("create-subject-form").reset();
+					populateSubjectDropdown();
+				}
+			}
+
+			// --- Teacher Management ---
+
+			/**
+			 * Handles the submission of the "Create Teacher" form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleCreateTeacher(event) {
+				event.preventDefault();
+				const teacherName = document.getElementById("teacher-name").value;
+				const teacherEmail = document.getElementById("teacher-email").value;
+
+				const { data, error } = await supabase.from("Teachers").insert([{ Name: teacherName, Email: teacherEmail }]);
+
+				if (error) {
+					console.error("Error creating teacher:", error);
+					showMessage("Error creating teacher.", "error");
+				} else {
+					showMessage(`Teacher "${teacherName}" created successfully!`);
+					document.getElementById("create-teacher-form").reset();
+				}
+			}
+
+			// --- Student Management ---
+
+			/**
+			 * Populates the class dropdown in the "Create Student" form.
+			 */
+			async function populateClassDropdown() {
+				const classDropdown = document.getElementById("student-class");
+				if (!classDropdown) {
+					console.error('Element with id "student-class" not found');
+					showMessage("Error finding class dropdown", "error");
+					return;
+				}
+				classDropdown.innerHTML = ""; // Clear existing options
+
+				const { data: classes, error } = await supabase.from("Classes").select("ClassID");
+
+				if (error) {
+					console.error("Error fetching classes:", error);
+					showMessage("Error fetching classes.", "error");
+					return;
+				}
+
+				classes.forEach((cls) => {
+					const option = document.createElement("option");
+					option.value = cls.ClassID;
+					option.textContent = cls.ClassID;
+					classDropdown.appendChild(option);
+				});
+			}
+
+			/**
+			 * Handles the submission of the "Create Student" form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleCreateStudent(event) {
+				event.preventDefault();
+				const trno = document.getElementById("student-trno").value;
+				const name = document.getElementById("student-name").value;
+				const gender = document.getElementById("student-gender").value;
+				const darajah = parseInt(document.getElementById("student-darajah").value);
+				const classId = document.getElementById("student-class").value;
+
+				const { data, error } = await supabase
+					.from("Students")
+					.insert([{ TRNO: trno, Name: name, Gender: gender, Darajah: darajah, ClassID: classId }]);
+
+				if (error) {
+					console.error("Error creating student:", error);
+					showMessage("Error creating student.", "error");
+				} else {
+					showMessage(`Student "${name}" created successfully!`);
+					document.getElementById("create-student-form").reset();
+				}
+			}
+
+			// --- Assessment Management ---
+
+			/**
+			 * Populates the subject dropdown for the Assessment form.
+			 */
+			async function populateSubjectDropdown() {
+				const subjectDropdown = document.createElement("select");
+				subjectDropdown.name = "subject-id";
+				subjectDropdown.required = true;
+
+				const { data: subjects, error } = await supabase.from("Subjects").select("SubjectID, Name");
+
+				if (error) {
+					console.error("Error fetching subjects:", error);
+					showMessage("Error fetching subjects.", "error");
+					return null; // Explicitly return null on error
+				}
+
+				subjects.forEach((subject) => {
+					const option = document.createElement("option");
+					option.value = subject.SubjectID;
+					option.textContent = subject.Name;
+					subjectDropdown.appendChild(option);
+				});
+				return subjectDropdown;
+			}
+
+			/**
+			 * Handles adding a subject to the assessment form.
+			 */
+			async function addAssessmentSubject() {
+				const container = document.getElementById("assessment-subjects-container");
+
+				const subjectDropdown = await populateSubjectDropdown();
+				if (!subjectDropdown) {
+					return; // Exit if there was an error fetching subjects
+				}
+
+				const subjectDiv = document.createElement("div");
+				subjectDiv.className = "assessment-subject";
+				subjectDiv.style.marginBottom = "10px";
+
+				const label = document.createElement("label");
+				label.textContent = "Subject:";
+				label.style.marginRight = "10px";
+				subjectDiv.appendChild(label);
+				subjectDiv.appendChild(subjectDropdown);
+
+				const maxMarksInput = document.createElement("input");
+				maxMarksInput.type = "number";
+				maxMarksInput.name = "max-marks";
+				maxMarksInput.placeholder = "Max Marks";
+				maxMarksInput.required = true;
+				maxMarksInput.style.width = "100px";
+				subjectDiv.appendChild(maxMarksInput);
+
+				container.appendChild(subjectDiv);
+			}
+
+			/**
+			 * Handles the submission of the "Create Assessment" form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleCreateAssessment(event) {
+				event.preventDefault();
+				const darajah = parseInt(document.getElementById("assessment-darajah").value);
+				const week = parseInt(document.getElementById("assessment-week").value);
+
+				const { data: assessmentData, error: assessmentError } = await supabase
+					.from("Assessments")
+					.insert([{ Week: week, Darajah: darajah }]) //removed title, added darajah
+					.select("Week")
+					.single();
+
+				if (assessmentError) {
+					console.error("Error creating assessment:", assessmentError);
+					showMessage("Error creating assessment.", "error");
+					return;
+				}
+
+				const assessmentId = assessmentData.Week;
+				const subjectsContainer = document.getElementById("assessment-subjects-container");
+				const subjectDivs = subjectsContainer.querySelectorAll(".assessment-subject");
+
+				const assessmentSubjects = [];
+				const subjectNames = {}; // Store subject names
+				for (const div of subjectDivs) {
+					const subjectId = parseInt(div.querySelector('select[name="subject-id"]').value);
+					const maxMarks = parseInt(div.querySelector('input[name="max-marks"]').value);
+
+					// Fetch subject name
+					const { data: subjectData, error: subjectError } = await supabase
+						.from("Subjects")
+						.select("Name")
+						.eq("SubjectID", subjectId)
+						.single();
+
+					if (subjectError) {
+						console.error("Error fetching subject name:", subjectError);
+						showMessage("Error fetching subject name.", "error");
+						return;
+					}
+					const subjectName = subjectData.Name;
+					subjectNames[subjectId] = subjectName; // Store it
+					assessmentSubjects.push({ AssessmentID: assessmentId, SubjectID: subjectId, MaxMarks: maxMarks });
+				}
+
+				// Insert into AssessmentSubjects
+				const { error: assessmentSubjectsError } = await supabase.from("AssessmentSubjects").insert(assessmentSubjects);
+
+				if (assessmentSubjectsError) {
+					console.error("Error creating assessment subjects:", assessmentSubjectsError);
+					showMessage("Error creating assessment subjects.", "error");
+					return;
+				}
+				//get all students of the same darajah
+				const { data: students, error: studentsError } = await supabase.from("Students").select("TRNO, ClassID").eq("Darajah", darajah); //added ClassID
+
+				if (studentsError) {
+					console.error("Error getting students:", studentsError);
+					showMessage("Error getting students.", "error");
+					return;
+				}
+				//create marks entries for each student and subject
+				const marksEntries = [];
+				for (const student of students) {
+					for (const as of assessmentSubjects) {
+						const subjectName = subjectNames[as.SubjectID]; // Get subject name from stored object.
+						const assessmentSubjectID = `Week${assessmentId}_${subjectName}_${student.ClassID}`; //changed assessmentSubjectID
+						console.log(student);
+
+						// Fetch the teacher ID from ClassSubjects
+						const { data: classSubjectData, error: classSubjectError } = await supabase
+							.from("ClassSubjects")
+							.select("TeacherID")
+							.eq("ClassID", student.ClassID)
+							.eq("SubjectID", as.SubjectID)
+							.single(); // Assuming only one teacher teaches a subject in a class
+
+						if (classSubjectError) {
+							console.error("Error fetching TeacherID from ClassSubjects:", classSubjectError);
+							showMessage("Error fetching teacher assignment.", "error");
+							return; // Stop processing if we can't get the teacher
+						}
+						const teacherId = classSubjectData ? classSubjectData.TeacherID : null;
+
+						marksEntries.push({
+							TRNO: student.TRNO,
+							AssessmentSubjectID: assessmentSubjectID,
+							MarksObtained: null,
+							ClassID: student.ClassID,
+							SubjectID: as.SubjectID,
+							TeacherID: teacherId, // Include TeacherID
+							// Week: assessmentId
+						});
+					}
+				}
+				//insert into marks table
+				const { error: marksError } = await supabase.from("Marks").insert(marksEntries);
+				if (marksError) {
+					console.error("Error creating marks entries:", marksError);
+					showMessage("Error creating marks entries.", "error");
+					return;
+				}
+
+				showMessage(`Assessment created successfully!`);
+				document.getElementById("create-assessment-form").reset();
+				document.getElementById("assessment-subjects-container").innerHTML = "<h2>Assessment Subjects</h2>"; // Clear added subjects
+			}
+
+			// --- Event Listeners ---
+			document.addEventListener("DOMContentLoaded", () => {
+				document.getElementById("create-subject-form").addEventListener("submit", handleCreateSubject);
+				document.getElementById("create-teacher-form").addEventListener("submit", handleCreateTeacher);
+				document.getElementById("create-student-form").addEventListener("submit", handleCreateStudent);
+				document.getElementById("create-assessment-form").addEventListener("submit", handleCreateAssessment);
+				document.getElementById("add-assessment-subject").addEventListener("click", addAssessmentSubject);
+
+				populateClassDropdown();
+			});
+		</script>
+	</body>
+</html>
