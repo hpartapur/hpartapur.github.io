@@ -1,195 +1,266 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<title>Admin Page</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Admin Panel</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 		<style>
 			body {
-				font-family: sans-serif;
-				margin: 20px;
-				background-color: #f9f9f9;
+				font-family: "Inter", sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: #f3f4f6;
+				color: #1f2937;
 			}
 			.container {
-				max-width: 800px;
-				margin: 0 auto;
+				max-width: 1200px;
+				margin: 20px auto;
+				padding: 20px;
+				background-color: white;
+				border-radius: 10px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			h1 {
+				text-align: center;
+				color: #4f46e5;
+				margin-bottom: 20px;
+			}
+			#data-display-area {
+				margin-top: 20px;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+				border-radius: 8px;
+				overflow: hidden; /* Ensures rounded corners are applied */
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+			}
+			th,
+			td {
+				padding: 12px 15px;
+				text-align: left;
+				border-bottom: 1px solid #e5e7eb;
+			}
+			th {
+				background-color: #f9fafb;
+				color: #374151;
+				font-weight: 600;
+			}
+			td {
+				color: #4b5563;
+			}
+			tbody tr:hover {
+				background-color: #f0f0f0;
 			}
 			form {
 				margin-bottom: 20px;
 				padding: 20px;
-				border: 1px solid #ddd;
+				background-color: #f7fafc;
 				border-radius: 8px;
-				background-color: white;
+				border: 1px solid #e5e7eb;
 			}
 			form h2 {
-				color: #1a202c;
+				margin-top: 0;
+				color: #6b7280;
 				margin-bottom: 20px;
-				text-align: center;
+				font-size: 1.5rem;
+				font-weight: 500;
 			}
 			label {
 				display: block;
 				margin-bottom: 5px;
-				color: #4a5568;
-				font-weight: bold;
+				color: #374151;
+				font-weight: 500;
+				font-size: 0.9rem;
 			}
 			input,
 			select {
 				width: 100%;
 				padding: 10px;
 				margin-bottom: 15px;
-				border: 1px solid #e2e8f0;
-				border-radius: 4px;
+				border: 1px solid #d1d5db;
+				border-radius: 6px;
 				box-sizing: border-box;
+				font-size: 1rem;
+				transition: border-color 0.2s ease;
 			}
+			input:focus,
+			select:focus {
+				outline: none;
+				border-color: #4f46e5;
+				box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+			}
+
 			button {
-				padding: 10px 20px;
-				background-color: #4caf50;
+				background-color: #4f46e5;
 				color: white;
+				padding: 10px 20px;
 				border: none;
-				border-radius: 4px;
+				border-radius: 6px;
 				cursor: pointer;
-				transition: background-color 0.3s ease;
+				font-size: 1rem;
+				transition: background-color 0.2s ease, box-shadow 0.2s ease;
 				margin-top: 10px;
 			}
 			button:hover {
-				background-color: #45a049;
-			}
-			table {
-				width: 100%;
-				border-collapse: collapse;
-				margin-top: 20px;
-				background-color: white;
-				border-radius: 8px;
+				background-color: #4338ca;
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 			}
-			th,
-			td {
-				border: 1px solid #e2e8f0;
-				padding: 12px;
-				text-align: left;
+			button:disabled {
+				background-color: #d1d5db;
+				cursor: not-allowed;
+				opacity: 0.7;
+				box-shadow: none;
 			}
-			th {
-				background-color: #f7fafc;
-				color: #2d3748;
-				font-weight: bold;
+			button:disabled:hover {
+				background-color: #d1d5db;
 			}
-			tbody tr:nth-child(odd) {
-				background-color: #edf2f7;
-			}
+
 			#message {
 				margin-top: 20px;
-				padding: 10px;
-				font-weight: bold;
-				border-radius: 4px;
+				padding: 12px;
+				border-radius: 6px;
 				text-align: center;
+				font-weight: 500;
+				border: 1px solid;
 			}
 			.message-success {
 				background-color: #f0fdf4;
 				color: #15803d;
-				border: 1px solid #16a34a;
+				border-color: #16a34a;
 			}
 			.message-error {
 				background-color: #fee2e2;
 				color: #b91c1c;
-				border: 1px solid #dc2626;
-			}
-			.teacher-class-assignment {
-				margin-bottom: 15px;
-				padding: 10px;
-				border: 1px solid #e2e8f0;
-				border-radius: 4px;
-				background-color: #f7fafc;
+				border-color: #dc2626;
 			}
 
-			details {
-				margin-bottom: 20px;
-				border: 1px solid #ddd;
-				border-radius: 8px;
-				background-color: white;
-				padding: 10px;
+			.auth-container {
+				display: flex;
+				justify-content: center;
+				margin-top: 20px;
 			}
-
-			details summary {
-				padding: 10px;
+			.auth-button {
+				padding: 10px 20px;
+				background-color: #4f46e5;
+				color: white;
+				border: none;
+				border-radius: 6px;
 				cursor: pointer;
-				font-weight: bold;
-				color: #1a202c;
-				border-bottom: 1px solid #e2e8f0;
+				font-size: 1rem;
+				transition: background-color 0.2s ease;
+				margin: 0 10px;
 			}
-
-			details form {
-				padding: 20px;
+			.auth-button:hover {
+				background-color: #4338ca;
+			}
+			.hidden {
+				display: none;
+			}
+			.visible {
+				display: block;
 			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
-			<h1>Admin Page</h1>
-
-			<details>
-				<summary>Create Subject</summary>
-				<form id="create-subject-form">
-					<label for="subject-name">Subject Name:</label>
-					<input type="text" id="subject-name" name="subject-name" required />
-					<button type="submit">Create Subject</button>
-				</form>
-			</details>
-
-			<details>
-				<summary>Create Teacher</summary>
-				<form id="create-teacher-form">
-					<label for="teacher-name">Teacher Name:</label>
-					<input type="text" id="teacher-name" name="teacher-name" required />
-					<label for="teacher-email">Teacher Email:</label>
-					<input type="email" id="teacher-email" name="teacher-email" required />
-					<button type="submit">Create Teacher</button>
-				</form>
-			</details>
-
-			<details>
-				<summary>Create Student</summary>
-				<form id="create-student-form">
-					<label for="student-trno">Student TRNO:</label>
-					<input type="text" id="student-trno" name="student-trno" required />
-					<label for="student-name">Student Name:</label>
-					<input type="text" id="student-name" name="student-name" required />
-					<label for="student-gender">Student Gender:</label>
-					<select id="student-gender" name="student-gender" required>
-						<option value="M">Male</option>
-						<option value="F">Female</option>
-					</select>
-					<label for="student-darajah">Student Darajah:</label>
-					<select id="student-darajah" name="student-darajah" required>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-					</select>
-					<label for="student-class">Student Class:</label>
-					<select id="student-class" name="student-class" required></select>
-					<button type="submit">Create Student</button>
-				</form>
-			</details>
-
-			<details>
-				<summary>Create Assessment</summary>
-				<form id="create-assessment-form">
-					<h2>Create Assessment</h2>
-					<label for="assessment-darajah">Darajah (Standard):</label>
-					<select id="assessment-darajah" name="assessment-darajah" required>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-					</select>
-					<label for="assessment-week">Week:</label>
-					<input type="number" id="assessment-week" name="assessment-week" required />
-					<div id="assessment-subjects-container">
-						<h2>Assessment Subjects</h2>
-					</div>
-					<button id="add-assessment-subject" type="button">Add Subject</button>
-					<button type="submit">Create Assessment</button>
-				</form>
-			</details>
-
+			<h1>Admin Panel</h1>
 			<div id="message"></div>
+			<form id="assessment-form">
+				<h2>Create Assessment</h2>
+				<label for="week">Week</label>
+				<input type="number" id="week" name="week" required />
+				<label for="assessment-darajah">Darajah:</label>
+				<select id="assessment-darajah" name="assessment-darajah" required>
+					<option value="">Select Darajah</option>
+				</select>
+				<label for="assessment-subject">Subject:</label>
+				<select id="assessment-subject" name="assessment-subject" required>
+					<option value="">Select Subject</option>
+				</select>
+				<label for="max-marks">Max Marks:</label>
+				<select id="max-marks" name="max-marks" required>
+					<option value="7">7</option>
+					<option value="13">13</option>
+					<option value="20">20</option>
+				</select>
+				<button type="submit">Create Assessment</button>
+				<table>
+					<thead>
+						<tr>
+							<th>Assessment ID</th>
+							<th>Name</th>
+							<th>Subject</th>
+							<th>Class</th>
+							<th>Teacher</th>
+							<th>Week</th>
+							<th>Max Marks</th>
+						</tr>
+					</thead>
+					<tbody id="assessment-table-body">
+						<tr>
+							<td colspan="7">No data to display</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+
+			<form id="teacher-form">
+				<h2>Add Teacher</h2>
+				<label for="teacher-name">Name:</label>
+				<input type="text" id="teacher-name" name="teacher-name" required />
+				<label for="teacher-email">Email:</label>
+				<input type="email" id="teacher-email" name="teacher-email" required />
+				<button type="submit">Add Teacher</button>
+			</form>
+
+			<form id="student-form">
+				<h2>Add Student</h2>
+				<label for="student-name">Name:</label>
+				<input type="text" id="student-name" name="student-name" required />
+				<label for="student-trno">TRNO:</label>
+				<input type="text" id="student-trno" name="student-trno" required />
+				<label for="student-class">Class ID:</label>
+				<input type="number" id="student-class" name="student-class" required />
+				<button type="submit">Add Student</button>
+			</form>
+
+			<form id="class-form">
+				<h2>Add Class</h2>
+				<label for="class-name">Class Name:</label>
+				<input type="text" id="class-name" name="class-name" required />
+				<label for="class-numeric">Class Numeric:</label>
+				<input type="number" id="class-numeric" name="class-numeric" required />
+				<button type="submit">Add Class</button>
+			</form>
+
+			<form id="subject-form">
+				<h2>Add Subject</h2>
+				<label for="subject-name">Subject Name:</label>
+				<input type="text" id="subject-name" name="subject-name" required />
+				<button type="submit">Add Subject</button>
+			</form>
+
+			<div id="data-display-area">
+				<h2>Data Display</h2>
+				<table id="data-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Email/TRNO/Class/Subject</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="3">No data to display</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 		<script>
@@ -200,7 +271,6 @@
 			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 			// --- Helper Functions ---
-
 			/**
 			 * Displays a message to the user.
 			 * @param {string} message - The message to display.
@@ -209,287 +279,323 @@
 			function showMessage(message, type = "success") {
 				const messageElement = document.getElementById("message");
 				messageElement.textContent = message;
-				messageElement.className = `message-${type}`; // Apply CSS class
+				messageElement.className = `message-${type}`;
 			}
 
-			// --- Subject Management ---
 			/**
-			 * Handles the submission of the "Create Subject" form.
-			 * @param {Event} event - The form submission event.
+			 * Clears the data display area.
 			 */
-			async function handleCreateSubject(event) {
-				event.preventDefault();
-				const subjectName = document.getElementById("subject-name").value;
-
-				const { data, error } = await supabase.from("Subjects").insert([{ Name: subjectName }]);
-
-				if (error) {
-					console.error("Error creating subject:", error);
-					showMessage("Error creating subject.", "error");
-				} else {
-					showMessage(`Subject "${subjectName}" created successfully!`);
-					document.getElementById("create-subject-form").reset();
-					populateSubjectDropdown();
-				}
+			function clearDataDisplay() {
+				const dataTableBody = document.querySelector("#data-table tbody");
+				dataTableBody.innerHTML = `<tr><td colspan="3">No data to display</td></tr>`;
 			}
 
-			// --- Teacher Management ---
-
+			// --- Data Fetching and Display Functions ---
 			/**
-			 * Handles the submission of the "Create Teacher" form.
-			 * @param {Event} event - The form submission event.
+			 * Fetches and displays data from a specified table.
+			 * @param {string} tableName - The name of the table to fetch data from.
 			 */
-			async function handleCreateTeacher(event) {
-				event.preventDefault();
-				const teacherName = document.getElementById("teacher-name").value;
-				const teacherEmail = document.getElementById("teacher-email").value;
-
-				const { data, error } = await supabase.from("Teachers").insert([{ Name: teacherName, Email: teacherEmail }]);
+			async function fetchData(tableName) {
+				const { data, error } = await supabase.from(tableName).select("*");
 
 				if (error) {
-					console.error("Error creating teacher:", error);
-					showMessage("Error creating teacher.", "error");
-				} else {
-					showMessage(`Teacher "${teacherName}" created successfully!`);
-					document.getElementById("create-teacher-form").reset();
-				}
-			}
-
-			// --- Student Management ---
-
-			/**
-			 * Populates the class dropdown in the "Create Student" form.
-			 */
-			async function populateClassDropdown() {
-				const classDropdown = document.getElementById("student-class");
-				if (!classDropdown) {
-					console.error('Element with id "student-class" not found');
-					showMessage("Error finding class dropdown", "error");
-					return;
-				}
-				classDropdown.innerHTML = ""; // Clear existing options
-
-				const { data: classes, error } = await supabase.from("Classes").select("ClassID");
-
-				if (error) {
-					console.error("Error fetching classes:", error);
-					showMessage("Error fetching classes.", "error");
+					console.error(`Error fetching ${tableName} data:`, error);
+					showMessage(`Error fetching ${tableName} data. Please try again.`, "error");
 					return;
 				}
 
-				classes.forEach((cls) => {
-					const option = document.createElement("option");
-					option.value = cls.ClassID;
-					option.textContent = cls.ClassID;
-					classDropdown.appendChild(option);
+				const dataTableBody = document.querySelector("#data-table tbody");
+				dataTableBody.innerHTML = ""; // Clear previous data
+
+				if (data.length === 0) {
+					dataTableBody.innerHTML = `<tr><td colspan="3">No data to display</td></tr>`;
+					return;
+				}
+
+				let headers = [];
+				if (tableName === "Teachers") {
+					headers = ["TeacherID", "Name", "Email"];
+				} else if (tableName === "Students") {
+					headers = ["StudentID", "Name", "TRNO", "ClassID"];
+				} else if (tableName === "Classes") {
+					headers = ["ClassID", "ClassName", "Darajah"];
+				} else if (tableName === "Subjects") {
+					headers = ["SubjectID", "SubjectName"];
+				} else if (tableName === "AssessmentSubjects") {
+					headers = ["AssessmentSubjectID", "Name", "SubjectID", "ClassID", "TeacherID"];
+				}
+
+				//add headers
+				const headerRow = document.createElement("tr");
+				headers.forEach((headerText) => {
+					const headerCell = document.createElement("th");
+					headerCell.textContent = headerText;
+					headerRow.appendChild(headerCell);
 				});
+				dataTableBody.appendChild(headerRow);
+
+				data.forEach((item) => {
+					const row = document.createElement("tr");
+					headers.forEach((header) => {
+						const cell = document.createElement("td");
+						cell.textContent = item[header];
+						row.appendChild(cell);
+					});
+					dataTableBody.appendChild(row);
+				});
+
+				document.getElementById("data-display-area").classList.remove("hidden");
+			}
+
+			// --- Form Submission Handlers ---
+			/**
+			 * Handles the submission of the teacher form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleTeacherFormSubmit(event) {
+				event.preventDefault();
+
+				const name = document.getElementById("teacher-name").value;
+				const email = document.getElementById("teacher-email").value;
+
+				const { data, error } = await supabase.from("Teachers").insert([{ Name: name, Email: email }]);
+
+				if (error) {
+					console.error("Error adding teacher:", error);
+					showMessage("Error adding teacher. Please try again.", "error");
+				} else {
+					showMessage("Teacher added successfully!", "success");
+					document.getElementById("teacher-form").reset();
+					fetchData("Teachers"); // Refresh the data table
+				}
 			}
 
 			/**
-			 * Handles the submission of the "Create Student" form.
+			 * Handles the submission of the student form.
 			 * @param {Event} event - The form submission event.
 			 */
-			async function handleCreateStudent(event) {
+			async function handleStudentFormSubmit(event) {
 				event.preventDefault();
-				const trno = document.getElementById("student-trno").value;
+
 				const name = document.getElementById("student-name").value;
-				const gender = document.getElementById("student-gender").value;
-				const darajah = parseInt(document.getElementById("student-darajah").value);
+				const trno = document.getElementById("student-trno").value;
 				const classId = document.getElementById("student-class").value;
 
-				const { data, error } = await supabase
-					.from("Students")
-					.insert([{ TRNO: trno, Name: name, Gender: gender, Darajah: darajah, ClassID: classId }]);
+				const { data, error } = await supabase.from("Students").insert([{ Name: name, TRNO: trno, ClassID: classId }]);
 
 				if (error) {
-					console.error("Error creating student:", error);
-					showMessage("Error creating student.", "error");
+					console.error("Error adding student:", error);
+					showMessage("Error adding student. Please try again.", "error");
 				} else {
-					showMessage(`Student "${name}" created successfully!`);
-					document.getElementById("create-student-form").reset();
+					showMessage("Student added successfully!", "success");
+					document.getElementById("student-form").reset();
+					fetchData("Students");
 				}
 			}
 
-			// --- Assessment Management ---
+			/**
+			 * Handles the submission of the class form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleClassFormSubmit(event) {
+				event.preventDefault();
+
+				const className = document.getElementById("class-name").value;
+				const Darajah = document.getElementById("class-numeric").value;
+
+				const { data, error } = await supabase.from("Classes").insert([{ ClassName: className, Darajah: Darajah }]);
+
+				if (error) {
+					console.error("Error adding class:", error);
+					showMessage("Error adding class. Please try again.", "error");
+				} else {
+					showMessage("Class added successfully!", "success");
+					document.getElementById("class-form").reset();
+					fetchData("Classes");
+				}
+			}
 
 			/**
-			 * Populates the subject dropdown for the Assessment form.
+			 * Handles the submission of the subject form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleSubjectFormSubmit(event) {
+				event.preventDefault();
+
+				const subjectName = document.getElementById("subject-name").value;
+
+				const { data, error } = await supabase.from("Subjects").insert([{ SubjectName: subjectName }]);
+
+				if (error) {
+					console.error("Error adding subject:", error);
+					showMessage("Error adding subject. Please try again.", "error");
+				} else {
+					showMessage("Subject added successfully!", "success");
+					document.getElementById("subject-form").reset();
+					fetchData("Subjects");
+				}
+			}
+
+			/**
+			 * Handles the submission of the assessment form.
+			 * @param {Event} event - The form submission event.
+			 */
+			async function handleAssessmentFormSubmit(event) {
+				event.preventDefault();
+
+				const week = document.getElementById("week").value;
+				const darajahId = document.getElementById("assessment-darajah").value;
+				const subjectId = document.getElementById("assessment-subject").value;
+				const maxMarks = document.getElementById("max-marks").value;
+
+				const { data: classes, error: classesError } = await supabase.from("Classes").select("ClassID").eq("Darajah", darajahId);
+
+				if (classesError) {
+					console.error("Error fetching classes:", classesError);
+					showMessage("Error fetching classes. Please try again.", "error");
+					return;
+				}
+
+				if (!classes || classes.length === 0) {
+					showMessage("No classes found for the selected Darajah.", "error");
+					return;
+				}
+				//Fetching Subject Name
+				const { data: subjectData, error: subjectError } = await supabase.from("Subjects").select("Name").eq("SubjectID", subjectId).single();
+
+				for (const classData of classes) {
+					const classId = classData.ClassID;
+					console.log("Class ID:", classId); // Debugging line
+
+					const { data: teacherData, error: teacherError } = await supabase
+						.from("ClassSubjects")
+						.select("TeacherID")
+						.eq("ClassID", classId)
+						.eq("SubjectID", subjectId)
+						.single();
+					console.log("Teacher Data:", teacherData); // Debugging line
+					if (teacherError) {
+						console.error("Error fetching teacher ID:", teacherError);
+						showMessage("Error fetching teacher ID. Please try again.", "error");
+						return; // Stop processing if there's an error
+					}
+
+					if (!teacherData) {
+						showMessage(`No teacher found for Class ID ${classId} and Subject ID ${subjectId}.`, "error");
+						return; // Stop processing if no teacher found
+					}
+					const teacherId = teacherData.TeacherID;
+					const newAssessmentName = `Week${week}_${subjectData.Name}_${classId}`; // Create a new assessment name
+					const { error: insertError } = await supabase
+						.from("Assessments")
+						.insert([
+							{ Name: newAssessmentName, SubjectID: subjectId, ClassID: classId, TeacherID: teacherId, Week: week, MaxMarks: maxMarks },
+						]);
+					if (insertError) {
+						console.error("Error adding assessment:", insertError);
+						showMessage("Error adding assessment. Please try again.", "error");
+						return; // Stop processing if insert fails
+					}
+					const assessmentIds = await supabase.from("Assessments").select("id");
+					const assessmentId = assessmentIds.data[assessmentIds.data.length - 1].id; // Get the last inserted assessment ID
+					console.log("Assessment ID:", assessmentId); // Debugging line
+					const studentData = await supabase.from("Students").select("TRNO").eq("ClassID", classId);
+					console.log("Student Data:", studentData); // Debugging line
+					for (const student of studentData.data) {
+						const trno = student.TRNO;
+						const { error: insertError } = await supabase
+							.from("Marks")
+							.insert([{ StudentID: trno, MarksObtained: 0, AssessmentID: assessmentId }]);
+						if (insertError) {
+							console.error("Error adding assessment to student:", insertError);
+							showMessage("Error adding assessment to student. Please try again.", "error");
+							return; // Stop processing if insert fails
+						}
+					}
+				}
+
+				showMessage("Assessments added successfully!", "success");
+				document.getElementById("assessment-form").reset();
+				console.log(classes); // Debugging line
+				fetchData("Assessments");
+			}
+
+			// --- Helper Functions ---
+			/**
+			 * Populates the Darajah dropdown.
+			 */
+			async function populateDarajahDropdown() {
+				const { data: classes, error } = await supabase.from("Classes").select("Darajah", { distinct: true });
+				console.log(classes);
+
+				if (error) {
+					console.error("Error fetching Darajah values", error);
+					showMessage("Error fetching Darajah values", "error");
+					return;
+				}
+
+				const darajahDropdown = document.getElementById("assessment-darajah");
+				darajahDropdown.innerHTML = '<option value="">Select Darajah</option>'; // Clear existing options
+
+				if (classes && classes.length > 0) {
+					classes.forEach((classItem) => {
+						const option = document.createElement("option");
+						option.value = classItem.Darajah;
+						option.textContent = classItem.Darajah;
+						darajahDropdown.appendChild(option);
+					});
+				}
+			}
+
+			/**
+			 * Populates the Subject dropdown.
 			 */
 			async function populateSubjectDropdown() {
-				const subjectDropdown = document.createElement("select");
-				subjectDropdown.name = "subject-id";
-				subjectDropdown.required = true;
-
 				const { data: subjects, error } = await supabase.from("Subjects").select("SubjectID, Name");
 
 				if (error) {
-					console.error("Error fetching subjects:", error);
-					showMessage("Error fetching subjects.", "error");
-					return null; // Explicitly return null on error
+					console.error("Error fetching subjects", error);
+					showMessage("Error fetching subjects", "error");
+					return;
 				}
 
-				subjects.forEach((subject) => {
-					const option = document.createElement("option");
-					option.value = subject.SubjectID;
-					option.textContent = subject.Name;
-					subjectDropdown.appendChild(option);
-				});
-				return subjectDropdown;
+				const subjectDropdown = document.getElementById("assessment-subject");
+				subjectDropdown.innerHTML = '<option value="">Select Subject</option>'; // Clear existing options
+
+				if (subjects && subjects.length > 0) {
+					subjects.forEach((subject) => {
+						const option = document.createElement("option");
+						option.value = subject.SubjectID;
+						option.textContent = subject.Name;
+						subjectDropdown.appendChild(option);
+					});
+				}
 			}
 
-			/**
-			 * Handles adding a subject to the assessment form.
-			 */
-			async function addAssessmentSubject() {
-				const container = document.getElementById("assessment-subjects-container");
+			// --- Initialize ---
+			async function main() {
+				// Attach form event listeners
+				document.getElementById("teacher-form").addEventListener("submit", handleTeacherFormSubmit);
+				document.getElementById("student-form").addEventListener("submit", handleStudentFormSubmit);
+				document.getElementById("class-form").addEventListener("submit", handleClassFormSubmit);
+				document.getElementById("subject-form").addEventListener("submit", handleSubjectFormSubmit);
+				document.getElementById("assessment-form").addEventListener("submit", handleAssessmentFormSubmit);
 
-				const subjectDropdown = await populateSubjectDropdown();
-				if (!subjectDropdown) {
-					return; // Exit if there was an error fetching subjects
-				}
+				//show forms
+				document.getElementById("teacher-form").classList.remove("hidden");
+				document.getElementById("student-form").classList.remove("hidden");
+				document.getElementById("class-form").classList.remove("hidden");
+				document.getElementById("subject-form").classList.remove("hidden");
+				document.getElementById("assessment-form").classList.remove("hidden");
+				document.getElementById("data-display-area").classList.remove("hidden");
 
-				const subjectDiv = document.createElement("div");
-				subjectDiv.className = "assessment-subject";
-				subjectDiv.style.marginBottom = "10px";
-
-				const label = document.createElement("label");
-				label.textContent = "Subject:";
-				label.style.marginRight = "10px";
-				subjectDiv.appendChild(label);
-				subjectDiv.appendChild(subjectDropdown);
-
-				const maxMarksInput = document.createElement("input");
-				maxMarksInput.type = "number";
-				maxMarksInput.name = "max-marks";
-				maxMarksInput.placeholder = "Max Marks";
-				maxMarksInput.required = true;
-				maxMarksInput.style.width = "100px";
-				subjectDiv.appendChild(maxMarksInput);
-
-				container.appendChild(subjectDiv);
+				// Populate dropdowns
+				await populateDarajahDropdown();
+				await populateSubjectDropdown();
 			}
 
-			/**
-			 * Handles the submission of the "Create Assessment" form.
-			 * @param {Event} event - The form submission event.
-			 */
-			async function handleCreateAssessment(event) {
-				event.preventDefault();
-				const darajah = parseInt(document.getElementById("assessment-darajah").value);
-				const week = parseInt(document.getElementById("assessment-week").value);
-
-				const { data: assessmentData, error: assessmentError } = await supabase
-					.from("Assessments")
-					.insert([{ Week: week, Darajah: darajah }]) //removed title, added darajah
-					.select("Week")
-					.single();
-
-				if (assessmentError) {
-					console.error("Error creating assessment:", assessmentError);
-					showMessage("Error creating assessment.", "error");
-					return;
-				}
-
-				const assessmentId = assessmentData.Week;
-				const subjectsContainer = document.getElementById("assessment-subjects-container");
-				const subjectDivs = subjectsContainer.querySelectorAll(".assessment-subject");
-
-				const assessmentSubjects = [];
-				const subjectNames = {}; // Store subject names
-				for (const div of subjectDivs) {
-					const subjectId = parseInt(div.querySelector('select[name="subject-id"]').value);
-					const maxMarks = parseInt(div.querySelector('input[name="max-marks"]').value);
-
-					// Fetch subject name
-					const { data: subjectData, error: subjectError } = await supabase
-						.from("Subjects")
-						.select("Name")
-						.eq("SubjectID", subjectId)
-						.single();
-
-					if (subjectError) {
-						console.error("Error fetching subject name:", subjectError);
-						showMessage("Error fetching subject name.", "error");
-						return;
-					}
-					const subjectName = subjectData.Name;
-					subjectNames[subjectId] = subjectName; // Store it
-					assessmentSubjects.push({ AssessmentID: assessmentId, SubjectID: subjectId, MaxMarks: maxMarks });
-				}
-
-				// Insert into AssessmentSubjects
-				const { error: assessmentSubjectsError } = await supabase.from("AssessmentSubjects").insert(assessmentSubjects);
-
-				if (assessmentSubjectsError) {
-					console.error("Error creating assessment subjects:", assessmentSubjectsError);
-					showMessage("Error creating assessment subjects.", "error");
-					return;
-				}
-				//get all students of the same darajah
-				const { data: students, error: studentsError } = await supabase.from("Students").select("TRNO, ClassID").eq("Darajah", darajah); //added ClassID
-
-				if (studentsError) {
-					console.error("Error getting students:", studentsError);
-					showMessage("Error getting students.", "error");
-					return;
-				}
-				//create marks entries for each student and subject
-				const marksEntries = [];
-				for (const student of students) {
-					for (const as of assessmentSubjects) {
-						const subjectName = subjectNames[as.SubjectID]; // Get subject name from stored object.
-						const assessmentSubjectID = `Week${assessmentId}_${subjectName}_${student.ClassID}`; //changed assessmentSubjectID
-						console.log(student);
-
-						// Fetch the teacher ID from ClassSubjects
-						const { data: classSubjectData, error: classSubjectError } = await supabase
-							.from("ClassSubjects")
-							.select("TeacherID")
-							.eq("ClassID", student.ClassID)
-							.eq("SubjectID", as.SubjectID)
-							.single(); // Assuming only one teacher teaches a subject in a class
-
-						if (classSubjectError) {
-							console.error("Error fetching TeacherID from ClassSubjects:", classSubjectError);
-							showMessage("Error fetching teacher assignment.", "error");
-							return; // Stop processing if we can't get the teacher
-						}
-						const teacherId = classSubjectData ? classSubjectData.TeacherID : null;
-
-						marksEntries.push({
-							TRNO: student.TRNO,
-							AssessmentSubjectID: assessmentSubjectID,
-							MarksObtained: null,
-							ClassID: student.ClassID,
-							SubjectID: as.SubjectID,
-							TeacherID: teacherId, // Include TeacherID
-							// Week: assessmentId
-						});
-					}
-				}
-				//insert into marks table
-				const { error: marksError } = await supabase.from("Marks").insert(marksEntries);
-				if (marksError) {
-					console.error("Error creating marks entries:", marksError);
-					showMessage("Error creating marks entries.", "error");
-					return;
-				}
-
-				showMessage(`Assessment created successfully!`);
-				document.getElementById("create-assessment-form").reset();
-				document.getElementById("assessment-subjects-container").innerHTML = "<h2>Assessment Subjects</h2>"; // Clear added subjects
-			}
-
-			// --- Event Listeners ---
-			document.addEventListener("DOMContentLoaded", () => {
-				document.getElementById("create-subject-form").addEventListener("submit", handleCreateSubject);
-				document.getElementById("create-teacher-form").addEventListener("submit", handleCreateTeacher);
-				document.getElementById("create-student-form").addEventListener("submit", handleCreateStudent);
-				document.getElementById("create-assessment-form").addEventListener("submit", handleCreateAssessment);
-				document.getElementById("add-assessment-subject").addEventListener("click", addAssessmentSubject);
-
-				populateClassDropdown();
-			});
+			// --- Initialize ---
+			main();
 		</script>
 	</body>
 </html>

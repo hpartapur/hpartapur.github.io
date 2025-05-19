@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Home - Collegiate 1 Awraq</title>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Teacher Marks Entry Dashboard</h1>
+
+			<div id="global-message-area"></div>
+
+			<div class="auth-container">
+				<button id="sign-in-button" class="auth-button">Sign In with Google</button>
+				<div id="user-section" class="hidden">
+					<div class="user-info">
+						<img id="user-photo" class="user-photo" src="" alt="User Photo" />
+						<p id="user-name" class="user-name"></p>
+						<p id="user-email" class="user-email"></p>
+						<button id="admin" class="auth-button hidden">>👤Admin Access</button>
+						<button id="entry" class="auth-button">📝Marks Entry</button>
+					</div>
+					<button id="sign-out-button" class="auth-button">Sign Out</button>
+					<table id="assessments-table" class="hidden">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Filled</th>
+								<th>Total</th>
+							</tr>
+						</thead>
+						<tbody id="assessments-body"></tbody>
+					</table>
+				</div>
+			</div>
+
+			<div id="app-content" class="hidden">
+				<h2>Welcome to the Teacher Marks Entry System!</h2>
+				<p>Once you're signed in, you can start managing assessments and marks.</p>
+			</div>
+		</div>
+
+		<script>
+			// --- DOM Elements ---
+			const signInButton = document.getElementById("sign-in-button");
+			const signOutButton = document.getElementById("sign-out-button");
+			const userSection = document.getElementById("user-section");
+			const userEmailSpan = document.getElementById("user-email");
+			const userNameSpan = document.getElementById("user-name");
+			const userPhotoImg = document.getElementById("user-photo");
+			const appContent = document.getElementById("app-content");
+			const globalMessageArea = document.getElementById("global-message-area");
+			const entryButton = document.getElementById("entry");
+			const assessmentsTable = document.getElementById("assessments-table");
+			const assessmentsBody = document.getElementById("assessments-body");
+
+			// --- Supabase Initialization ---
+			const supabaseUrl = "https://urlburhufcpkpfcoyflh.supabase.co";
+			const supabaseKey =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybGJ1cmh1ZmNwa3BmY295ZmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMzY1MzYsImV4cCI6MjA2MTYxMjUzNn0.17VTbejLDJyI9hkHPiuoiy5jcZmLdgiJ16GuhkiOd08";
+			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+			// --- Authentication Functions ---
+			async function signInWithGoogle() {
+				const { error } = await supabase.auth.signInWithOAuth({
+					provider: "google",
+					options: {
+						// redirectTo: window.location.origin, // Redirect to home page after sign-in
+						// prompt: "select_account",
+					},
+				});
+				if (error) {
+					console.error("Error signing in:", error);
+					showMessage(`Error signing in: ${error.message}`, "error");
+				}
+			}
+
+			async function signOut() {
+				const { error } = await supabase.auth.signOut();
+				if (error) {
+					console.error("Error signing out:", error);
+					showMessage(`Error signing out: ${error.message}`, "error");
+				} else {
+					updateUI(null); // Refresh UI after sign-out
+				}
+			}
+
+			// --- UI Update Function ---
+			async function updateUI(user) {
+				clearMessage(); // Clear global messages on auth change
+
+				if (user) {
+					userNameSpan.textContent = user.user_metadata?.full_name || "User";
+					userEmailSpan.textContent = user.email;
+					userPhotoImg.src = user.user_metadata?.avatar_url || "https://www.example.com/default-avatar.jpg";
+
+					signInButton.classList.add("hidden");
+					userSection.classList.remove("hidden");
+					appContent.classList.remove("hidden");
+
+					// Change sign-out button color to red
+					signOutButton.classList.add("red-button");
+					signInButton.classList.remove("blue-button");
+
+					const { data, error } = await supabase.from("Teachers").select("*").eq("Email", user.email).single();
+					const teacherid = data?.TeacherID;
+					if (teacherid) {
+						console.log("Teacher ID:", teacherid);
+						entryButton.addEventListener("click", () => {
+							window.location.href = `entry.html`;
+						});
+						assessmentsTable.classList.remove("hidden");
+						getAssessments(teacherid);
+
+						entryButton.classList.remove("hidden");
+						entryButton.classList.add("yellow-button");
+						entryButton.color = "red"; // Set background color to blue
+					}
+
+					const { data: admin, error: adminError } = await supabase.from("Admins").select("*").eq("Email", user.email).single();
+					console.log("Admin Data:", admin.id);
+					if (admin.id) {
+						//TODO: Add admin entry page
+						document.getElementById("admin").classList.remove("hidden");
+						document.getElementById("admin").classList.add("orange-button");
+						document.getElementById("admin").addEventListener("click", () => {
+							window.location.href = `admin.html`;
+						});
+					}
+				} else {
+					userNameSpan.textContent = "";
+					userEmailSpan.textContent = "";
+					userPhotoImg.src = "";
+					signInButton.classList.remove("hidden");
+					userSection.classList.add("hidden");
+					appContent.classList.add("hidden");
+					entryButton.classList.add("hidden");
+
+					// Change sign-in button color to blue
+					signInButton.classList.add("blue-button");
+					signOutButton.classList.remove("red-button");
+				}
+			}
+
+			async function getAssessments(teacherid) {
+				const { data } = await supabase.from("Assessments").select("*").eq("TeacherID", teacherid);
+				console.log("Assessments Data:", data);
+				if (data.length > 0) {
+					assessmentsBody.innerHTML = ""; // Clear previous entries
+					data.forEach((assessment) => {
+						const row = document.createElement("tr");
+						const cell = document.createElement("td");
+						cell.textContent = assessment.Name;
+						row.appendChild(cell);
+						console.log("Assessment ID:", assessment.id);
+						assessmentsBody.appendChild(row);
+					});
+				} else {
+					const row = document.createElement("tr");
+					const cell = document.createElement("td");
+					cell.textContent = "No assessments found.";
+					row.appendChild(cell);
+					assessmentsBody.appendChild(row);
+				}
+			}
+
+			// --- Message Display ---
+			function showMessage(message, type = "success") {
+				globalMessageArea.textContent = message;
+				globalMessageArea.className = `message-area message-${type}`;
+				globalMessageArea.style.display = "block";
+			}
+
+			function clearMessage() {
+				globalMessageArea.textContent = "";
+				globalMessageArea.style.display = "none";
+				globalMessageArea.className = "message-area";
+			}
+
+			// --- Event Listeners Setup ---
+			signInButton.addEventListener("click", signInWithGoogle);
+			signOutButton.addEventListener("click", signOut);
+
+			// --- Auth State Change Listener ---
+			supabase.auth.onAuthStateChange(async (event, session) => {
+				const user = session?.user;
+				console.log(user);
+				updateUI(user); // Update UI when authentication state changes
+			});
+		</script>
+
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f4f7fa;
+				margin: 0;
+				padding: 0;
+			}
+
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 20px;
+				text-align: center;
+			}
+
+			h1 {
+				color: #333;
+				margin-bottom: 20px;
+			}
+
+			.auth-container {
+				margin: 20px 0;
+			}
+
+			.auth-button {
+				padding: 12px 25px;
+				margin: 10px;
+				cursor: pointer;
+				font-size: 16px;
+				border-radius: 5px;
+			}
+
+			.auth-button:hover {
+				opacity: 0.9;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			.message-area {
+				padding: 10px;
+				margin-top: 20px;
+				font-size: 16px;
+				border-radius: 5px;
+			}
+
+			.message-success {
+				background-color: #4caf50;
+				color: white;
+			}
+
+			.message-error {
+				background-color: #f44336;
+				color: white;
+			}
+
+			.message-info {
+				background-color: #2196f3;
+				color: white;
+			}
+
+			.blue-button {
+				background-color: #007bff;
+				color: white;
+				border: none;
+			}
+
+			.blue-button:hover {
+				background-color: #0056b3;
+			}
+
+			.red-button {
+				background-color: #f44336;
+				color: white;
+				border: none;
+			}
+
+			.red-button:hover {
+				background-color: #d32f2f;
+			}
+			.yellow-button {
+				background-color: #d9c511;
+				color: black;
+				border: none;
+			}
+			.yellow-button:hover {
+				background-color: #fbc02d;
+			}
+			.orange-button {
+				background-color: #ff9800;
+				color: white;
+				border: none;
+			}
+			.orange-button:hover {
+				background-color: #f57c00;
+			}
+
+			/* User Info Section */
+			.user-info {
+				margin-top: 20px;
+				display: inline-block;
+				text-align: left;
+			}
+
+			.user-photo {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				margin-bottom: 10px;
+			}
+
+			.user-name {
+				font-weight: bold;
+				font-size: 18px;
+				color: #333;
+			}
+
+			.user-email {
+				font-size: 14px;
+				color: #777;
+			}
+			table {
+				margin: 20px auto;
+				border-collapse: collapse;
+				width: 100%;
+			}
+			th,
+			td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: left;
+			}
+			th {
+				background-color: #f2f2f2;
+				color: #333;
+			}
+			tr:nth-child(even) {
+				background-color: #f9f9f9;
+			}
+			tr:hover {
+				background-color: #ddd;
+			}
+		</style>
+	</body>
+</html>
