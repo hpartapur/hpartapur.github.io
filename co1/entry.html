@@ -304,7 +304,7 @@
 				const { data, error } = await supabase
 					.from("Assessments")
 					.select("*") // Fetch subject name for display
-					.eq("TeacherID", teacherId);
+					.eq("TeacherID", teacherId); //JUST COMMENT OUT THE EQ LINE FOR ADMIN ENTRY PAGE
 				console.log("Fetched data for Assessments:", data); // Debugging line
 
 				if (error) {
