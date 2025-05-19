@@ -193,12 +193,10 @@
 
 			<div id="global-message-area"></div>
 			<div class="auth-container">
-				<button id="sign-in-button" class="auth-button">Sign In with Google</button>
 				<div id="user-section" class="hidden">
 					<div id="user-info">
 						<p>Logged in as: <span id="user-email"></span></p>
 					</div>
-					<button id="sign-out-button" class="auth-button">Sign Out</button>
 				</div>
 			</div>
 
@@ -220,6 +218,7 @@
 									<th>Class ID</th>
 									<th>Subject Name</th>
 									<th>Marks Obtained</th>
+									<th>Max Marks</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -236,8 +235,6 @@
 		</div>
 		<script>
 			// --- DOM Elements ---
-			const signInButton = document.getElementById("sign-in-button");
-			const signOutButton = document.getElementById("sign-out-button");
 			const userSection = document.getElementById("user-section");
 			const userInfo = document.getElementById("user-info");
 			const userEmailSpan = document.getElementById("user-email");
@@ -286,32 +283,6 @@
 				targetElement.className = "message-area";
 			}
 
-			// --- Authentication Functions ---
-			async function signInWithGoogle() {
-				const { error } = await supabase.auth.signInWithOAuth({
-					provider: "google",
-					options: {
-						redirectTo: window.location.origin + window.location.pathname, // Redirect to the current page
-					},
-				});
-				if (error) {
-					console.error("Error signing in:", error);
-					showMessage(`Error signing in: ${error.message}`, "error");
-				}
-			}
-
-			async function signOut() {
-				console.log("Signing out...");
-				const { error } = await supabase.auth.signOut();
-				if (error) {
-					console.error("Error signing out:", error);
-					showMessage(`Error signing out: ${error.message}`, "error");
-				} else {
-					// UI updates are handled by onAuthStateChange
-					console.log("Signed out successfully. onAuthStateChange will handle UI.");
-				}
-			}
-
 			// --- Data Fetching and Processing ---
 			async function getTeacherIdByEmail(email) {
 				const { data, error } = await supabase.from("Teachers").select("TeacherID").eq("Email", email).single();
@@ -328,94 +299,66 @@
 				}
 			}
 
-			async function getUniqueAssessmentSubjectIds(teacherId) {
+			async function getAssessments(teacherId) {
 				if (!teacherId) return [];
 				const { data, error } = await supabase
-					.from("Marks")
-					.select("AssessmentSubjectID, Subjects(Name)") // Fetch subject name for display
+					.from("Assessments")
+					.select("*") // Fetch subject name for display
 					.eq("TeacherID", teacherId);
+				console.log("Fetched data for Assessments:", data); // Debugging line
 
 				if (error) {
-					console.error("Error fetching unique AssessmentSubjectIDs:", error);
-					showMessage("Error fetching assessment subjects.", "error", marksMessageArea);
+					console.error("Error fetching Assessments:", error);
+					showMessage("Error fetching Assessments:", "error", marksMessageArea);
 					return [];
 				}
 				if (data) {
-					const uniqueEntries = [];
-					const seenIds = new Set();
-					data.forEach((item) => {
-						if (!seenIds.has(item.AssessmentSubjectID)) {
-							// Try to get a more descriptive name if Subjects.Name is available
-							let subjectDisplayName = `Assessment ID: ${item.AssessmentSubjectID}`;
-							if (item.Subjects && item.Subjects.Name) {
-								subjectDisplayName = `${item.Subjects.Name} (ID: ${item.AssessmentSubjectID})`;
-							} else {
-								// Fallback if subject name is not directly available or relation is not setup as expected
-								// You might need another query here if Subjects.Name is not directly joined in this query.
-								// For now, using ID.
-								console.warn(`Subject name not found for AssessmentSubjectID: ${item.AssessmentSubjectID}. Displaying ID only.`);
-							}
-
-							uniqueEntries.push({
-								id: item.AssessmentSubjectID,
-								name: subjectDisplayName,
-							});
-							seenIds.add(item.AssessmentSubjectID);
-						}
+					assessmentDropdown.innerHTML = ""; // Clear previous options
+					const defaultOption = document.createElement("option");
+					defaultOption.value = "";
+					defaultOption.textContent = "Select an Assessment Subject";
+					assessmentDropdown.appendChild(defaultOption);
+					data.forEach((assessment) => {
+						console.log(assessment.Name);
+						const option = document.createElement("option");
+						option.value = assessment.id;
+						option.textContent = assessment.Name;
+						assessmentDropdown.appendChild(option);
 					});
-					return uniqueEntries;
+					assessmentDropdownContainer.classList.remove("hidden");
 				}
 				return [];
 			}
 
-			function populateAssessmentSubjectDropdown(assessmentSubjectEntries) {
-				assessmentDropdown.innerHTML = ""; // Clear previous options
-
-				if (!assessmentSubjectEntries || assessmentSubjectEntries.length === 0) {
-					const option = document.createElement("option");
-					option.value = "";
-					option.textContent = "No subjects found for you";
-					assessmentDropdown.appendChild(option);
-					marksDisplayArea.classList.add("hidden"); // Hide marks if no subjects
-					return;
-				}
-
-				const defaultOption = document.createElement("option");
-				defaultOption.value = "";
-				defaultOption.textContent = "Select an Assessment Subject";
-				assessmentDropdown.appendChild(defaultOption);
-
-				assessmentSubjectEntries.forEach((entry) => {
-					const option = document.createElement("option");
-					option.value = entry.id;
-					option.textContent = entry.name;
-					assessmentDropdown.appendChild(option);
-				});
-				assessmentDropdownContainer.classList.remove("hidden");
-			}
-
-			async function getMarksByTeacherAndSubject(teacherId, assessmentSubjectId) {
-				if (!teacherId || !assessmentSubjectId) {
+			async function getMarksbyAssessment(assessmentid) {
+				if (!assessmentid) {
 					displayMarks([]); // Clear table if IDs are missing
 					return [];
 				}
 				const { data, error } = await supabase
 					.from("Marks")
-					.select("MarkID, TRNO, Students(Name), ClassID, SubjectID, MarksObtained, Subjects(Name)")
-					.eq("TeacherID", teacherId)
-					.eq("AssessmentSubjectID", assessmentSubjectId);
+					.select("*, Students(Name,ClassID),Assessments(MaxMarks)") // Get marks and related student name
+					.eq("AssessmentID", assessmentid); // Filter based on AssessmentID
+
+				if (error) {
+					console.error("Error:", error);
+				} else {
+					console.log("Data:", data);
+				}
 
 				if (error) {
 					console.error("Error fetching marks:", error);
 					showMessage("Error fetching marks.", "error", marksMessageArea);
 					return [];
 				}
+				console.log("Fetched marks data:", data); // Debugging line
 				return data || [];
 			}
 
 			function displayMarks(marksData) {
 				marksTableBody.innerHTML = ""; // Clear previous marks
 				clearMessage(marksMessageArea);
+				console.log("Marks data to display:", marksData); // Debugging line
 
 				if (!marksData || marksData.length === 0) {
 					const selectedSubject = assessmentDropdown.value;
@@ -433,30 +376,38 @@
 					marksDisplayArea.classList.remove("hidden"); // Ensure it's visible
 					return;
 				}
-
-				marksData.sort((a, b) => a.TRNO.localeCompare(b.TRNO));
-
+				// const { data: studentsData } = supabase
+				// 	.from("Students")
+				// 	.select("Name")
+				// 	.then((students) => {
+				// 		console.log("Fetched students data:", students.data); // Debugging line
+				// 		return students;
+				// 	});
+				// console.log("Fetched students data:", studentsData); // Debugging line
+				marksData.sort((a, b) => a.StudentID.localeCompare(b.StudentID)); // Sort by StudentID
 				let nonNullCount = 0;
 				marksData.forEach((markEntry) => {
 					const row = marksTableBody.insertRow();
-					row.insertCell().textContent = markEntry.TRNO;
+					row.insertCell().textContent = markEntry.StudentID;
 					row.insertCell().textContent = markEntry.Students?.Name || "N/A"; // Handle missing student name
-					row.insertCell().textContent = markEntry.ClassID;
+					row.insertCell().textContent = markEntry.Students.ClassID;
 					row.insertCell().textContent = markEntry.Subjects?.Name || "N/A"; // Handle missing subject name
 
 					const marksObtainedCell = row.insertCell();
 					const marksInput = document.createElement("input");
 					marksInput.type = "number";
 					marksInput.value = markEntry.MarksObtained !== null ? markEntry.MarksObtained : "";
-					marksInput.name = `marks-${markEntry.MarkID}`;
-					marksInput.dataset.markId = markEntry.MarkID; // Store MarkID for easier access
+					marksInput.name = `marks-${markEntry.id}`;
+					marksInput.dataset.markId = markEntry.id; // Store MarkID for easier access
+					marksInput.max = markEntry.Assessments?.MaxMarks;
 
-					if (markEntry.MarksObtained === null) {
+					if (markEntry.MarksObtained === 0) {
 						marksInput.classList.add("empty-marks-input");
 					} else {
 						nonNullCount++;
 					}
 					marksObtainedCell.appendChild(marksInput);
+					row.insertCell().textContent = markEntry.Assessments?.MaxMarks || "N/A"; // Handle missing max marks
 				});
 				marksHeading.textContent = `${nonNullCount} / ${marksData.length} Scores Entered`;
 				marksDisplayArea.classList.remove("hidden");
@@ -503,8 +454,10 @@
 				showMessage("Saving marks...", "info", marksMessageArea);
 
 				// Using Promise.all for concurrent updates
-				const updatePromises = updates.map((update) =>
-					supabase.from("Marks").update({ MarksObtained: update.MarksObtained }).eq("MarkID", update.MarkID)
+				const updatePromises = updates.map(
+					(update) =>
+						console.log("Updating Mark ID:", update.MarkID, "to Marks Obtained:", update.MarksObtained) ||
+						supabase.from("Marks").update({ MarksObtained: update.MarksObtained }).eq("id", update.MarkID)
 				);
 
 				try {
@@ -529,9 +482,9 @@
 
 				// Refresh marks display if successful
 				if (allUpdatesSuccessful) {
-					const selectedAssessmentSubjectId = assessmentDropdown.value;
-					if (selectedAssessmentSubjectId) {
-						const marksData = await getMarksByTeacherAndSubject(currentTeacherId, selectedAssessmentSubjectId);
+					const selectedAssessmentId = assessmentDropdown.value;
+					if (selectedAssessmentId) {
+						const marksData = await getMarksbyAssessment(selectedAssessmentId);
 						displayMarks(marksData);
 					}
 				}
@@ -539,8 +492,9 @@
 
 			async function handleDropdownChange() {
 				clearMessage(marksMessageArea);
-				const selectedAssessmentSubjectId = assessmentDropdown.value;
-				if (!selectedAssessmentSubjectId) {
+				const assessmentid = assessmentDropdown.value;
+				console.log("Selected Assessment ID:", assessmentid);
+				if (!assessmentid) {
 					marksTableBody.innerHTML = '<tr><td colspan="5">Select an assessment subject to view marks.</td></tr>';
 					marksHeading.textContent = "Scores Entered";
 					return;
@@ -549,7 +503,7 @@
 					showMessage("User not properly identified. Please sign in again.", "error");
 					return;
 				}
-				const marksData = await getMarksByTeacherAndSubject(currentTeacherId, selectedAssessmentSubjectId);
+				const marksData = await getMarksbyAssessment(assessmentid);
 				displayMarks(marksData);
 			}
 
@@ -560,29 +514,23 @@
 				if (user) {
 					console.log("User is logged in:", user);
 					userEmailSpan.textContent = user.email;
-					signInButton.classList.add("hidden");
 					userSection.classList.remove("hidden");
 					appContent.classList.remove("hidden");
 
 					currentTeacherId = await getTeacherIdByEmail(user.email);
 					if (!currentTeacherId) {
 						showMessage("Failed to identify you as a registered teacher. Please contact support.", "error");
-						await signOut(); // Sign out if teacher ID not found
 						return; // Stop further processing for this user
 					}
 
 					console.log("Teacher ID:", currentTeacherId);
-					const assessmentSubjectEntries = await getUniqueAssessmentSubjectIds(currentTeacherId);
-					populateAssessmentSubjectDropdown(assessmentSubjectEntries);
+					const assessmentSubjectEntries = await getAssessments(currentTeacherId);
+					// populateAssessmentSubjectDropdown(assessmentSubjectEntries);
 					// Initial load of marks if a subject is pre-selected or first in list (optional)
 					if (assessmentDropdown.options.length > 1 && assessmentDropdown.value) {
 						// if more than "Select..." and a value exists
 						handleDropdownChange();
 					} else if (assessmentDropdown.options.length > 0 && assessmentDropdown.options[0].value) {
-						// If there are subjects but none selected, perhaps select the first one automatically
-						// assessmentDropdown.value = assessmentDropdown.options[0].value;
-						// await handleDropdownChange();
-						// For now, let user select explicitly
 						displayMarks([]); // Show empty table initially
 					} else {
 						displayMarks([]); // Show empty table if no subjects
@@ -604,28 +552,14 @@
 			// --- Event Listeners Setup ---
 			// These are attached once when the script loads.
 			// The functions they call will handle logic based on the current state.
-			signInButton.addEventListener("click", signInWithGoogle);
-			signOutButton.addEventListener("click", signOut);
 			marksForm.addEventListener("submit", handleSaveMarks);
 			assessmentDropdown.addEventListener("change", handleDropdownChange);
-
-			// --- Main Initialization ---
-			// Listen for authentication state changes
-			// This will also fire on initial page load with the current session or null
 			supabase.auth.onAuthStateChange(async (event, session) => {
 				console.log("Auth state change event:", event, "Session:", session);
 				const user = session?.user;
 				console.log("Current user:", user);
 				updateUI(user); // Call the centralized UI update function
 			});
-
-			// No need for an explicit DOMContentLoaded and main() if onAuthStateChange handles initial load.
-			// If you have other setup that needs to happen strictly after DOM load and *before* onAuthStateChange might fire
-			// (which is rare for auth-dependent apps), you could wrap the onAuthStateChange subscription in DOMContentLoaded.
-			// However, Supabase SDK usually handles this well.
-			// document.addEventListener("DOMContentLoaded", () => {
-			// supabase.auth.onAuthStateChange...
-			// });
 		</script>
 	</body>
 </html>
