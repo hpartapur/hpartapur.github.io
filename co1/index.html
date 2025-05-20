@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Teacher Marks Entry Dashboard</h1>
+			<h1>Teacher Marks Entry - Home</h1>
 
 			<div id="global-message-area"></div>
 
@@ -19,11 +19,19 @@
 						<img id="user-photo" class="user-photo" src="" alt="User Photo" />
 						<p id="user-name" class="user-name"></p>
 						<p id="user-email" class="user-email"></p>
-						<button id="admin" class="auth-button hidden">>👤Admin Access</button>
+						<div id="admin-section" class="hidden" style="border: 2px solid black; padding: 10px; margin-top: 10px">
+							<h2>Admin Section</h2>
+							<button id="admin" class="auth-button orange-button">👤Admin Access</button>
+							<button id="admin-entry" class="auth-button purple-button">📝Admin Entry</button>
+						</div>
+
 						<button id="entry" class="auth-button">📝Marks Entry</button>
 					</div>
 					<button id="sign-out-button" class="auth-button">Sign Out</button>
 					<table id="assessments-table" class="hidden">
+						<caption>
+							My Assessments
+						</caption>
 						<thead>
 							<tr>
 								<th>Name</th>
@@ -67,7 +75,7 @@
 				const { error } = await supabase.auth.signInWithOAuth({
 					provider: "google",
 					options: {
-						redirectTo: "https://khardal.net/co1", // Redirect to home page after sign-in
+						// redirectTo: window.location.origin, // Redirect to home page after sign-in
 						// prompt: "select_account",
 					},
 				});
@@ -123,8 +131,10 @@
 					console.log("Admin Data:", admin.id);
 					if (admin.id) {
 						//TODO: Add admin entry page
-						document.getElementById("admin").classList.remove("hidden");
-						document.getElementById("admin").classList.add("orange-button");
+						document.getElementById("admin-section").classList.remove("hidden");
+						document.getElementById("admin-entry").addEventListener("click", () => {
+							window.location.href = `admin-entry.html`;
+						});
 						document.getElementById("admin").addEventListener("click", () => {
 							window.location.href = `admin.html`;
 						});
@@ -143,6 +153,25 @@
 					signOutButton.classList.remove("red-button");
 				}
 			}
+			async function getProgress(assessment) {
+				const { data } = await supabase.from("Marks").select("*").eq("AssessmentID", assessment.id);
+				console.log("Progress Data:", data);
+				const row = document.createElement("tr");
+				const cell = document.createElement("td");
+				cell.textContent = assessment.Name;
+				row.appendChild(cell);
+				const filledCell = document.createElement("td");
+				const notZero = data.filter((mark) => mark.MarksObtained > 0);
+				const filled = notZero.length;
+				const total = data.length;
+				console.log("Filled:", filled, "Total:", total);
+				filledCell.textContent = filled;
+				row.appendChild(filledCell);
+				const totalCell = document.createElement("td");
+				totalCell.textContent = total;
+				row.appendChild(totalCell);
+				assessmentsBody.appendChild(row);
+			}
 
 			async function getAssessments(teacherid) {
 				const { data } = await supabase.from("Assessments").select("*").eq("TeacherID", teacherid);
@@ -150,12 +179,7 @@
 				if (data.length > 0) {
 					assessmentsBody.innerHTML = ""; // Clear previous entries
 					data.forEach((assessment) => {
-						const row = document.createElement("tr");
-						const cell = document.createElement("td");
-						cell.textContent = assessment.Name;
-						row.appendChild(cell);
-						console.log("Assessment ID:", assessment.id);
-						assessmentsBody.appendChild(row);
+						getProgress(assessment);
 					});
 				} else {
 					const row = document.createElement("tr");
@@ -287,6 +311,14 @@
 			}
 			.orange-button:hover {
 				background-color: #f57c00;
+			}
+			.purple-button {
+				background-color: #673ab7;
+				color: white;
+				border: none;
+			}
+			.purple-button:hover {
+				background-color: #512da8;
 			}
 
 			/* User Info Section */
