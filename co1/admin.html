@@ -137,6 +137,12 @@
 				color: #b91c1c;
 				border-color: #dc2626;
 			}
+			.message-info {
+				/* Added for info messages */
+				background-color: #e3f2fd;
+				color: #1565c0;
+				border-color: #64b5f6;
+			}
 
 			.auth-container {
 				display: flex;
@@ -443,6 +449,7 @@
 			 * @param {Event} event - The form submission event.
 			 */
 			async function handleAssessmentFormSubmit(event) {
+				showMessage("Creating assessments... Please stay on this page", "info");
 				event.preventDefault();
 
 				const week = document.getElementById("week").value;
@@ -515,7 +522,7 @@
 						}
 					}
 				}
-
+				alert("Assessments added successfully!");
 				showMessage("Assessments added successfully!", "success");
 				document.getElementById("assessment-form").reset();
 				console.log(classes); // Debugging line
