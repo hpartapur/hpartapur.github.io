@@ -5,13 +5,36 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Reports - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 		<style>
 			body {
 				font-family: Arial, sans-serif;
 				background-color: #f4f7fa;
+				/* background-image: url("https://khardal.net/assets/bg.jpg"); */
+				/* background-size: 13em; */
 				margin: 0;
 				padding: 0;
 			}
+
+            .dropdown {
+                position: relative;
+                display: block;
+            }
+            .dropdown-content {
+                display: block;
+                position: absolute;
+                background-color: #f9f9f9;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+            .dropdown-content option {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
 
 			.container {
 				max-width: 800px;
@@ -79,6 +102,7 @@
 				font-size: 1.2em;
 				margin-bottom: 10px;
 			}
+
 		</style>
 	</head>
 	<body>
@@ -106,6 +130,15 @@
 						</thead>
 						<tbody></tbody>
 					</table>
+
+                    <!-- Dropdown -->
+                     <br>
+                    <select class="dropdown" id="class-dropdown">
+                        <option value="">Select Class</option>
+                        <div class="dropdown-content"></div>
+                    </select>
+                    <div>
+                        <button onclick="exportMarks()" class=" auth-button red-button">Export Marks</button>
 					<table id="marks-table">
 						<caption>
 							Marks
@@ -120,20 +153,7 @@
 						</tbody>
 					</table>
 
-					<div id="report-output" class="hidden">
-						<h3>Report Output</h3>
-						<table id="report-table">
-							<thead>
-								<tr>
-									<th>Student</th>
-									<th>Assessment</th>
-									<th>Marks</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</div>
-				</div>
+
 			</div>
 		</div>
 
@@ -163,6 +183,13 @@
 					reportOutput.classList.add("hidden");
 				}
 			}
+            async function exportMarks() {
+                const table = document.getElementById("marks-table");
+                const workbook = XLSX.utils.table_to_book(table, { sheet: "Marks" });
+                const fileName = `Awraq_${new Date().toISOString().split("T")[0]}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+                showMessage("Marks report exported successfully!", "success");
+            }
 
 			function showMessage(message, type = "success") {
 				globalMessageArea.textContent = message;
@@ -179,8 +206,38 @@
 				console.log(data, error);
 			}
 
-			async function getMarks() {
-				let selectedDarajah = 5;
+            async function populateClassDropdown() {
+                const { data: classes, error } = await supabase
+                    .from("Classes")
+                    .select("*")
+
+                if (error) {
+                    showMessage("Error fetching classes: " + error.message, "error");
+                    return;
+                    
+                }
+                console.log(classes);
+                const dropdown = document.querySelector(".dropdown-content");
+                document.getElementById("class-dropdown").addEventListener("change", (event) => {
+                    console.log(event.target.value);
+                    getMarks(event.target.value);
+                });
+                dropdown.innerHTML = ""; // Clear existing options
+
+                classes.forEach((classItem) => {
+                    const option = document.createElement("option");
+                    option.value = classItem.ClassID;
+                    option.textContent = classItem.ClassID;
+                    option.onselect = function () {
+                        console.log(1)
+                    };
+                    dropdown.appendChild(option);
+                });
+            }
+            populateClassDropdown(); // Call this function to populate the dropdown on page load
+
+			async function getMarks(classID) {
+				// classID = "6 A M";
 				const { data: students, error: studentsError } = await supabase
 					.from("Students")
 					.select("TRNO, Name, ClassID, Classes(*)")
@@ -190,51 +247,38 @@
 					showMessage("Error fetching students: " + studentsError.message, "error");
 					return;
 				}
-				let selectedStudents = students.filter((student) => student.Classes.Darajah === selectedDarajah);
-				const { data: assessments, error: assessmentsError } = await supabase.from("Assessments").select("*, Classes(*), Subjects(*)");
-				let selectedAssessments = assessments.filter((assessment) => assessment.Classes.Darajah === selectedDarajah);
-				console.log(selectedAssessments);
-				const { data: marksData, error: marksError } = await supabase.from("Marks").select(`*, Students(*, Classes(*))`);
-				let selectedMarks = marksData.filter((mark) => mark.Students.Classes.Darajah === selectedDarajah);
+				let selectedStudents = students.filter((student) => student.ClassID === classID);
+				console.log(selectedStudents);
+				// const { data: assessments, error: assessmentsError } = await supabase.from("Assessments").select("*, Classes(*), Subjects(*)");
+				// let selectedAssessments = assessments.filter((assessment) => assessment.Classes.Darajah === selectedDarajah);
+				// console.log(selectedAssessments);
+				const { data: marksData, error: marksError } = await supabase.from("Marks").select(`*, Assessments(*),Students(*)`);
+				let selectedMarks = marksData.filter((mark) => mark.Students.ClassID === classID);
 				console.log(selectedMarks);
-
+				let assessmentids = [];
+				let assessmentdata = {};
+				selectedMarks.forEach((mark) => {
+					assessmentids.push(mark.AssessmentID);
+					assessmentdata[mark.AssessmentID] = mark.Assessments;
+				});
+				console.log(assessmentdata);
+				assessmentids = [...new Set(assessmentids)];
+				console.log(assessmentids);
 				const tableHeader = document.getElementById("markstable-header");
 				tableHeader.innerHTML = "<th>Student</th>";
-				let listofAssessments = [];
-				selectedAssessments.forEach((assessment) => {
-					// Create a unique key based on both Subject Name and Week
-					const assessmentKey = `${assessment.Subjects.Name}_Week${assessment.Week}`;
-
-					// Check if the assessment has already been added
-					if (!listofAssessments.includes(assessmentKey)) {
-						listofAssessments.push(assessmentKey);
-						tableHeader.innerHTML += `<th>${assessment.Subjects.Name}_Week${assessment.Week}</th>`;
-					}
+				assessmentids.forEach((assessment) => {
+					tableHeader.innerHTML += `<th>${assessmentdata[assessment].Name}</th>`;
 				});
 				const tableBody = document.getElementById("marks-table-body");
 				tableBody.innerHTML = ""; // Clear existing rows
 				selectedStudents.forEach((student) => {
 					const row = document.createElement("tr");
 					row.innerHTML = `<td>${student.Name}</td>`;
-					console.log(listofAssessments);
 					selectedMarks.forEach((mark) => {
 						if (mark.Students.TRNO === student.TRNO) {
-							console.log(mark);
 							row.innerHTML += `<td>${mark.MarksObtained}</td>`;
 						}
 					});
-
-					// selectedMarks.forEach((mark) => {
-					// 	if (mark.Students.TRNO === student.TRNO) {
-					// 		const assessmentKey = `${mark.Assessment.Subjects.Name}_Week${mark.Assessment.Week}`;
-					// 		// Check if the assessment key matches the current row's assessment key
-					// 		if (listofAssessments.includes(assessmentKey)) {
-					// 			row.innerHTML += `<td>${mark.MarksObtained}</td>`;
-					// 		} else {
-					// 			row.innerHTML += `<td></td>`; // Empty cell for non-matching assessments
-					// 		}
-					// 	}
-					// });
 					tableBody.appendChild(row);
 				});
 			}
@@ -266,7 +310,7 @@
 				assessmentsTableBody.appendChild(row);
 			}
 			async function getAssessments() {
-				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name,Email)`);
+				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name, Email)`);
 				console.log(data, error);
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
 				assessmentsTableBody.innerHTML = ""; // Clear existing rows
@@ -287,7 +331,7 @@
 				}
 			}
 			getAssessments();
-			// getMarks();
+			getMarks("24653");
 
 			// fetchReports();
 		</script>
