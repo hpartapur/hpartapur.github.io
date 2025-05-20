@@ -266,7 +266,7 @@
 				assessmentsTableBody.appendChild(row);
 			}
 			async function getAssessments() {
-				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name)`);
+				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name,Email)`);
 				console.log(data, error);
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
 				assessmentsTableBody.innerHTML = ""; // Clear existing rows
