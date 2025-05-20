@@ -120,12 +120,13 @@
 						</caption>
 						<thead>
 							<tr>
-								<th>Week</th>
+								<th>Week<input type="text" id="week-filter" placeholder="Filter by Week" /></th>
 								<th>Class</th>
 								<th>Assessment Title</th>
 								<th>Teacher</th>
 								<th>Progress</th>
 								<th>Reminder Email</th>
+                                <th>Reminder Whatsapp</th>
 							</tr>
 						</thead>
 						<tbody></tbody>
@@ -195,16 +196,7 @@
 				globalMessageArea.textContent = message;
 				globalMessageArea.style.color = type === "error" ? "red" : "green";
 			}
-			async function fetchReports() {
-				let selectedDarajah = 5;
-				const { data, error } = await supabase
-					.from("Marks")
-					.select(`id, MarksObtained, AssessmentID, StudentID, Students (*, Classes(*)) `)
-					.eq("Students.Classes.Darajah", selectedDarajah)
-					.order("StudentID", { ascending: true });
-				// const { data, error } = await supabase.from("Assessments").select(`id, ClassID`);
-				console.log(data, error);
-			}
+
 
             async function populateClassDropdown() {
                 const { data: classes, error } = await supabase
@@ -283,6 +275,9 @@
 				});
 			}
 
+            async function populateWeekDropdown() {
+                
+            }
 			async function getProgress(assessment, marksData, row) {
 				//TODO: get the progress of the assessment for each assessment
 				// console.log(assessment, marksData);
@@ -307,6 +302,7 @@
 					row.style.backgroundColor = "#f8d7da"; // Red for less than 50%
 				}
 				row.innerHTML += `<td><a href="mailto:${assessment.Teachers.Email}?subject='Awraq${assessment.Name}'&body='This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}'">Remind by Email</a></td>`;
+                row.innerHTML += `<td><a href="https:wa.me/15104031553?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1">Remind by Whatsapp</a></td>`;
 				assessmentsTableBody.appendChild(row);
 			}
 			async function getAssessments() {
@@ -332,7 +328,19 @@
 			}
 			getAssessments();
 			getMarks("24653");
+            function filterTable() {
+        const weekFilter = document.getElementById("week-filter").value.toLowerCase();
+        const rows = document.querySelectorAll("#assessments tbody tr");
 
+        rows.forEach(row => {
+          const week = row.cells[0].textContent.toLowerCase();
+          // Show or hide row based on matching Week
+          row.style.display = week.includes(weekFilter) ? "" : "none";
+        });
+      }
+
+      // Add event listener to the Week filter input
+      document.getElementById("week-filter").addEventListener("input", filterTable);
 			// fetchReports();
 		</script>
 	</body>
