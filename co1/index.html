@@ -23,6 +23,7 @@
 							<h2>Admin Section</h2>
 							<button id="admin" class="auth-button orange-button">👤Admin Access</button>
 							<button id="admin-entry" class="auth-button purple-button">📝Admin Entry</button>
+							<button id="admin-reports" class="auth-button green-button">📊Admin Reports</button>
 						</div>
 
 						<button id="entry" class="auth-button">📝Marks Entry</button>
@@ -137,6 +138,9 @@
 						});
 						document.getElementById("admin").addEventListener("click", () => {
 							window.location.href = `admin.html`;
+						});
+						document.getElementById("admin-reports").addEventListener("click", () => {
+							window.location.href = `reports.html`;
 						});
 					}
 				} else {
@@ -319,6 +323,14 @@
 			}
 			.purple-button:hover {
 				background-color: #512da8;
+			}
+			.green-button {
+				background-color: #4caf50;
+				color: white;
+				border: none;
+			}
+			.green-button:hover {
+				background-color: #388e3c;
 			}
 
 			/* User Info Section */

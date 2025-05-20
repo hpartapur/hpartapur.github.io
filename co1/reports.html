@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Reports - Collegiate 1 Awraq</title>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f4f7fa;
+				margin: 0;
+				padding: 0;
+			}
+
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 20px;
+				text-align: center;
+			}
+
+			h1 {
+				color: #333;
+				margin-bottom: 20px;
+			}
+
+			.auth-button {
+				padding: 10px 20px;
+				margin: 10px;
+				font-size: 16px;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+
+			.blue-button {
+				background-color: #007bff;
+				color: white;
+			}
+
+			.red-button {
+				background-color: #f44336;
+				color: white;
+			}
+
+			.report-section {
+				margin-top: 30px;
+				text-align: left;
+			}
+
+			.report-section h2 {
+				margin-bottom: 10px;
+				color: #444;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+			}
+
+			th,
+			td {
+				border: 1px solid #ddd;
+				padding: 10px;
+				text-align: left;
+			}
+
+			th {
+				background-color: #f2f2f2;
+			}
+
+			.hidden {
+				display: none;
+			}
+			caption {
+				font-weight: bold;
+				font-size: 1.2em;
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>📊 Reports Dashboard</h1>
+			<div id="global-message-area"></div>
+			<div id="user-section" class="hidden">
+				<p>Signed in as: <span id="user-email"></span></p>
+
+				<div class="report-section">
+					<h2>Available Reports</h2>
+					<table id="assessments">
+						<caption>
+							Assessments
+						</caption>
+						<thead>
+							<tr>
+								<th>Week</th>
+								<th>Class</th>
+								<th>Assessment Title</th>
+								<th>Teacher</th>
+								<th>Progress</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<table id="marks-table">
+						<caption>
+							Marks
+						</caption>
+						<thead>
+							<tr id="markstable-header">
+								<th>Student</th>
+							</tr>
+						</thead>
+						<tbody id="marks-table-body">
+							<!-- Dynamic rows will go here -->
+						</tbody>
+					</table>
+
+					<div id="report-output" class="hidden">
+						<h3>Report Output</h3>
+						<table id="report-table">
+							<thead>
+								<tr>
+									<th>Student</th>
+									<th>Assessment</th>
+									<th>Marks</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			const userSection = document.getElementById("user-section");
+			const userEmailSpan = document.getElementById("user-email");
+			const reportOutput = document.getElementById("report-output");
+			const reportTableBody = document.querySelector("#report-table tbody");
+			const globalMessageArea = document.getElementById("global-message-area");
+
+			const supabaseUrl = "https://urlburhufcpkpfcoyflh.supabase.co";
+			const supabaseKey =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybGJ1cmh1ZmNwa3BmY295ZmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMzY1MzYsImV4cCI6MjA2MTYxMjUzNn0.17VTbejLDJyI9hkHPiuoiy5jcZmLdgiJ16GuhkiOd08";
+			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+			supabase.auth.onAuthStateChange((event, session) => {
+				updateUI(session?.user);
+			});
+
+			function updateUI(user) {
+				if (user) {
+					userSection.classList.remove("hidden");
+					userEmailSpan.textContent = user.email;
+				} else {
+					userSection.classList.add("hidden");
+					userEmailSpan.textContent = "";
+					reportOutput.classList.add("hidden");
+				}
+			}
+
+			function showMessage(message, type = "success") {
+				globalMessageArea.textContent = message;
+				globalMessageArea.style.color = type === "error" ? "red" : "green";
+			}
+			async function fetchReports() {
+				let selectedDarajah = 5;
+				const { data, error } = await supabase
+					.from("Marks")
+					.select(`id, MarksObtained, AssessmentID, StudentID, Students (*, Classes(*)) `)
+					.eq("Students.Classes.Darajah", selectedDarajah)
+					.order("StudentID", { ascending: true });
+				// const { data, error } = await supabase.from("Assessments").select(`id, ClassID`);
+				console.log(data, error);
+			}
+
+			async function getMarks() {
+				let selectedDarajah = 5;
+				const { data: students, error: studentsError } = await supabase
+					.from("Students")
+					.select("TRNO, Name, ClassID, Classes(*)")
+					.order("TRNO", { ascending: true });
+				console.log(students);
+				if (studentsError) {
+					showMessage("Error fetching students: " + studentsError.message, "error");
+					return;
+				}
+				let selectedStudents = students.filter((student) => student.Classes.Darajah === selectedDarajah);
+				const { data: assessments, error: assessmentsError } = await supabase.from("Assessments").select("*, Classes(*), Subjects(*)");
+				let selectedAssessments = assessments.filter((assessment) => assessment.Classes.Darajah === selectedDarajah);
+				console.log(selectedAssessments);
+				const { data: marksData, error: marksError } = await supabase.from("Marks").select(`*, Students(*, Classes(*))`);
+				let selectedMarks = marksData.filter((mark) => mark.Students.Classes.Darajah === selectedDarajah);
+				console.log(selectedMarks);
+
+				const tableHeader = document.getElementById("markstable-header");
+				tableHeader.innerHTML = "<th>Student</th>";
+				let listofAssessments = [];
+				selectedAssessments.forEach((assessment) => {
+					// Create a unique key based on both Subject Name and Week
+					const assessmentKey = `${assessment.Subjects.Name}_Week${assessment.Week}`;
+
+					// Check if the assessment has already been added
+					if (!listofAssessments.includes(assessmentKey)) {
+						listofAssessments.push(assessmentKey);
+						tableHeader.innerHTML += `<th>${assessment.Subjects.Name}_Week${assessment.Week}</th>`;
+					}
+				});
+				const tableBody = document.getElementById("marks-table-body");
+				tableBody.innerHTML = ""; // Clear existing rows
+				selectedStudents.forEach((student) => {
+					const row = document.createElement("tr");
+					row.innerHTML = `<td>${student.Name}</td>`;
+					console.log(listofAssessments);
+					selectedMarks.forEach((mark) => {
+						if (mark.Students.TRNO === student.TRNO) {
+							console.log(mark);
+							row.innerHTML += `<td>${mark.MarksObtained}</td>`;
+						}
+					});
+
+					// selectedMarks.forEach((mark) => {
+					// 	if (mark.Students.TRNO === student.TRNO) {
+					// 		const assessmentKey = `${mark.Assessment.Subjects.Name}_Week${mark.Assessment.Week}`;
+					// 		// Check if the assessment key matches the current row's assessment key
+					// 		if (listofAssessments.includes(assessmentKey)) {
+					// 			row.innerHTML += `<td>${mark.MarksObtained}</td>`;
+					// 		} else {
+					// 			row.innerHTML += `<td></td>`; // Empty cell for non-matching assessments
+					// 		}
+					// 	}
+					// });
+					tableBody.appendChild(row);
+				});
+			}
+
+			async function getProgress(assessment, marksData, row) {
+				//TODO: get the progress of the assessment for each assessment
+				// console.log(assessment, marksData);
+				let total = 0;
+				let notZero = 0;
+				marksData.forEach((mark) => {
+					if (mark.AssessmentID === assessment.id) {
+						total++;
+						if (mark.MarksObtained > 0) {
+							notZero++;
+						}
+					}
+				});
+				const progress = (notZero / total) * 100;
+				row.innerHTML += `<td>${progress.toFixed(2)}%</td>`;
+				const assessmentsTableBody = document.querySelector("#assessments tbody");
+				if (progress === 100) {
+					row.style.backgroundColor = "#d4edda"; // Green for 100%
+				} else if (progress >= 10) {
+					row.style.backgroundColor = "#fff3cd"; // Yellow for 50% or more
+				} else {
+					row.style.backgroundColor = "#f8d7da"; // Red for less than 50%
+				}
+
+				assessmentsTableBody.appendChild(row);
+			}
+			async function getAssessments() {
+				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name)`);
+				console.log(data, error);
+				const assessmentsTableBody = document.querySelector("#assessments tbody");
+				assessmentsTableBody.innerHTML = ""; // Clear existing rows
+				const marksData = await supabase.from("Marks").select("*");
+				if (data) {
+					data.forEach((assessment) => {
+						const row = document.createElement("tr");
+						row.innerHTML = `
+			                         <td>${assessment.Week}</td>
+			                         <td>${assessment.ClassID}</td>
+			                         <td>${assessment.Name}</td>
+			                         <td>${assessment.Teachers.Name}</td>
+			                     `;
+						let progress = getProgress(assessment, marksData.data, row);
+					});
+				} else {
+					showMessage("No assessments found.", "error");
+				}
+			}
+			getAssessments();
+			// getMarks();
+
+			// fetchReports();
+		</script>
+	</body>
+</html>
