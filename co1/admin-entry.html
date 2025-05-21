@@ -396,7 +396,7 @@
 
 					const marksObtainedCell = row.insertCell();
 					const marksInput = document.createElement("input");
-					marksInput.type = "number";
+					marksInput.type = "decimal";
 					marksInput.value = markEntry.MarksObtained !== null ? markEntry.MarksObtained : "";
 					marksInput.name = `marks-${markEntry.id}`;
 					marksInput.dataset.markId = markEntry.id; // Store MarkID for easier access
@@ -429,7 +429,7 @@
 					const markID = input.dataset.markId;
 					// Ensure value is either a number or null. Empty string becomes null.
 					const marksObtainedValue = input.value.trim();
-					const marksObtained = marksObtainedValue === "" ? null : parseInt(marksObtainedValue, 10);
+					const marksObtained = marksObtainedValue === "" ? null : parseFloat(marksObtainedValue, 10);
 
 					// Basic validation (optional, can be expanded)
 					if (marksObtainedValue !== "" && isNaN(marksObtained)) {
