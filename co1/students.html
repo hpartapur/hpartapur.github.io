@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Student Portal - Collegiate 1 Awraq</title>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f4f7fa;
+				text-align: center;
+				padding: 20px;
+			}
+
+			.auth-button {
+				padding: 12px 25px;
+				margin: 10px;
+				font-size: 16px;
+				cursor: pointer;
+				border-radius: 5px;
+				border: none;
+			}
+
+			.blue-button {
+				background-color: #007bff;
+				color: white;
+			}
+
+			.red-button {
+				background-color: #f44336;
+				color: white;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			#global-message-area {
+				margin-top: 10px;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Student Marks Viewer</h1>
+
+		<div>
+			<button id="sign-in-button" class="auth-button blue-button">Sign In with Google</button>
+			<button id="sign-out-button" class="auth-button red-button hidden">Sign Out</button>
+		</div>
+
+		<div id="global-message-area"></div>
+        <table class="hidden" id="marks-table" border="1" style="margin-top: 20px; width: 100%; text-align: left;">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                </tr>
+            </thead>
+            <tbody id="marks-table-body">
+                <!-- Marks will be populated here -->
+            </tbody>
+
+		<script>
+			const signInButton = document.getElementById("sign-in-button");
+			const signOutButton = document.getElementById("sign-out-button");
+			const globalMessageArea = document.getElementById("global-message-area");
+
+			const supabaseUrl = "https://urlburhufcpkpfcoyflh.supabase.co";
+			const supabaseKey =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybGJ1cmh1ZmNwa3BmY295ZmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMzY1MzYsImV4cCI6MjA2MTYxMjUzNn0.17VTbejLDJyI9hkHPiuoiy5jcZmLdgiJ16GuhkiOd08";
+			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+			async function signInWithGoogle() {
+				const { error } = await supabase.auth.signInWithOAuth({
+					provider: "google",
+					options: { redirectTo: "https://khardal.net/co1/students.html" },
+				});
+				if (error) showMessage(`Sign-in error: ${error.message}`, "error");
+			}
+
+			async function signOut() {
+				await supabase.auth.signOut();
+				showMessage("Signed out successfully", "success");
+				signOutButton.classList.add("hidden");
+				signInButton.classList.remove("hidden");
+			}
+
+			function showMessage(message, type) {
+				globalMessageArea.textContent = message;
+				globalMessageArea.style.color = type === "error" ? "red" : "green";
+			}
+
+			async function updateUI(user) {
+				if (!user) return;
+
+				const email = user.email;
+				const studentID = email.split("@")[0];
+				console.log("Student ID:", studentID);
+
+                
+
+				const { data, error } = await supabase.from("Marks").select("*, Assessments(Name)").eq("StudentID", studentID);
+
+				if (error) {
+					showMessage(`Error fetching marks: ${error.message}`, "error");
+					return;
+				}
+                document.getElementById("marks-table").classList.remove("hidden");
+                const marksTableBody = document.getElementById("marks-table-body");
+                marksTableBody.innerHTML = ""; // Clear previous data
+				console.log("Marks for student:", data);
+				data.forEach((row) => {
+					const tr = document.createElement("tr");
+                    const subjectCell = document.createElement("td");
+                    const marksCell = document.createElement("td");
+                    subjectCell.textContent = row.Assessments.Name;
+                    marksCell.textContent = row.MarksObtained;
+                    tr.appendChild(subjectCell);
+                    tr.appendChild(marksCell);
+                    marksTableBody.appendChild(tr);
+				});
+
+				signInButton.classList.add("hidden");
+				signOutButton.classList.remove("hidden");
+				showMessage("Signed in successfully", "success");
+			}
+
+			signInButton.addEventListener("click", signInWithGoogle);
+			signOutButton.addEventListener("click", signOut);
+
+			supabase.auth.onAuthStateChange(async (event, session) => {
+				const user = session?.user;
+				await updateUI(user);
+			});
+		</script>
+	</body>
+</html>
