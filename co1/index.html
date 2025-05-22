@@ -5,6 +5,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Home - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+		/>
+		<style>
+			.material-symbols-outlined {
+				font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 48;
+				font-size: 80px;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="container">
@@ -13,22 +23,28 @@
 			<div id="global-message-area"></div>
 
 			<div class="auth-container">
-				<button id="sign-in-button" class="auth-button">Sign In with Google</button>
+				<button id="sign-in-button" class="auth-button"><span class="material-symbols-outlined"> lock_open</span>Sign In</button>
 				<div id="user-section" class="hidden">
 					<div class="user-info">
 						<img id="user-photo" class="user-photo" src="" alt="User Photo" />
 						<p id="user-name" class="user-name"></p>
 						<p id="user-email" class="user-email"></p>
-						<div id="admin-section" class="hidden" style="border: 2px solid black; padding: 10px; margin-top: 10px">
-							<h2>Admin Section</h2>
-							<button id="admin" class="auth-button orange-button">👤Admin Access</button>
-							<button id="admin-entry" class="auth-button purple-button">📝Admin Entry</button>
-							<button id="admin-reports" class="auth-button green-button">📊Admin Reports</button>
-						</div>
+						<button id="admin-access" class="auth-button orange-button admin">
+							<span class="material-symbols-outlined"> shield_person </span><br />Admin Access
+						</button>
+						<button id="admin-entry" class="auth-button purple-button admin">
+							<span class="material-symbols-outlined"> edit_note </span><br />Admin Entry
+						</button>
+						<button id="admin-reports" class="auth-button green-button admin">
+							<span class="material-symbols-outlined"> analytics </span><br />Admin Reports
+						</button>
 
-						<button id="entry" class="auth-button">📝Marks Entry</button>
+						<button id="entry" class="auth-button">
+							<span class="material-symbols-outlined"> <span class="material-symbols-outlined"> assignment_turned_in </span> </span
+							><br />Marks Entry
+						</button>
 					</div>
-					<button id="sign-out-button" class="auth-button">Sign Out</button>
+					<button id="sign-out-button" class="auth-button"><span class="material-symbols-outlined"> logout </span><br />Sign Out</button>
 					<table id="assessments-table" class="hidden">
 						<caption>
 							My Assessments
@@ -87,6 +103,8 @@
 			}
 
 			async function signOut() {
+				const session = await supabase.auth.getSession();
+				console.log("Session:", session);
 				const { error } = await supabase.auth.signOut();
 				if (error) {
 					console.error("Error signing out:", error);
@@ -131,12 +149,14 @@
 					const { data: admin, error: adminError } = await supabase.from("Admins").select("*").eq("Email", user.email).single();
 					console.log("Admin Data:", admin.id);
 					if (admin.id) {
-						//TODO: Add admin entry page
-						document.getElementById("admin-section").classList.remove("hidden");
+						let adminElements = document.querySelectorAll(".admin");
+						adminElements.forEach((element) => {
+							element.style.display = "inline-block";
+						});
 						document.getElementById("admin-entry").addEventListener("click", () => {
 							window.location.href = `admin-entry.html`;
 						});
-						document.getElementById("admin").addEventListener("click", () => {
+						document.getElementById("admin-access").addEventListener("click", () => {
 							window.location.href = `admin.html`;
 						});
 						document.getElementById("admin-reports").addEventListener("click", () => {
@@ -244,15 +264,20 @@
 			}
 
 			.auth-button {
+				width: 9rem;
+				height: 9rem;
 				padding: 12px 25px;
 				margin: 10px;
 				cursor: pointer;
-				font-size: 16px;
+				font-size: 1.2rem;
 				border-radius: 5px;
+				border: 0.5rem solid #0f0f0f;
 			}
 
 			.auth-button:hover {
 				opacity: 0.9;
+				transform: scale(1.1);
+				transition: transform 0.2s;
 			}
 
 			.hidden {
@@ -302,7 +327,7 @@
 			}
 			.yellow-button {
 				background-color: #d9c511;
-				color: black;
+				color: white;
 				border: none;
 			}
 			.yellow-button:hover {
@@ -377,6 +402,13 @@
 			}
 			tr:hover {
 				background-color: #ddd;
+			}
+			.admin {
+				display: none;
+				/* background-color: #512da8; */
+			}
+			.admin:hover {
+				/* background-color: #673ab7; */
 			}
 		</style>
 	</body>
