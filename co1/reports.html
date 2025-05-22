@@ -66,6 +66,13 @@
 				background-color: #f44336;
 				color: white;
 			}
+			.green-button {
+				background-color: #4CAF50;
+				color: white;
+			}
+			.green-button:hover {
+				background-color: #45a049;
+			}
 
 			.report-section {
 				margin-top: 30px;
@@ -280,8 +287,6 @@
                 
             }
 			async function getProgress(assessment, marksData, row) {
-				//TODO: get the progress of the assessment for each assessment
-				// console.log(assessment, marksData);
 				let total = 0;
 				let notZero = 0;
 				marksData.forEach((mark) => {
@@ -302,12 +307,12 @@
 				} else {
 					row.style.backgroundColor = "#f8d7da"; // Red for less than 50%
 				}
-				row.innerHTML += `<td><a href="mailto:${assessment.Teachers.Email}?subject='Awraq${assessment.Name}'&body='This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}'">Remind by Email</a></td>`;
-                row.innerHTML += `<td><a href="https://wa.me/${assessment.Teachers.whatsapp}?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1">Remind by Whatsapp</a></td>`;
+				row.innerHTML += `<td><a href="mailto:${assessment.Teachers.Email}?subject='Awraq${assessment.Name}'&body='This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}'"><button class='auth-button blue-button'>📧Remind by Email</button></a></td>`;
+                row.innerHTML += `<td><a href="https://wa.me/${assessment.Teachers.whatsapp}?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1"><button class='auth-button green-button'>💬Remind by Whatsapp</button></a></td>`;
 				assessmentsTableBody.appendChild(row);
 			}
 			async function getAssessments() {
-				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name, Email,whatsapp)`);
+				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name, Email,whatsapp)`).order("Week", { ascending: true }).order("ClassID", { ascending: true });
 				console.log(data, error);
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
 				assessmentsTableBody.innerHTML = ""; // Clear existing rows
@@ -329,7 +334,7 @@
 			}
 			getAssessments();
 			getMarks("24653");
-            function filterTable() {
+		function filterTable() {
         const weekFilter = document.getElementById("week-filter").value.toLowerCase();
         const rows = document.querySelectorAll("#assessments tbody tr");
 
