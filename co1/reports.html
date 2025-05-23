@@ -133,8 +133,10 @@
 								<th>Assessment Title</th>
 								<th>Teacher</th>
 								<th>Progress</th>
+								<th>Pending</th>
 								<th>Reminder Email</th>
                                 <th>Reminder Whatsapp</th>
+								<th><button class='auth-button red-button' onclick="bulkEmail()">Bulk Email</button></th>
 							</tr>
 						</thead>
 						<tbody></tbody>
@@ -190,6 +192,20 @@
 					userSection.classList.add("hidden");
 					userEmailSpan.textContent = "";
 					reportOutput.classList.add("hidden");
+				}
+			}
+			function bulkEmail() {
+				const checkboxes = document.querySelectorAll(".email-checkbox:checked");
+				const emails = Array.from(checkboxes).map((checkbox) => checkbox.value);
+				const emailString = emails.join(",");
+				console.log(emailString);
+				if (emails.length > 0) {
+					const subject = "Reminder: Fill out Awraq Marks";
+					const body = "This is a reminder to fill out marks for the assessments. Please visit https://khardal.net/co1 to complete the task.";
+					const mailtoLink = `mailto:${emailString}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+					window.location.href = mailtoLink;
+				} else {
+					showMessage("Please select at least one email to send reminders.", "error");
 				}
 			}
             async function exportMarks() {
@@ -282,33 +298,31 @@
 					tableBody.appendChild(row);
 				});
 			}
-
-            async function populateWeekDropdown() {
-                
-            }
 			async function getProgress(assessment, marksData, row) {
 				let total = 0;
-				let notZero = 0;
+				let notNull = 0;
 				marksData.forEach((mark) => {
 					if (mark.AssessmentID === assessment.id) {
 						total++;
-						if (mark.MarksObtained > 0) {
-							notZero++;
+						if (mark.MarksObtained !== null) {
+							notNull++;
 						}
 					}
 				});
-				const progress = (notZero / total) * 100;
+				const progress = (notNull / total) * 100;
 				row.innerHTML += `<td>${progress.toFixed(2)}%</td>`;
+				row.innerHTML += `<td>${total - notNull} / ${total}</td>`;
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
-				if (progress === 100) {
+				if (progress >=90) {
 					row.style.backgroundColor = "#d4edda"; // Green for 100%
-				} else if (progress >= 10) {
+				} else if (progress >= 40) {
 					row.style.backgroundColor = "#fff3cd"; // Yellow for 50% or more
 				} else {
 					row.style.backgroundColor = "#f8d7da"; // Red for less than 50%
 				}
 				row.innerHTML += `<td><a href="mailto:${assessment.Teachers.Email}?subject='Awraq${assessment.Name}'&body='This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}'"><button class='auth-button blue-button'>📧Remind by Email</button></a></td>`;
                 row.innerHTML += `<td><a href="https://wa.me/${assessment.Teachers.whatsapp}?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1"><button class='auth-button green-button'>💬Remind by Whatsapp</button></a></td>`;
+				row.innerHTML += `<td><input type='checkbox' class='email-checkbox' value=${assessment.Teachers.Email}></td>`;
 				assessmentsTableBody.appendChild(row);
 			}
 			async function getAssessments() {
