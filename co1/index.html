@@ -3,6 +3,11 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" href="https://img.icons8.com/arcade/64/report-card.png" type="image/x-icon" />
+
+
+		
+		<script src="https://cdn.lordicon.com/lordicon.js"></script>
 		<title>Home - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 		<link
@@ -19,7 +24,7 @@
 	<body>
 		<nav style="background-color: #333; color: white; padding: 10px">
 			<div class="user-info">
-				<img id="user-photo" class="user-photo" src="" alt="User Photo" />
+				<img id="user-photo" hidden class="user-photo" src="" alt="User Photo" />
 				<p id="user-name" hidden class="user-name"></p>
 				<p id="user-email" hidden class="user-email"></p>
 			</div>
@@ -35,21 +40,125 @@
 				<div id="user-section" class="hidden">
 					<div class="user-info">
 						<button id="admin-access" class="auth-button orange-button admin">
-							<span class="material-symbols-outlined"> shield_person </span><br />Admin Access
+							<!-- <span class="material-symbols-outlined"> shield_person </span> -->
+							<lord-icon
+								src="https://cdn.lordicon.com/vpbspaec.json"
+								trigger="loop"
+								colors="primary:white,secondary:white"
+								stroke="bold"
+								style="width:4rem;height:4rem">
+							</lord-icon>
+							<br />Admin Access
 						</button>
 						<button id="admin-entry" class="auth-button purple-button admin">
-							<span class="material-symbols-outlined"> edit_note </span><br />Admin Entry
+							<!-- <span class="material-symbols-outlined"> edit_note </span> -->
+							<lord-icon
+								src="https://cdn.lordicon.com/igcctxvk.json"
+								trigger="loop"
+								colors="primary:white,secondary:white"
+								stroke="bold"
+								style="width:4rem;height:4rem">
+							</lord-icon>
+							<br />Admin Entry
 						</button>
 						<button id="admin-reports" class="auth-button green-button admin">
-							<span class="material-symbols-outlined"> analytics </span><br />Admin Reports
+							<!-- <span class="material-symbols-outlined"> analytics </span> -->
+							<lord-icon
+								src="https://cdn.lordicon.com/oqhqyeud.json"
+								trigger="loop"
+								colors="primary:white,secondary:white"
+								stroke="bold"
+								style="width:4rem;height:4rem">
+							</lord-icon>
+							<br />Admin Reports
 						</button>
 
 						<button id="entry" class="auth-button">
-							<span class="material-symbols-outlined"> <span class="material-symbols-outlined"> assignment_turned_in </span> </span
-							><br />Marks Entry
+						<!-- <span class="material-symbols-outlined"> assignment_turned_in </span> -->
+							<lord-icon
+								src="https://cdn.lordicon.com/knfutiyr.json"
+								trigger="loop"
+								colors="primary:white,secondary:white"
+								stroke="bold"
+								style="width:4rem;height:4rem">
+							</lord-icon>
+						<br />Marks Entry
 						</button>
+						<button id="masool" class="auth-button brown-button" hidden>
+							<!-- <span class="material-symbols-outlined"> museum </span> -->
+								<lord-icon
+									src="https://cdn.lordicon.com/cfoaotmk.json"
+									trigger="loop"
+									colors="primary:white,secondary:white"
+									stroke="bold"
+									style="width:4rem;height:4rem">
+								</lord-icon>
+							<br />Masool Portal
+							</button>
 					</div>
 					<button id="sign-out-button" class="auth-button"><span class="material-symbols-outlined"> logout </span><br />Sign Out</button>
+
+					<div id="stats-cards">
+						<div id="assessments-card" class="card" style="background-color: lightgoldenrodyellow">
+							<p>My Assessments</p>
+							<br />
+							<lord-icon
+							src="https://cdn.lordicon.com/fikcyfpp.json"
+							trigger="loop"
+							colors="primary:#242424,secondary:grey"
+							style="width:4rem;height:4rem">
+						</lord-icon>
+							<br />
+							<span id="assessments-count">0</span>
+						</div>
+						<div id="marks-card" class="card" style="background-color: #92d6d6">
+							<p>Marks Filled</p>
+							<br />
+							<lord-icon
+							src="https://cdn.lordicon.com/edcgvlnw.json"
+							trigger="loop"
+							colors="primary:#242424,secondary:grey"
+							style="width:4rem;height:4rem">
+						</lord-icon>
+							<br />
+							<span id="marks-count">0</span>
+					</div>
+					<div id="'pending-card" class="card" style="background-color: lightpink">
+						<p>Pending Entry</p>
+						<br />
+						<lord-icon
+							src="https://cdn.lordicon.com/exymduqj.json"
+							trigger="loop"
+							colors="primary:#121331,secondary:#e83a30"
+							style="width:4rem;height:4rem">
+						</lord-icon>
+						<br />
+						<span id="pending-count">0</span>
+					</div>
+					<div id="percentage-card" class="card" style="background-color: #f5ba5b">
+						<p>Percentage Entered</p>
+						<br />
+						<lord-icon
+							src="https://cdn.lordicon.com/dkobpcrm.json"
+							trigger="loop"
+							colors="primary:#121331,secondary:#e83a30"
+							style="width:4rem;height:4rem">
+						</lord-icon>
+						<br />
+						<span id="percentage-count">0%</span>
+					</div>
+					<div id="average-card" class="card" style="background-color: #daa3de">
+						<p>Average Score</p>
+						<br />
+						<lord-icon
+							src="https://cdn.lordicon.com/bduzytli.json"
+							trigger="loop"
+							colors="primary:#121331,secondary:#e83a30"
+							style="width:4rem;height:4rem">
+						</lord-icon>
+						<br />
+						<span id="average-count">0</span>
+					</div>
 					<table id="assessments-table" class="hidden">
 						<caption>
 							My Assessments
@@ -65,6 +174,7 @@
 					</table>
 				</div>
 			</div>
+
 
 			<div id="app-content" class="hidden">
 				<h2>Welcome to the Teacher Marks Entry System!</h2>
@@ -136,6 +246,8 @@
 					signOutButton.classList.add("red-button");
 					signInButton.classList.remove("blue-button");
 
+					getMasool(user.email);
+
 					const { data, error } = await supabase.from("Teachers").select("*").eq("Email", user.email).single();
 					const teacherid = data?.TeacherID;
 					if (teacherid) {
@@ -149,6 +261,8 @@
 						entryButton.classList.remove("hidden");
 						entryButton.classList.add("yellow-button");
 						entryButton.color = "red"; // Set background color to blue
+
+						getMarkingProgress(teacherid);
 					}
 
 					const { data: admin, error: adminError } = await supabase.from("Admins").select("*").eq("Email", user.email).single();
@@ -190,9 +304,9 @@
 				cell.textContent = assessment.Name;
 				row.appendChild(cell);
 				const filledCell = document.createElement("td");
-				const notZero = data.filter((mark) => mark.MarksObtained > 0);
-				const filled = notZero.length;
-				const total = data.length;
+				const notNull = data.filter((mark) => mark.MarksObtained !== null);
+				let filled = notNull.length;
+				let total = data.length;
 				console.log("Filled:", filled, "Total:", total);
 				filledCell.textContent = filled;
 				row.appendChild(filledCell);
@@ -201,12 +315,23 @@
 				row.appendChild(totalCell);
 				assessmentsBody.appendChild(row);
 			}
+			async function getMasool(email) {
+				const { data, error } = await supabase.from("Classes").select("*").eq("Masool", email).single();
+				if (error) {
+					console.error("Error fetching masool. This user may not be a masool:", error);
+					return;
+				}
+				document.getElementById("masool").hidden = false;
+				document.getElementById("masool").addEventListener("click", () => {
+					window.location.href = `masool.html?classid=${data.ClassID}`;
+				});
+			}
 
 			async function getAssessments(teacherid) {
 				const { data } = await supabase.from("Assessments").select("*").eq("TeacherID", teacherid);
 				console.log("Assessments Data:", data);
+				assessmentsBody.innerHTML = ""; // Clear previous entries
 				if (data.length > 0) {
-					assessmentsBody.innerHTML = ""; // Clear previous entries
 					data.forEach((assessment) => {
 						getProgress(assessment);
 					});
@@ -219,6 +344,35 @@
 				}
 			}
 
+			async function getMarkingProgress(teacherid) {
+				console.log("Getting marking progress for teacher ID:", teacherid);
+				const { data: assessments } = await supabase.from("Assessments").select("*").eq("TeacherID", teacherid);
+				let { data: marks, error } = await supabase.from("Marks").select("*,Students(Name), Assessments(TeacherID,MaxMarks)");
+				if (error) {
+					console.error("Error fetching marks:", error);
+					showMessage(`Error fetching marks: ${error.message}`, "error");
+					return;
+				}
+				marks = marks.filter((mark) => mark.Assessments.TeacherID == teacherid);
+				console.log("Marks Data:", marks);
+				console.log("Assessment Count:", assessments);
+				document.getElementById("assessments-count").textContent = assessments.length;
+				let notNull = marks.filter((mark) => mark.MarksObtained !== null);
+				document.getElementById("marks-count").textContent = notNull.length;
+				let pending = marks.filter((mark) => mark.MarksObtained == null);
+				document.getElementById("pending-count").textContent = pending.length;
+				let total = marks.length;
+				let percentage = ((notNull.length / total) * 100).toFixed(2);
+				document.getElementById("percentage-count").textContent = percentage + "%";
+				let scorepercentages = 0
+				let notNulltotal = notNull.length;
+				notNull.forEach((mark) => {
+					console.log("Average",(mark.MarksObtained/ mark.Assessments.MaxMarks)*100);
+					scorepercentages += (mark.MarksObtained / mark.Assessments.MaxMarks) * 100;
+				});
+				let average = (scorepercentages / notNulltotal).toFixed(2);
+				document.getElementById("average-count").textContent = average + "%";
+			}
 			// --- Message Display ---
 			function showMessage(message, type = "success") {
 				globalMessageArea.textContent = message;
@@ -271,7 +425,7 @@
 			.auth-button {
 				width: 9rem;
 				height: 9rem;
-				padding: 12px 25px;
+				/* padding: 12px 25px; */
 				margin: 10px;
 				cursor: pointer;
 				font-size: 1.2rem;
@@ -362,6 +516,14 @@
 			.green-button:hover {
 				background-color: #388e3c;
 			}
+			.brown-button {
+				background-color: #795548;
+				color: white;
+				border: none;
+			}
+			.brown-button:hover {
+				background-color: #5d4037;
+			}
 
 			/* User Info Section */
 			.user-info {
@@ -418,6 +580,22 @@
 			}
 			.admin:hover {
 				/* background-color: #673ab7; */
+			}
+			.card {
+				background-color: #fff;
+				border-radius: 8px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				/* padding: 20px; */
+				/* margin: 20px auto; */
+				text-align: center;
+				width: 10rem;
+				height: 10rem;
+				display: inline-block;
+			}
+			.card:hover {
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				transition: box-shadow 0.3s;
+				transform: scale(1.05);
 			}
 		</style>
 	</body>
