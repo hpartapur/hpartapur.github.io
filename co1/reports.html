@@ -6,6 +6,7 @@
 		<title>Reports - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+		<script src="https://cdn.lordicon.com/lordicon.js"></script>
 		<style>
 			body {
 				font-family: Arial, sans-serif;
@@ -109,22 +110,141 @@
 				font-size: 1.2em;
 				margin-bottom: 10px;
 			}
-
+			nav {
+				background-color: #333;
+				color: white;
+				padding: 10px;
+				text-align: center;
+			}
+			.dropdown {
+				margin: 20px 0;
+				padding: 10px;
+				font-size: 16px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
+			.card {
+				background-color: #fff;
+				border-radius: 8px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				/* padding: 20px; */
+				/* margin: 20px auto; */
+				text-align: center;
+				width: 10rem;
+				height: 10rem;
+				display: inline-block;
+			}
+			.card:hover {
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				transition: box-shadow 0.3s;
+				transform: scale(1.05);
+			}
 		</style>
 	</head>
 	<body>
-
+		<nav style="width: 100vw;">
+			<a href="#assessments" style="color: white; text-decoration: none; margin-right: 20px;">📋Assessments</a>
+			<a href="#marks-table" style="color: white; text-decoration: none; margin-right: 20px;">🗃️Scores</a>
+			<!-- <a href="https://khardal.net/co1" style="color: white; text-decoration: none;">Login</a> -->
+		</nav>
+		
 		<div class="container">
 			<h1>📊 Reports Dashboard</h1>
+			<p>Welcome, <span id="user-email"></span></p>
 			<div id="global-message-area"></div>
+			<div id="stats-cards">
+				<div id="assessments-card" class="card" style="background-color: lightgoldenrodyellow">
+					<p>All Assessments</p>
+					<br />
+					<lord-icon
+					src="https://cdn.lordicon.com/fikcyfpp.json"
+					trigger="loop"
+					colors="primary:#242424,secondary:grey"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+					<br />
+					<span id="assessments-count">0</span>
+				</div>
+				<div id="marks-card" class="card" style="background-color: #92d6d6">
+					<p>Marks Filled</p>
+					<br />
+					<lord-icon
+					src="https://cdn.lordicon.com/edcgvlnw.json"
+					trigger="loop"
+					colors="primary:#242424,secondary:grey"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+					<br />
+					<span id="marks-count">0</span>
+			</div>
+			<div id="'pending-card" class="card" style="background-color: lightpink">
+				<p>Pending Entry</p>
+				<br />
+				<lord-icon
+					src="https://cdn.lordicon.com/exymduqj.json"
+					trigger="loop"
+					colors="primary:#121331,secondary:#e83a30"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+				<br />
+				<span id="pending-count">0</span>
+			</div>
+			<div id="percentage-card" class="card" style="background-color: #f5ba5b">
+				<p>Percentage Entered</p>
+				<br />
+				<lord-icon
+					src="https://cdn.lordicon.com/dkobpcrm.json"
+					trigger="loop"
+					colors="primary:#121331,secondary:#e83a30"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+				<br />
+				<span id="percentage-count">0%</span>
+			</div>
+			<div id="average-card" class="card" style="background-color: #daa3de">
+				<p>Average Score</p>
+				<br />
+				<lord-icon
+					src="https://cdn.lordicon.com/bduzytli.json"
+					trigger="loop"
+					colors="primary:#121331,secondary:#e83a30"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+				<br />
+				<span id="average-count">0</span>
+			</div>
+			<div id="best-class-card" class="card" style="background-color: #f5ba5b">
+				<p>Best Class</p>
+				<br />
+				<lord-icon
+					src="https://cdn.lordicon.com/vttzorhw.json"
+					trigger="loop"
+					colors="primary:#121331,secondary:#e83a30"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+				<br />
+				<span id="best-class-count">0%</span>
+			</div>
+			<!-- <div id="best-student-card"  class="card" style="background-color: #f5ba5b">
+				<p>Best Student</p>
+				<br />
+				<lord-icon
+					src="https://cdn.lordicon.com/dkobpcrm.json"
+					trigger="loop"
+					colors="primary:#121331,secondary:#e83a30"
+					style="width:4rem;height:4rem">
+				</lord-icon>
+				<br />
+				<span id="best-student-count">0%</span>
+			</div> -->
+			
 			<div id="user-section" class="hidden">
-				<p>Signed in as: <span id="user-email"></span></p>
+				
 
 				<div class="report-section">
-					<h2>Available Reports</h2>
 					<table id="assessments">
 						<caption>
-							Assessments
+							📋Assessments
 						</caption>
 						<thead>
 							<tr>
@@ -134,6 +254,7 @@
 								<th>Teacher</th>
 								<th>Progress</th>
 								<th>Pending</th>
+								<th>Average</th>
 								<th>Reminder Email</th>
                                 <th>Reminder Whatsapp</th>
 								<th><button class='auth-button red-button' onclick="bulkEmail()">Bulk Email</button></th>
@@ -181,8 +302,30 @@
 			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 			supabase.auth.onAuthStateChange((event, session) => {
+				checkAdmin(session?.user);
 				updateUI(session?.user);
 			});
+			async function checkAdmin(user){
+				if (user) {
+					const { data, error } = await supabase
+						.from("Admins").select("*")
+						.eq("Email", user.email);
+					if (data.length > 0) {
+						console.log("User is an admin");
+						userSection.classList.remove("hidden");
+						userEmailSpan.textContent = user.email;
+						reportOutput.classList.remove("hidden");
+					} else {
+						showMessage("You are not authorized to access this page.", "error");
+						window.location.href = "https://khardal.net/co1";
+					}
+					if (error) {
+						showMessage("Error fetching user data: " + error.message, "error");
+						window.location.href = "https://khardal.net/co1";
+						return;
+					}
+				}
+			}
 
 			function updateUI(user) {
 				if (user) {
@@ -193,6 +336,92 @@
 					userEmailSpan.textContent = "";
 					reportOutput.classList.add("hidden");
 				}
+			}
+			async function getStatsCards(){
+				const { data: assessments, error: assessmentsError } = await supabase
+					.from("Assessments")
+					.select("*");
+				if (assessmentsError) {
+					showMessage("Error fetching assessments: " + assessmentsError.message, "error");
+					return;
+				}
+				document.getElementById("assessments-count").textContent = assessments.length;
+
+				const { data: marks, error: marksError } = await supabase
+					.from("Marks")
+					.select("*, Assessments(*), Students(*)");
+				if (marksError) {
+					showMessage("Error fetching marks: " + marksError.message, "error");
+					return;
+				}
+				let notNull = marks.filter((mark) => mark.MarksObtained !== null);
+				document.getElementById("marks-count").textContent = notNull.length;
+				let pending = marks.filter((mark) => mark.MarksObtained === null);
+				document.getElementById("pending-count").textContent = pending.length;
+				let total = marks.length;
+				let percentage = ((notNull.length / total) * 100).toFixed(2);
+				document.getElementById("percentage-count").textContent = percentage + "%";
+				let scorepercentages = 0
+				let notNulltotal = notNull.length;
+				notNull.forEach((mark) => {
+					console.log("Average",(mark.MarksObtained/ mark.Assessments.MaxMarks)*100);
+					scorepercentages += (mark.MarksObtained / mark.Assessments.MaxMarks) * 100;
+				});
+				let average = (scorepercentages / notNulltotal).toFixed(2);
+				document.getElementById("average-count").textContent = average + "%";
+
+				let classPercentages = {};
+				notNull.forEach(mark => {
+					if (!classPercentages[mark.Students.ClassID]) {
+						classPercentages[mark.Students.ClassID] = { total: 0, count: 0 };
+					}
+					classPercentages[mark.Students.ClassID].total += (mark.MarksObtained / mark.Assessments.MaxMarks) * 100;
+					classPercentages[mark.Students.ClassID].count++;
+				});
+				let bestClass = { classID: null, percentage: 0 };
+				for (const classID in classPercentages) {
+					const { total, count } = classPercentages[classID];
+					const average = total / count;
+					if (average > bestClass.percentage) {
+						bestClass.classID = classID;
+						bestClass.percentage = average;
+					}
+				}
+				
+				document.getElementById("best-class-count").textContent = bestClass.classID + " - " + bestClass.percentage.toFixed(2) + "%";
+
+				const { data: students, error: studentsError } = await supabase
+					.from("Students")
+					.select("*");
+				if (studentsError) {
+					showMessage("Error fetching students: " + studentsError.message, "error");
+					return;
+				}
+				let bestStudent = { name: null, percentage: 0 };
+				let bestStudentName = "";
+				let studentPercentages = {};
+				notNull.forEach(mark => {
+					if (!studentPercentages[mark.Students.TRNO]) {
+						studentPercentages[mark.Students.TRNO] = { total: 0, count: 0 };
+					}
+					studentPercentages[mark.Students.TRNO].total += (mark.MarksObtained / mark.Assessments.MaxMarks) * 100;
+					studentPercentages[mark.Students.TRNO].count++;
+				});
+				for (const studentID in studentPercentages) {
+					const { total, count } = studentPercentages[studentID];
+					const average = total / count;
+					if (average > bestStudent.percentage) {
+						bestStudent.name = studentID;
+						bestStudent.percentage = average;
+					}
+				}
+				students.forEach((student) => {
+					if (student.TRNO === bestStudent.name) {
+						bestStudentName = student.Name;
+					}
+				});
+				// document.getElementById("best-student-count").textContent = bestStudentName + " - " + bestStudent.percentage.toFixed(2) + "%";
+
 			}
 			function bulkEmail() {
 				const checkboxes = document.querySelectorAll(".email-checkbox:checked");
@@ -301,17 +530,20 @@
 			async function getProgress(assessment, marksData, row) {
 				let total = 0;
 				let notNull = 0;
+				let notNullTotal = 0;
 				marksData.forEach((mark) => {
 					if (mark.AssessmentID === assessment.id) {
 						total++;
 						if (mark.MarksObtained !== null) {
 							notNull++;
+							notNullTotal += mark.MarksObtained;
 						}
 					}
 				});
 				const progress = (notNull / total) * 100;
 				row.innerHTML += `<td>${progress.toFixed(2)}%</td>`;
 				row.innerHTML += `<td>${total - notNull} / ${total}</td>`;
+				row.innerHTML += `<td>${(notNullTotal / notNull).toFixed(0)}/${assessment.MaxMarks}: ${((notNullTotal/notNull)/assessment.MaxMarks*100).toFixed(0)}%</td>`;
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
 				if (progress >=90) {
 					row.style.backgroundColor = "#d4edda"; // Green for 100%
@@ -320,8 +552,24 @@
 				} else {
 					row.style.backgroundColor = "#f8d7da"; // Red for less than 50%
 				}
-				row.innerHTML += `<td><a href="mailto:${assessment.Teachers.Email}?subject='Awraq${assessment.Name}'&body='This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}'"><button class='auth-button blue-button'>📧Remind by Email</button></a></td>`;
-                row.innerHTML += `<td><a href="https://wa.me/${assessment.Teachers.whatsapp}?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1"><button class='auth-button green-button'>💬Remind by Whatsapp</button></a></td>`;
+				row.innerHTML += `<td>
+					<a href="mailto:${assessment.Teachers.Email}?subject='Awraq${assessment.Name}'&body='This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}'">
+						<button class='auth-button blue-button'>
+						<lord-icon
+						src="https://cdn.lordicon.com/uufkkpxl.json"
+						trigger="hover"
+						style="width:50px;height:50px">
+						</lord-icon>
+					Remind by Email</button>
+					</a>
+					</td>`;
+                row.innerHTML += `<td><a href="https://wa.me/${assessment.Teachers.whatsapp}?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1"><button class='auth-button green-button'>
+					<lord-icon
+						src="https://cdn.lordicon.com/czyzlqzd.json"
+						trigger="hover"
+						style="width:50px;height:50px">
+					</lord-icon>
+					Remind by Whatsapp</button></a></td>`;
 				row.innerHTML += `<td><input type='checkbox' class='email-checkbox' value=${assessment.Teachers.Email}></td>`;
 				assessmentsTableBody.appendChild(row);
 			}
@@ -348,16 +596,17 @@
 			}
 			getAssessments();
 			getMarks("24653");
+			getStatsCards();
 		function filterTable() {
-        const weekFilter = document.getElementById("week-filter").value.toLowerCase();
-        const rows = document.querySelectorAll("#assessments tbody tr");
+			const weekFilter = document.getElementById("week-filter").value.toLowerCase();
+			const rows = document.querySelectorAll("#assessments tbody tr");
 
-        rows.forEach(row => {
-          const week = row.cells[0].textContent.toLowerCase();
-          // Show or hide row based on matching Week
-          row.style.display = week.includes(weekFilter) ? "" : "none";
-        });
-      }
+			rows.forEach(row => {
+			const week = row.cells[0].textContent.toLowerCase();
+			// Show or hide row based on matching Week
+			row.style.display = week.includes(weekFilter) ? "" : "none";
+			});
+		}
 
       // Add event listener to the Week filter input
       document.getElementById("week-filter").addEventListener("input", filterTable);
