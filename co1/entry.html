@@ -3,6 +3,7 @@
 	<head>
 		<title>Teacher Marks Entry</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<link rel="icon" href="https://img.icons8.com/arcade/64/report-card.png" type="image/x-icon" />
 		<style>
 			body {
 				font-family: sans-serif;
@@ -223,7 +224,7 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5">No marks to display</td>
+									<td colspan="6">No marks to display</td>
 								</tr>
 							</tbody>
 						</table>
@@ -337,7 +338,7 @@
 				}
 				const { data, error } = await supabase
 					.from("Marks")
-					.select("*, Students(Name,ClassID),Assessments(MaxMarks)") // Get marks and related student name
+					.select("*, Students(Name,ClassID),Assessments(MaxMarks,Subjects(Name))") // Get marks and related student name
 					.eq("AssessmentID", assessmentid); // Filter based on AssessmentID
 
 				if (error) {
@@ -391,7 +392,7 @@
 					row.insertCell().textContent = markEntry.StudentID;
 					row.insertCell().textContent = markEntry.Students?.Name || "N/A"; // Handle missing student name
 					row.insertCell().textContent = markEntry.Students.ClassID;
-					row.insertCell().textContent = markEntry.Subjects?.Name || "N/A"; // Handle missing subject name
+					row.insertCell().textContent = markEntry.Assessments?.Subjects?.Name || "N/A"; // Handle missing subject name
 
 					const marksObtainedCell = row.insertCell();
 					const marksInput = document.createElement("input");
@@ -401,7 +402,7 @@
 					marksInput.dataset.markId = markEntry.id; // Store MarkID for easier access
 					marksInput.max = markEntry.Assessments?.MaxMarks;
 
-					if (markEntry.MarksObtained === 0) {
+					if (markEntry.MarksObtained === null) {
 						marksInput.classList.add("empty-marks-input");
 					} else {
 						nonNullCount++;
