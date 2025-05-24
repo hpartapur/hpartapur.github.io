@@ -7,6 +7,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 		<script src="https://cdn.lordicon.com/lordicon.js"></script>
+		<link rel="icon" href="https://img.icons8.com/arcade/64/report-card.png" type="image/x-icon" />
 		<style>
 			body {
 				font-family: Arial, sans-serif;
@@ -139,6 +140,21 @@
 				transition: box-shadow 0.3s;
 				transform: scale(1.05);
 			}
+			#searcher {
+				width: 50%;
+				padding: 10px;
+				margin-top: 10px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+				text-align: center;
+				background-color: #e8e8e8;
+			}
+			#searcher:focus {
+				outline: none;
+				border-color: #007bff;
+				border-width: 3px;
+				background-color: #fff
+			}
 		</style>
 	</head>
 	<body>
@@ -161,9 +177,8 @@
 					trigger="loop"
 					colors="primary:#242424,secondary:grey"
 					style="width:4rem;height:4rem">
-				</lord-icon>
-					<br />
-					<span id="assessments-count">0</span>
+					</lord-icon>
+					<br /><span id="assessments-count">0</span>
 				</div>
 				<div id="marks-card" class="card" style="background-color: #92d6d6">
 					<p>Marks Filled</p>
@@ -173,10 +188,9 @@
 					trigger="loop"
 					colors="primary:#242424,secondary:grey"
 					style="width:4rem;height:4rem">
-				</lord-icon>
-					<br />
-					<span id="marks-count">0</span>
-			</div>
+					</lord-icon>
+					<br /><span id="marks-count">0</span>
+				</div>
 			<div id="'pending-card" class="card" style="background-color: lightpink">
 				<p>Pending Entry</p>
 				<br />
@@ -185,8 +199,7 @@
 					trigger="loop"
 					colors="primary:#121331,secondary:#e83a30"
 					style="width:4rem;height:4rem">
-				</lord-icon>
-				<br />
+				</lord-icon><br/>
 				<span id="pending-count">0</span>
 			</div>
 			<div id="percentage-card" class="card" style="background-color: #f5ba5b">
@@ -220,6 +233,8 @@
 					src="https://cdn.lordicon.com/vttzorhw.json"
 					trigger="loop"
 					colors="primary:#121331,secondary:#e83a30"
+					delay="1500"
+					state="in-reveal"
 					style="width:4rem;height:4rem">
 				</lord-icon>
 				<br />
@@ -238,13 +253,15 @@
 				<span id="best-student-count">0%</span>
 			</div> -->
 			
+		</div>
 			<div id="user-section" class="hidden">
 				
 
 				<div class="report-section">
 					<table id="assessments">
 						<caption>
-							📋Assessments
+							📋Assessments<br>
+							<input type="text" id="searcher" placeholder="Search by Subject, Teacher, Class, or Assessment🔍" oninput="searchAssessments()" />
 						</caption>
 						<thead>
 							<tr>
@@ -325,6 +342,17 @@
 						return;
 					}
 				}
+			}
+			function searchAssessments(){
+				const searchTerm = document.getElementById("searcher").value.toLowerCase();
+				const rows = document.querySelectorAll("#assessments tbody tr");
+				rows.forEach(row => {
+					const searchResults = //Normalize and remove diacritics
+					row.cells[2].textContent.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ṣ/g, 's').toLowerCase() +
+					row.cells[3].textContent.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ṣ/g, 's').toLowerCase();
+
+					row.style.display = searchResults.includes(searchTerm) ? "" : "none";
+				});
 			}
 
 			function updateUI(user) {
@@ -560,7 +588,7 @@
 						trigger="hover"
 						style="width:50px;height:50px">
 						</lord-icon>
-					Remind by Email</button>
+					Remind</button>
 					</a>
 					</td>`;
                 row.innerHTML += `<td><a href="https://wa.me/${assessment.Teachers.whatsapp}?text=This%20is%20a%20reminder%20to%20fill%20out%20marks%20for%20${assessment.Name}Login at khardal.net/co1"><button class='auth-button green-button'>
@@ -569,7 +597,7 @@
 						trigger="hover"
 						style="width:50px;height:50px">
 					</lord-icon>
-					Remind by Whatsapp</button></a></td>`;
+					Remind</button></a></td>`;
 				row.innerHTML += `<td><input type='checkbox' class='email-checkbox' value=${assessment.Teachers.Email}></td>`;
 				assessmentsTableBody.appendChild(row);
 			}
