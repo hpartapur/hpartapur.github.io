@@ -8,6 +8,9 @@
 
 		
 		<script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+		<!-- favicon -->
+		<!-- <link rel="icon" href="/favicon.ico" /> -->
 		<title>Home - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 		<link
@@ -36,7 +39,16 @@
 			<div id="global-message-area"></div>
 
 			<div class="auth-container">
-				<button id="sign-in-button" class="auth-button"><span class="material-symbols-outlined"> lock_open</span>Sign In</button>
+				<button id="sign-in-button" class="auth-button">
+					<!-- <span class="material-symbols-outlined"> lock_open</span> -->
+					<lord-icon
+						src="https://cdn.lordicon.com/eziplgef.json"
+						trigger="loop"
+						delay="1500"
+						state="hover-draw"
+						style="width:4rem;height:4rem">
+					</lord-icon>
+					<br>Sign In</button>
 				<div id="user-section" class="hidden">
 					<div class="user-info">
 						<button id="admin-access" class="auth-button orange-button admin">
@@ -313,6 +325,8 @@
 				const totalCell = document.createElement("td");
 				totalCell.textContent = total;
 				row.appendChild(totalCell);
+
+				// row.style.backgroundColor = `rgb(${(total / filled) * 255}, ${(filled / total) * 255}, 0)`;
 				assessmentsBody.appendChild(row);
 			}
 			async function getMasool(email) {
@@ -576,11 +590,11 @@
 			}
 			.admin {
 				display: none;
-				/* background-color: #512da8; */
-			}
-			.admin:hover {
 				/* background-color: #673ab7; */
 			}
+			/* .admin:hover {
+				background-color: #673ab7;
+			} */
 			.card {
 				background-color: #fff;
 				border-radius: 8px;
