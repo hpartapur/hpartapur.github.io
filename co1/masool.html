@@ -4,8 +4,9 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="https://cdn.lordicon.com/lordicon.js"></script>
-		<link rel="icon" href="https://img.icons8.com/arcade/64/report-card.png" type="image/x-icon" />
-		<title>Home - Collegiate 1 Awraq</title>
+        <link rel="icon" href="https://img.icons8.com/arcade/64/report-card.png" type="image/x-icon" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+		<title>Masool Page - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 		<link
 			rel="stylesheet"
@@ -19,91 +20,11 @@
 		</style>
 	</head>
 	<body>
-		<nav style="background-color: #333; color: white; padding: 10px">
-			<div class="user-info">
-				<img id="user-photo" hidden class="user-photo" src="" alt="User Photo" />
-				<p id="user-name" hidden class="user-name"></p>
-				<p id="user-email" hidden class="user-email"></p>
-			</div>
-			<h1 style="color: white; text-align: center; margin: 0">Awraq ul Murajaat - Home</h1>
-		</nav>
+		
 		<div class="container">
-			<h1>Teacher Marks Entry - Home</h1>
+			<h1 id = 'title'>Masool Page</h1>
 
 			<div id="global-message-area"></div>
-
-			<div class="auth-container">
-				<button id="sign-in-button" class="auth-button">
-					<!-- <span class="material-symbols-outlined"> lock_open</span> -->
-					<lord-icon
-						src="https://cdn.lordicon.com/eziplgef.json"
-						trigger="loop"
-						delay="1500"
-						state="hover-draw"
-						style="width:4rem;height:4rem">
-					</lord-icon>
-					<br>Sign In</button>
-				<div id="user-section" class="hidden">
-					<div class="user-info">
-						<button id="admin-access" class="auth-button orange-button admin">
-							<!-- <span class="material-symbols-outlined"> shield_person </span> -->
-							<lord-icon
-								src="https://cdn.lordicon.com/vpbspaec.json"
-								trigger="loop"
-								colors="primary:white,secondary:white"
-								stroke="bold"
-								style="width:4rem;height:4rem">
-							</lord-icon>
-							<br />Admin Access
-						</button>
-						<button id="admin-entry" class="auth-button purple-button admin">
-							<!-- <span class="material-symbols-outlined"> edit_note </span> -->
-							<lord-icon
-								src="https://cdn.lordicon.com/igcctxvk.json"
-								trigger="loop"
-								colors="primary:white,secondary:white"
-								stroke="bold"
-								style="width:4rem;height:4rem">
-							</lord-icon>
-							<br />Admin Entry
-						</button>
-						<button id="admin-reports" class="auth-button green-button admin">
-							<!-- <span class="material-symbols-outlined"> analytics </span> -->
-							<lord-icon
-								src="https://cdn.lordicon.com/oqhqyeud.json"
-								trigger="loop"
-								colors="primary:white,secondary:white"
-								stroke="bold"
-								style="width:4rem;height:4rem">
-							</lord-icon>
-							<br />Admin Reports
-						</button>
-
-						<button id="entry" class="auth-button yellow-button">
-						<!-- <span class="material-symbols-outlined"> assignment_turned_in </span> -->
-							<lord-icon
-								src="https://cdn.lordicon.com/knfutiyr.json"
-								trigger="loop"
-								colors="primary:white,secondary:white"
-								stroke="bold"
-								style="width:4rem;height:4rem">
-							</lord-icon>
-						<br />Marks Entry
-						</button>
-						<button id="masool" class="auth-button brown-button" hidden>
-							<!-- <span class="material-symbols-outlined"> museum </span> -->
-								<lord-icon
-									src="https://cdn.lordicon.com/cfoaotmk.json"
-									trigger="loop"
-									colors="primary:white,secondary:white"
-									stroke="bold"
-									style="width:4rem;height:4rem">
-								</lord-icon>
-							<br />Masool Portal
-							</button>
-					</div>
-					<button id="sign-out-button" class="auth-button"><span class="material-symbols-outlined"> logout </span><br />Sign Out</button>
-
 					<div id="stats-cards">
 						<div id="assessments-card" class="card" style="background-color: lightgoldenrodyellow">
 							<p>My Assessments</p>
@@ -178,24 +99,24 @@
 						</thead>
 						<tbody id="assessments-body"></tbody>
 					</table>
+                    <table id="students-table">
+                        <caption>
+                            Students in Class
+                        </caption>
+                        <!-- <button id="export-button" class="yellow-button" onclick="exportToExcel()">Export to Excel</button> -->
+                        <thead id="students-header">
+                        </thead>
+                        <tbody id="students-body"></tbody>
 				</div>
 			</div>
 
 
 			<div id="app-content" class="hidden">
-				<h2>Welcome to the Teacher Marks Entry System!</h2>
-				<p>Once you're signed in, you can start managing assessments and marks.</p>
 			</div>
 		</div>
 
 		<script>
 			// --- DOM Elements ---
-			const signInButton = document.getElementById("sign-in-button");
-			const signOutButton = document.getElementById("sign-out-button");
-			const userSection = document.getElementById("user-section");
-			const userEmailSpan = document.getElementById("user-email");
-			const userNameSpan = document.getElementById("user-name");
-			const userPhotoImg = document.getElementById("user-photo");
 			const appContent = document.getElementById("app-content");
 			const globalMessageArea = document.getElementById("global-message-area");
 			const entryButton = document.getElementById("entry");
@@ -208,97 +129,37 @@
 				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybGJ1cmh1ZmNwa3BmY295ZmxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMzY1MzYsImV4cCI6MjA2MTYxMjUzNn0.17VTbejLDJyI9hkHPiuoiy5jcZmLdgiJ16GuhkiOd08";
 			var supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-			// --- Authentication Functions ---
-			async function signInWithGoogle() {
-				const { error } = await supabase.auth.signInWithOAuth({
-					provider: "google",
-					options: {
-						redirectTo: "https://khardal.net/co1/", // Redirect to home page after sign-in
-						// prompt: "select_account",
-					},
-				});
-				if (error) {
-					console.error("Error signing in:", error);
-					showMessage(`Error signing in: ${error.message}`, "error");
-				}
-			}
-
-			async function signOut() {
-				const session = await supabase.auth.getSession();
-				console.log("Session:", session);
-				const { error } = await supabase.auth.signOut();
-				if (error) {
-					console.error("Error signing out:", error);
-					showMessage(`Error signing out: ${error.message}`, "error");
-				} else {
-					updateUI(null); // Refresh UI after sign-out
-				}
-			}
 
 			// --- UI Update Function ---
 			async function updateUI(user) {
 				clearMessage(); // Clear global messages on auth change
 
 				if (user) {
-					userNameSpan.textContent = user.user_metadata?.full_name || "User";
-					userEmailSpan.textContent = user.email;
-					userPhotoImg.src = user.user_metadata?.avatar_url || "https://www.example.com/default-avatar.jpg";
+					appContent.classList.remove("hidden")
 
-					signInButton.classList.add("hidden");
-					userSection.classList.remove("hidden");
-					appContent.classList.remove("hidden");
+					let classid = getMasool(user.email);
 
-					// Change sign-out button color to red
-					signOutButton.classList.add("red-button");
-					signInButton.classList.remove("blue-button");
+					// const { data, error } = await supabase.from("Teachers").select("*").eq("Email", user.email).single();
+					// const teacherid = data?.TeacherID;
+					// if (teacherid) {
+					// 	console.log("Teacher ID:", teacherid);
+					// 	assessmentsTable.classList.remove("hidden");
+					// 	getAssessments(teacherid);
 
-					getMasool(user.email);
-
-					const { data, error } = await supabase.from("Teachers").select("*").eq("Email", user.email).single();
-					const teacherid = data?.TeacherID;
-					if (teacherid) {
-						console.log("Teacher ID:", teacherid);
-						entryButton.addEventListener("click", () => {
-							window.location.href = `entry.html`;
-						});
-						assessmentsTable.classList.remove("hidden");
-						getAssessments(teacherid);
-
-						entryButton.classList.remove("hidden");
-						entryButton.color = "red"; // Set background color to blue
-
-						getMarkingProgress(teacherid);
-					}
-
-					const { data: admin, error: adminError } = await supabase.from("Admins").select("*").eq("Email", user.email).single();
-					console.log("Admin Data:", admin.id);
-					if (admin.id) {
-						let adminElements = document.querySelectorAll(".admin");
-						adminElements.forEach((element) => {
-							element.style.display = "inline-block";
-						});
-						document.getElementById("admin-entry").addEventListener("click", () => {
-							window.location.href = `admin-entry.html`;
-						});
-						document.getElementById("admin-access").addEventListener("click", () => {
-							window.location.href = `admin.html`;
-						});
-						document.getElementById("admin-reports").addEventListener("click", () => {
-							window.location.href = `reports.html`;
-						});
-					}
+					// 	getMarkingProgress(teacherid);
+					// }
+                    if (classid) {
+                        console.log("Class ID:", classid);
+                        assessmentsTable.classList.remove("hidden");
+                        // getAssessments(classid);
+                        // getMarkingProgress(classid);
+                    } else {
+                        showMessage("Masool not found for this user.", "error");
+                        window.location.href = "index.html";
+                    }
 				} else {
-					userNameSpan.textContent = "";
-					userEmailSpan.textContent = "";
-					userPhotoImg.src = "";
-					signInButton.classList.remove("hidden");
-					userSection.classList.add("hidden");
 					appContent.classList.add("hidden");
-					entryButton.classList.add("hidden");
-
 					// Change sign-in button color to blue
-					signInButton.classList.add("blue-button");
-					signOutButton.classList.remove("red-button");
 				}
 			}
 			async function getProgress(assessment) {
@@ -324,16 +185,20 @@
 				const { data, error } = await supabase.from("Classes").select("*").eq("Masool", email).single();
 				if (error) {
 					console.error("Error fetching masool. This user may not be a masool:", error);
+                    alert("Error fetching masool. This user may not be a masool.");
+                    window.location.href = "index.html";
 					return;
 				}
-				document.getElementById("masool").hidden = false;
-				document.getElementById("masool").addEventListener("click", () => {
-					window.location.href = `masool.html?classid=${data.ClassID}`;
-				});
+                console.log("Masool Data:", data);
+                document.getElementById("title").textContent = `Masool Page - ${data.ClassID}`;
+                getAssessments(data.ClassID);
+                getMarkingProgress(data.ClassID);
+                getStudentsData(data.ClassID);
+                return data.ClassID;
 			}
 
-			async function getAssessments(teacherid) {
-				const { data } = await supabase.from("Assessments").select("*").eq("TeacherID", teacherid);
+			async function getAssessments(classid) { //TODO: Change to classid
+				const { data } = await supabase.from("Assessments").select("*").eq("ClassID", classid);
 				console.log("Assessments Data:", data);
 				assessmentsBody.innerHTML = ""; // Clear previous entries
 				if (data.length > 0) {
@@ -349,16 +214,17 @@
 				}
 			}
 
-			async function getMarkingProgress(teacherid) {
-				console.log("Getting marking progress for teacher ID:", teacherid);
-				const { data: assessments } = await supabase.from("Assessments").select("*").eq("TeacherID", teacherid);
-				let { data: marks, error } = await supabase.from("Marks").select("*,Students(Name), Assessments(TeacherID,MaxMarks)");
+			async function getMarkingProgress(classid) {//TODO: Change to classid
+				console.log("Getting marking progress for teacher ID:", classid);
+				const { data: assessments } = await supabase.from("Assessments").select("*").eq("ClassID", classid);
+				let { data: marks, error } = await supabase.from("Marks").select("*,Students(Name), Assessments(TeacherID,ClassID,MaxMarks)");
 				if (error) {
 					console.error("Error fetching marks:", error);
 					showMessage(`Error fetching marks: ${error.message}`, "error");
 					return;
 				}
-				marks = marks.filter((mark) => mark.Assessments.TeacherID == teacherid);
+                console.log("Marks Data:", marks);
+				marks = marks.filter((mark) => mark.Assessments.ClassID == classid);
 				console.log("Marks Data:", marks);
 				console.log("Assessment Count:", assessments);
 				document.getElementById("assessments-count").textContent = assessments.length;
@@ -372,12 +238,136 @@
 				let scorepercentages = 0
 				let notNulltotal = notNull.length;
 				notNull.forEach((mark) => {
-					console.log("Average",(mark.MarksObtained/ mark.Assessments.MaxMarks)*100);
+					// console.log("Average",(mark.MarksObtained/ mark.Assessments.MaxMarks)*100);
 					scorepercentages += (mark.MarksObtained / mark.Assessments.MaxMarks) * 100;
 				});
 				let average = (scorepercentages / notNulltotal).toFixed(2);
 				document.getElementById("average-count").textContent = average + "%";
 			}
+
+            async function getStudentsData(classid) {
+    const { data: marks, error } = await supabase.from("Marks").select("*, Students(*), Assessments(Name, ClassID, MaxMarks)");
+    let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
+    
+    const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
+    console.log("Students Data:", students);
+    
+    const studentsBody = document.getElementById("students-body");
+    studentsBody.innerHTML = ""; // Clear previous entries
+    
+    let uniqueAssessments = new Set();
+    for (let mark of classMarks) {
+        uniqueAssessments.add(mark.Assessments.Name);
+    }
+    uniqueAssessments = Array.from(uniqueAssessments);  // List of all unique assessments
+    
+    // Create header row with the assessments dynamically
+    const headerRow = document.createElement("tr");
+    const nameHeader = document.createElement("th");
+    nameHeader.textContent = "Name";
+    headerRow.appendChild(nameHeader);
+    
+    const TRHeader = document.createElement("th");
+    TRHeader.textContent = "TRNO";
+    headerRow.appendChild(TRHeader);
+    
+    // Dynamically create headers for each assessment
+    uniqueAssessments.forEach(assessment => {
+        const assessmentHeader = document.createElement("th");
+        assessmentHeader.textContent = assessment;
+        headerRow.appendChild(assessmentHeader);
+    });
+    
+    // Add the Average column
+    const averageHeader = document.createElement("th");
+    averageHeader.textContent = "Average";
+    headerRow.appendChild(averageHeader);
+    
+    const studentsHeader = document.getElementById("students-header");
+    studentsHeader.innerHTML = ""; // Clear previous headers
+    studentsHeader.appendChild(headerRow);
+
+    // Create an array of student objects
+    const studentData = students.map(student => {
+        const studentMarks = classMarks.filter(mark => mark.StudentID === student.TRNO);
+        let studentObject = {
+            name: student.Name,
+            trno: student.TRNO,
+            assessments: {}
+        };
+
+        uniqueAssessments.forEach(assessment => {
+            const mark = studentMarks.find(m => m.Assessments.Name === assessment);
+            if (mark) {
+                studentObject.assessments[assessment] = {
+                    marksObtained: mark.MarksObtained,
+                    maxMarks: mark.Assessments.MaxMarks
+                };
+            } else {
+                studentObject.assessments[assessment] = {
+                    marksObtained: null,
+                    maxMarks: null
+                };
+            }
+        });
+
+        return studentObject;
+    });
+
+    console.log("Student Objects:", studentData);  // Log to check the data structure
+
+    // Now, create rows based on the student objects
+    studentData.forEach(student => {
+        const row = document.createElement("tr");
+
+        // Name and TRNO cells
+        const nameCell = document.createElement("td");
+        nameCell.textContent = student.name;
+        row.appendChild(nameCell);
+
+        const trnoCell = document.createElement("td");
+        trnoCell.textContent = student.trno;
+        row.appendChild(trnoCell);
+
+        let totalMarksObtained = 0;
+        let totalMaxMarks = 0;
+
+        // Loop through assessments and create cells
+        uniqueAssessments.forEach(assessment => {
+            const marksCell = document.createElement("td");
+
+            const assessmentData = student.assessments[assessment];
+            if (assessmentData.marksObtained !== null) {
+                marksCell.textContent = `${assessmentData.marksObtained}/${assessmentData.maxMarks}`;
+                totalMarksObtained += assessmentData.marksObtained;
+                totalMaxMarks += assessmentData.maxMarks;
+            } else {
+                marksCell.textContent = "N/A";
+            }
+
+            row.appendChild(marksCell);
+        });
+
+        // Average calculation
+        const averageCell = document.createElement("td");
+        if (totalMaxMarks > 0) {
+            const average = ((totalMarksObtained / totalMaxMarks) * 100).toFixed(2);
+            averageCell.textContent = `${average}%`;
+        } else {
+            averageCell.textContent = "N/A";
+        }
+
+        row.appendChild(averageCell);
+        studentsBody.appendChild(row);
+    });
+}
+            function exportToExcel() {
+                const table = document.getElementById("students-table");
+                const workbook = XLSX.utils.table_to_book(table, { sheet: "Students" });
+                XLSX.writeFile(workbook, "students.xlsx");
+            }
+
+
 			// --- Message Display ---
 			function showMessage(message, type = "success") {
 				globalMessageArea.textContent = message;
@@ -392,8 +382,6 @@
 			}
 
 			// --- Event Listeners Setup ---
-			signInButton.addEventListener("click", signInWithGoogle);
-			signOutButton.addEventListener("click", signOut);
 
 			// --- Auth State Change Listener ---
 			supabase.auth.onAuthStateChange(async (event, session) => {
@@ -570,7 +558,7 @@
 				text-align: left;
 			}
 			th {
-				background-color: #a98888;
+				background-color: #2196f3;
 				color: #333;
 			}
 			tr:nth-child(even) {
