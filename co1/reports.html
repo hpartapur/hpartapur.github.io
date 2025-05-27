@@ -263,6 +263,7 @@
 							📋Assessments<br>
 							<input type="text" id="searcher" placeholder="Search by Subject, Teacher, Class, or Assessment🔍" oninput="searchAssessments()" />
 						</caption>
+						
 						<thead>
 							<tr>
 								<th>Week<input type="text" id="week-filter" placeholder="Filter by Week" /></th>
@@ -292,10 +293,7 @@
 						<caption>
 							Marks
 						</caption>
-						<thead>
-							<tr id="markstable-header">
-								<th>Student</th>
-							</tr>
+						<thead id="markstable-header">
 						</thead>
 						<tbody id="marks-table-body">
 							<!-- Dynamic rows will go here -->
@@ -307,6 +305,7 @@
 		</div>
 
 		<script>
+			//TODO:securepage
 			const userSection = document.getElementById("user-section");
 			const userEmailSpan = document.getElementById("user-email");
 			const reportOutput = document.getElementById("report-output");
@@ -509,52 +508,115 @@
             }
             populateClassDropdown(); // Call this function to populate the dropdown on page load
 
-			async function getMarks(classID) {
-				// classID = "6 A M";
-				const { data: students, error: studentsError } = await supabase
-					.from("Students")
-					.select("TRNO, Name, ClassID, Classes(*)")
-					.order("TRNO", { ascending: true });
-				console.log(students);
-				if (studentsError) {
-					showMessage("Error fetching students: " + studentsError.message, "error");
-					return;
+			async function getMarks(classid) {
+				const { data: marks, error } = await supabase.from("Marks").select("*, Students(*), Assessments(Name, ClassID, MaxMarks)");
+				let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
+
+				const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
+				console.log("Students Data:", students);
+
+				const studentsBody = document.getElementById("marks-table-body");
+				studentsBody.innerHTML = ""; // Clear existing rows
+				let uniqueAssessments = new Set();
+				for (let mark of classMarks) {
+					uniqueAssessments.add(mark.Assessments.Name);
 				}
-				let selectedStudents = students.filter((student) => student.ClassID === classID);
-				console.log(selectedStudents);
-				// const { data: assessments, error: assessmentsError } = await supabase.from("Assessments").select("*, Classes(*), Subjects(*)");
-				// let selectedAssessments = assessments.filter((assessment) => assessment.Classes.Darajah === selectedDarajah);
-				// console.log(selectedAssessments);
-				const { data: marksData, error: marksError } = await supabase.from("Marks").select(`*, Assessments(*),Students(*)`);
-				let selectedMarks = marksData.filter((mark) => mark.Students.ClassID === classID);
-				console.log(selectedMarks);
-				let assessmentids = [];
-				let assessmentdata = {};
-				selectedMarks.forEach((mark) => {
-					assessmentids.push(mark.AssessmentID);
-					assessmentdata[mark.AssessmentID] = mark.Assessments;
+				uniqueAssessments = Array.from(uniqueAssessments);
+				uniqueAssessments.sort(); // Sort assessments alphabetically
+
+				const headerRow  = document.createElement("tr");
+				const nameHeader = document.createElement("th");
+				nameHeader.textContent = "Student";
+				headerRow.appendChild(nameHeader);
+				const TRHeader = document.createElement("th");
+				TRHeader.textContent = "TRNO";
+				headerRow.appendChild(TRHeader);
+				uniqueAssessments.forEach(assessment => {
+					const assessmentHeader = document.createElement("th");
+					assessmentHeader.textContent = assessment;
+					headerRow.appendChild(assessmentHeader);
 				});
-				console.log(assessmentdata);
-				assessmentids = [...new Set(assessmentids)];
-				console.log(assessmentids);
-				const tableHeader = document.getElementById("markstable-header");
-				tableHeader.innerHTML = "<th>Student</th>";
-				assessmentids.forEach((assessment) => {
-					tableHeader.innerHTML += `<th>${assessmentdata[assessment].Name}</th>`;
-				});
-				const tableBody = document.getElementById("marks-table-body");
-				tableBody.innerHTML = ""; // Clear existing rows
-				selectedStudents.forEach((student) => {
-					const row = document.createElement("tr");
-					row.innerHTML = `<td>${student.Name}</td>`;
-					selectedMarks.forEach((mark) => {
-						if (mark.Students.TRNO === student.TRNO) {
-							row.innerHTML += `<td>${mark.MarksObtained}</td>`;
-						}
-					});
-					tableBody.appendChild(row);
-				});
-			}
+				const averageHeader = document.createElement("th");
+				averageHeader.textContent = "Average";
+				headerRow.appendChild(averageHeader);
+
+				const studentsHeader = document.getElementById("markstable-header");
+				studentsHeader.innerHTML = ""; // Clear existing headers
+				studentsHeader.appendChild(headerRow);
+				const studentData = students.map(student => {
+        const studentMarks = classMarks.filter(mark => mark.StudentID === student.TRNO);
+        let studentObject = {
+            name: student.Name,
+            trno: student.TRNO,
+            assessments: {}
+        };
+
+        uniqueAssessments.forEach(assessment => {
+            const mark = studentMarks.find(m => m.Assessments.Name === assessment);
+            if (mark) {
+                studentObject.assessments[assessment] = {
+                    marksObtained: mark.MarksObtained,
+                    maxMarks: mark.Assessments.MaxMarks
+                };
+            } else {
+                studentObject.assessments[assessment] = {
+                    marksObtained: null,
+                    maxMarks: null
+                };
+            }
+        });
+
+        return studentObject;
+    });
+
+    console.log("Student Objects:", studentData);  // Log to check the data structure
+
+    // Now, create rows based on the student objects
+    studentData.forEach(student => {
+        const row = document.createElement("tr");
+
+        // Name and TRNO cells
+        const nameCell = document.createElement("td");
+        nameCell.textContent = student.name;
+        row.appendChild(nameCell);
+
+        const trnoCell = document.createElement("td");
+        trnoCell.textContent = student.trno;
+        row.appendChild(trnoCell);
+
+        let totalMarksObtained = 0;
+        let totalMaxMarks = 0;
+
+        // Loop through assessments and create cells
+        uniqueAssessments.forEach(assessment => {
+			console.log("Assessment:", assessment);
+            const marksCell = document.createElement("td");
+
+            const assessmentData = student.assessments[assessment];
+            if (assessmentData.marksObtained !== null) {
+                marksCell.textContent = `${assessmentData.marksObtained}/${assessmentData.maxMarks}`;
+                totalMarksObtained += assessmentData.marksObtained;
+                totalMaxMarks += assessmentData.maxMarks;
+            } else {
+                marksCell.textContent = "N/A";
+            }
+
+            row.appendChild(marksCell);
+        });
+
+        // Average calculation
+        const averageCell = document.createElement("td");
+        if (totalMaxMarks > 0) {
+            const average = ((totalMarksObtained / totalMaxMarks) * 100).toFixed(2);
+            averageCell.textContent = `${average}%`;
+        } else {
+            averageCell.textContent = "N/A";
+        }
+
+        row.appendChild(averageCell);
+        studentsBody.appendChild(row);
+    });
+}
 			async function getProgress(assessment, marksData, row) {
 				let total = 0;
 				let notNull = 0;
