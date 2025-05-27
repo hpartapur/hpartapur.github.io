@@ -514,7 +514,7 @@
 						const trno = student.TRNO;
 						const { error: insertError } = await supabase
 							.from("Marks")
-							.insert([{ StudentID: trno, MarksObtained: 0, AssessmentID: assessmentId }]);
+							.insert([{ StudentID: trno, MarksObtained: null, AssessmentID: assessmentId }]);
 						if (insertError) {
 							console.error("Error adding assessment to student:", insertError);
 							showMessage("Error adding assessment to student. Please try again.", "error");
