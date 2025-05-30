@@ -269,6 +269,26 @@
 				targetElement.className = `message-area message-${type}`; // Ensure base class and type class
 				targetElement.style.display = "block";
 
+				// Optionally, scroll to the message area
+				targetElement.scrollIntoView({ behavior: "smooth" });
+				targetElement.scrollIntoView({ behavior: "smooth" });
+				//vibrate if possible
+				// Vibrate if possible, based on message type
+				if (navigator.vibrate) {
+					switch (type) {
+						case "success":
+							navigator.vibrate(75); // Short single pulse
+							break;
+						case "error":
+							navigator.vibrate([100, 50, 100]); // Two pulses
+							break;
+						case "info":
+						default:
+							navigator.vibrate(50); // Very brief pulse
+							break;
+					}
+				}
+
 				// Optionally hide after some time
 				// setTimeout(() => {
 				//     targetElement.style.display = 'none';
@@ -396,7 +416,8 @@
 
 					const marksObtainedCell = row.insertCell();
 					const marksInput = document.createElement("input");
-					marksInput.type = "decimal";
+					marksInput.type = "number";
+					marksInput.step = "any"; // Allow decimal marks
 					marksInput.value = markEntry.MarksObtained !== null ? markEntry.MarksObtained : "";
 					marksInput.name = `marks-${markEntry.id}`;
 					marksInput.dataset.markId = markEntry.id; // Store MarkID for easier access
