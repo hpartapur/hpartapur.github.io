@@ -391,7 +391,6 @@
 				let scorepercentages = 0
 				let notNulltotal = notNull.length;
 				notNull.forEach((mark) => {
-					console.log("Average",(mark.MarksObtained/ mark.Assessments.MaxMarks)*100);
 					scorepercentages += (mark.MarksObtained / mark.Assessments.MaxMarks) * 100;
 				});
 				let average = (scorepercentages / notNulltotal).toFixed(2);
@@ -678,7 +677,7 @@
 			}
 			async function getAssessments() {
 				const { data, error } = await supabase.from("Assessments").select(`*, Teachers(Name, Email,whatsapp)`).order("Week", { ascending: true }).order("ClassID", { ascending: true });
-				console.log(data, error);
+				console.log(data, error, "Assessments Data:");
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
 				assessmentsTableBody.innerHTML = ""; // Clear existing rows
 				const marksData = await supabase.from("Marks").select("*");
