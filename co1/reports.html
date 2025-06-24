@@ -670,7 +670,7 @@
 				console.log(data, error);
 				const assessmentsTableBody = document.querySelector("#assessments tbody");
 				assessmentsTableBody.innerHTML = ""; // Clear existing rows
-				const marksData = await supabase.from("Marks").select("*").range(0,7000);
+				const marksData = await supabase.from("Marks").select("*").range(0,1300);
 				if (data) {
 					data.forEach((assessment) => {
 						const row = document.createElement("tr");
