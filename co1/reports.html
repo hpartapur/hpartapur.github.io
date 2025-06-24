@@ -620,6 +620,7 @@
 			async function getProgress(assessment, marksData, row) {
 				let total = 0;
 				marksData = await supabase.from("Marks").select("*").eq("AssessmentID", assessment.id);
+				marksData = marksData.data;
 				console.log(marksData);
 				let notNull = 0;
 				let notNullTotal = 0;
