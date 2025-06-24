@@ -631,6 +631,7 @@
 					}
 				});
 				const progress = (notNull / total) * 100;
+				console.log(assessment.Name, "Progress:", progress, "Total:", total, "Not Null:", notNull, "Not Null Total:", notNullTotal);
 				row.innerHTML += `<td>${progress.toFixed(2)}%</td>`;
 				row.innerHTML += `<td>${total - notNull} / ${total}</td>`;
 				row.innerHTML += `<td>${(notNullTotal / notNull).toFixed(0)}/${assessment.MaxMarks}: ${((notNullTotal/notNull)/assessment.MaxMarks*100).toFixed(0)}%</td>`;
