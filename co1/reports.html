@@ -509,8 +509,9 @@
             populateClassDropdown(); // Call this function to populate the dropdown on page load
 
 			async function getMarks(classid) {
-				const { data: marks, error } = await supabase.from("Marks").select("*, Students(*), Assessments(Name, ClassID, MaxMarks)");
-				let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
+				const { data: marks, error } = await supabase.from("Marks").select("*, Students(*), Assessments(Name, ClassID, MaxMarks)").eq("Assessments.ClassID", classid);
+				// let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
+				console.log("Marks Data 2:", marks);
 
 				const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
 				console.log("Students Data:", students);
