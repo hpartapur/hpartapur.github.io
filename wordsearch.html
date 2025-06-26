@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Arabic Word Search Game</title>
+		<title>Khardal Behs</title>
 		<audio id="tile-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3" preload="auto"></audio>
 
 		<!-- Tailwind CSS CDN -->
@@ -177,9 +177,15 @@
 				transform: translateY(0);
 				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 			}
+			.footer-text {
+				margin-top: 30px;
+				font-size: 0.9rem;
+				color: #718096; /* Gray text */
+				padding-top: 15px;
+				border-top: 1px solid #e2e8f0; /* Light border on top */
+			}
 
 			/* Responsive adjustments */
-			/* Cells and font size will be adjusted by setting --cell-size in media queries via JS */
 			@media (max-width: 768px) {
 				.game-container {
 					padding: 25px;
@@ -226,7 +232,6 @@
 				.grid-container {
 					padding: 2px; /* Less padding to maximize cell space */
 				}
-				/* Cell size and font size for smallest screens should be handled here, not calc in JS */
 				.grid-cell {
 					width: 30px;
 					height: 30px;
@@ -242,7 +247,7 @@
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-amiri">
 		<div class="game-container">
 			<div class="game-header">
-				<h1 class="text-4xl font-bold text-gray-800 mb-2">Arabic Word Search Game</h1>
+				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal Behs</h1>
 				<p class="text-lg text-gray-600">Find the hidden words in the grid!</p>
 			</div>
 
@@ -262,15 +267,20 @@
 			<div class="button-group">
 				<button id="reset-button" class="game-button">Reset Game</button>
 			</div>
+
+			<footer class="footer-text">
+				Brought to you by <a style="color: blue" href="https://talabulilm.com/istibsaar/home">Junior Reflections</a>
+			</footer>
 		</div>
 
 		<script>
+			// Updated words and hints
 			const words = ["سفينة", "كهجوري", "اصحاب", "ميزان"]; // Actual words to find
 			const hints = [
-				"🛳️مارا اهل بيت نو مثل نوح نو ___", // Hint for 'مثل'
-				"🌴مومن قوي نو مثل", // Hint for 'القاب'
-				"مارا __ نمك ني مثل ؛", // Hint for 'اين'
-				"نماز ايك __ ني مثل⚖️ ؛", // Hint for 'پنچتن'
+				"🛳️مارا اهل بيت نو مثل نوح نو ___", // Hint for 'سفينة'
+				"🌴مومن قوي نو مثل", // Hint for 'كهجوري'
+				"مارا __ نمك ني مثل ؛", // Hint for 'اصحاب'
+				"نماز ايك __ ني مثل⚖️ ؛", // Hint for 'ميزان'
 			];
 			const GRID_SIZE = 10; // Smaller grid for easier play
 			const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنوهىيىءةگپےٹچ"; // Common Arabic letters for filler
@@ -289,6 +299,7 @@
 			let gameGridElement = document.getElementById("game-grid");
 			let wordListElement = document.getElementById("word-list");
 			let resetButton = document.getElementById("reset-button");
+			let tileSound = document.getElementById("tile-sound"); // Get the audio element
 
 			// Function to get a random Arabic letter
 			function getRandomArabicLetter() {
@@ -475,6 +486,12 @@
 				if (foundExactWord) {
 					foundWords.add(foundExactWord);
 					displayMessage(`Great! You found "${foundExactWord}"!`, "success");
+
+					// Play tile sound when a word is found
+					if (tileSound) {
+						tileSound.currentTime = 0; // Rewind to start
+						tileSound.play();
+					}
 
 					// Mark cells as found
 					highlightCells(selectedCells, false); // Remove selected class
