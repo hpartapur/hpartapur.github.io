@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -185,6 +185,58 @@
 				border-top: 1px solid #e2e8f0; /* Light border on top */
 			}
 
+			/* Modal Styles */
+			.modal-overlay {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 1000; /* Ensure it's on top */
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.3s ease, visibility 0.3s ease;
+			}
+			.modal-overlay.show {
+				opacity: 1;
+				visibility: visible;
+			}
+			.modal-content {
+				background-color: #ffffff;
+				padding: 40px;
+				border-radius: 15px;
+				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+				text-align: center;
+				max-width: 400px;
+				width: 90%;
+				transform: translateY(-50px); /* Start slightly above */
+				transition: transform 0.3s ease;
+			}
+			.modal-overlay.show .modal-content {
+				transform: translateY(0); /* Slide into place */
+			}
+			.modal-content h3 {
+				font-size: 2rem;
+				font-weight: bold;
+				color: #3182ce; /* Blue for modal title */
+				margin-bottom: 20px;
+			}
+			.modal-content p {
+				font-size: 1.1rem;
+				color: #4a5568;
+				margin-bottom: 30px;
+			}
+			.share-message {
+				margin-top: 15px;
+				font-size: 0.9rem;
+				color: #48bb78; /* Green for success message */
+				min-height: 20px; /* Reserve space */
+			}
+
 			/* Responsive adjustments */
 			@media (max-width: 768px) {
 				.game-container {
@@ -208,6 +260,15 @@
 				.game-button {
 					padding: 10px 20px;
 					font-size: 0.95rem;
+				}
+				.modal-content {
+					padding: 30px;
+				}
+				.modal-content h3 {
+					font-size: 1.8rem;
+				}
+				.modal-content p {
+					font-size: 1rem;
 				}
 			}
 
@@ -239,6 +300,15 @@
 				}
 				.game-button {
 					padding: 8px 16px;
+					font-size: 0.9rem;
+				}
+				.modal-content {
+					padding: 20px;
+				}
+				.modal-content h3 {
+					font-size: 1.5rem;
+				}
+				.modal-content p {
 					font-size: 0.9rem;
 				}
 			}
@@ -273,8 +343,17 @@
 			</footer>
 		</div>
 
+		<!-- Congrats Modal -->
+		<div id="congrats-modal-overlay" class="modal-overlay">
+			<div class="modal-content">
+				<h3>Congratulations! 🎉</h3>
+				<p id="modal-message">You found all the words!</p>
+				<button id="share-button" class="game-button">Share My Score!</button>
+				<div id="share-status-message" class="share-message"></div>
+			</div>
+		</div>
+
 		<script>
-			// Updated words and hints
 			const words = ["سفينة", "كهجوري", "اصحاب", "ميزان"]; // Actual words to find
 			const hints = [
 				"🛳️مارا اهل بيت نو مثل نوح نو ___", // Hint for 'سفينة'
@@ -300,6 +379,12 @@
 			let wordListElement = document.getElementById("word-list");
 			let resetButton = document.getElementById("reset-button");
 			let tileSound = document.getElementById("tile-sound"); // Get the audio element
+
+			// Modal elements
+			const congratsModalOverlay = document.getElementById("congrats-modal-overlay");
+			const modalMessage = document.getElementById("modal-message");
+			const shareButton = document.getElementById("share-button");
+			const shareStatusMessage = document.getElementById("share-status-message");
 
 			// Function to get a random Arabic letter
 			function getRandomArabicLetter() {
@@ -504,7 +589,8 @@
 					renderWordList(); // Update word list to mark as found
 
 					if (foundWords.size === words.length) {
-						displayMessage("Congratulations! You found all the words!", "success");
+						// All words found, show congrats modal
+						openCongratsModal();
 						// Trigger confetti when all words are found!
 						confetti({
 							particleCount: 100,
@@ -521,6 +607,50 @@
 				selectedCells = [];
 				currentSelectionDirection = { dr: 0, dc: 0 }; // Reset direction
 			}
+
+			// Function to open the congrats modal
+			function openCongratsModal() {
+				modalMessage.textContent = "You found all the words!";
+				shareStatusMessage.textContent = ""; // Clear previous share status
+				congratsModalOverlay.classList.add("show");
+				// Optionally disable game interaction while modal is open
+				gameGridElement.style.pointerEvents = "none";
+				resetButton.disabled = true;
+			}
+
+			// Function to close the modal
+			function closeCongratsModal() {
+				congratsModalOverlay.classList.remove("show");
+				gameGridElement.style.pointerEvents = "auto"; // Re-enable game interaction
+				resetButton.disabled = false;
+			}
+
+			// Share button logic
+			shareButton.addEventListener("click", () => {
+				const shareText = `I just solved the "Khardal Behs" Word Search game and found all the words! Can you beat my score? #KhardalBehs #WordSearch`;
+				const dummyTextArea = document.createElement("textarea");
+				dummyTextArea.value = shareText;
+				document.body.appendChild(dummyTextArea);
+				dummyTextArea.select();
+				try {
+					document.execCommand("copy");
+					shareStatusMessage.textContent = "Copied to clipboard! Share with your friends!";
+				} catch (err) {
+					shareStatusMessage.textContent = "Failed to copy. Please copy manually.";
+					console.error("Failed to copy text: ", err);
+				}
+				document.body.removeChild(dummyTextArea);
+
+				// Close modal after a short delay for user to see copy message
+				setTimeout(closeCongratsModal, 2000);
+			});
+
+			// Close modal when clicking outside (on the overlay)
+			congratsModalOverlay.addEventListener("click", (e) => {
+				if (e.target === congratsModalOverlay) {
+					closeCongratsModal();
+				}
+			});
 
 			// Event Listeners for Grid Interaction
 			gameGridElement.addEventListener("mousedown", (e) => {
@@ -690,6 +820,7 @@
 				selectedCells = [];
 				isMouseDown = false;
 				currentSelectionDirection = { dr: 0, dc: 0 }; // Ensure reset
+				closeCongratsModal(); // Ensure modal is closed on new game
 				displayMessage("Find the words below!");
 				fillGrid();
 				renderGrid();
