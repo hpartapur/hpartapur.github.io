@@ -322,7 +322,7 @@
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-amiri">
 		<div class="game-container">
 			<div class="game-header">
-				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 2</h1>
+				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 3</h1>
 				<p class="text-lg text-gray-600">Find the hidden words in the grid!</p>
 			</div>
 
@@ -359,14 +359,15 @@
 		</div>
 
 		<script>
-			const words = ["نجومي", "مناظر", "جفاكش", "نشانه", "نصيب"]; // Actual words to find
-			const hints = [
-				"امام مهدي يه وه __ ني وات نه سني، انسس خدا ثثر توكل كري نسس ثثدهاري ككيا ", // Hint for 'فلكمحيط'
-				"امام معز قدرة نا __ ديكهوا واسطسس ثثدهارا مككر سككلا لوككو اْثثنسس ككهيري ليدا", // Hint for 'حركة'
-				"فرزندو نسس بهي اهوا كامو سككلا كراوسس تاكه  يه بهي ___ بنسس", // Hint for 'پياز'
-				"سيدي داود بهائيصاحب نو ___ ككهنو بظظتر هتو", // Hint for 'لطافة'
-				"نه اميد نه تهائي، ___ نا بدلنار حسين ؛!", // Hint for 'ححوويس'
-			];
+			const words = ["نحوسية", "كهيروت", "باريك", "روزه", "چار"]; // Actual words to find
+        const hints = [
+            "بسم الله الرحمن الرحيم پرهواسي __ دور تهائي ؛ انسس شيطان بهاككسس ؛", // Hint for 'نحوسية'
+            "جو ____ برابر تدبير كرسس ؛ تو پهل گهنا ميضضها اوسس ؛", // Hint for 'كهيروت'
+            "صراط مستقيم تلوار ني دهار كرتا تيز انسس بال كرتا ___ ؛", // Hint for 'باريك'
+            "جان نسس كسر كروو ___ سكهاوسس ؛، پياسا رهوانا سبب", // Hint for 'روزه'
+            "___ ما سي دس ١٠ نكلسس ؛" // Hint for 'چار'
+        ];
+
 			const GRID_SIZE = 10; // Smaller grid for easier play
 			const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنوهىيىءةگپےٹچ"; // Common Arabic letters for filler
 			const directions = [
@@ -633,12 +634,13 @@
 
 			// Share button logic
 			shareButton.addEventListener("click", () => {
-				const shareText = `🔍I just solved the "Khardal WordSearch Day2 and found all the words! Can you do the same?`;
+				const shareText = `🔍I just solved the "Khardal WordSearch Day3 and found all the words! Can you do the same?`;
 				const dummyTextArea = document.createElement("textarea");
 				dummyTextArea.value = shareText;
 				document.body.appendChild(dummyTextArea);
 				dummyTextArea.select();
 				try {
+navigator.share(shareText)
 					document.execCommand("copy");
 					shareStatusMessage.textContent = "Copied to clipboard! Share with your friends!";
 				} catch (err) {
