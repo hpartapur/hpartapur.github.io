@@ -5,8 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Khardal WordSearch</title>
 		<audio id="tile-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3" preload="auto"></audio>
-    <link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf"
-    type="font/ttf" crossorigin="anonymous">
+		<link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous" />
 
 		<!-- Tailwind CSS CDN -->
 		<script src="https://cdn.tailwindcss.com"></script>
@@ -17,13 +16,13 @@
 			:root {
 				--grid-cols: 10; /* Set default grid columns via CSS variable */
 			}
-@font-face {
-      font-family: KM;
-      src: url(Kanz-al-Marjaan.ttf);
-}
+			@font-face {
+				font-family: KM;
+				src: url(Kanz-al-Marjaan.ttf);
+			}
 
 			body {
-				font-family: KM,"Kanz-al-Marjaan", "Amiri", serif; /* Use Amiri for Arabic text, Inter for general UI */
+				font-family: KM, "Kanz-al-Marjaan", "Amiri", serif; /* Use Amiri for Arabic text, Inter for general UI */
 				background-color: #eef2f6; /* Lighter background */
 				display: flex;
 				justify-content: center;
@@ -323,7 +322,7 @@
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-amiri">
 		<div class="game-container">
 			<div class="game-header">
-				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎</h1>
+				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 2</h1>
 				<p class="text-lg text-gray-600">Find the hidden words in the grid!</p>
 			</div>
 
@@ -360,14 +359,14 @@
 		</div>
 
 		<script>
-			const words = ["فلكمحيط", "حركة", "پياز", "چكي", "چوويس"]; // Actual words to find
-        const hints = [
-            "سككلا كرتا بلند انسس وسيع اسمان", // Hint for 'فلكمحيط'
-            "فلك محيط خود بخود ___ كري نسس بيسرا نسس كراوسس ؛", // Hint for 'حركة'
-            "خدا يه اسمان نسس layers ما پيدا كيدا ___ ني مثل", // Hint for 'پياز'
-            "منسس __ نو اواز سنائي ؛ مككر ثثيسوانو عمل نظر نتهي اؤتو", // Hint for 'لطافة'
-            "سيدنا يوسف نجم الدين رض ___ما داعي تها" // Hint for 'ححوويس'
-        ];
+			const words = ["نجومي", "مناظر", "جفاكش", "نشانه", "نصيب"]; // Actual words to find
+			const hints = [
+				"امام مهدي يه وه __ ني وات نه سني، انسس خدا ثثر توكل كري نسس ثثدهاري ككيا ", // Hint for 'فلكمحيط'
+				"امام معز قدرة نا __ ديكهوا واسطسس ثثدهارا مككر سككلا لوككو اْثثنسس ككهيري ليدا", // Hint for 'حركة'
+				"فرزندو نسس بهي اهوا كامو سككلا كراوسس تاكه  يه بهي ___ بنسس", // Hint for 'پياز'
+				"سيدي داود بهائيصاحب نو ___ ككهنو بظظتر هتو", // Hint for 'لطافة'
+				"نه اميد نه تهائي، ___ نا بدلنار حسين ؛!", // Hint for 'ححوويس'
+			];
 			const GRID_SIZE = 10; // Smaller grid for easier play
 			const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنوهىيىءةگپےٹچ"; // Common Arabic letters for filler
 			const directions = [
@@ -634,7 +633,7 @@
 
 			// Share button logic
 			shareButton.addEventListener("click", () => {
-				const shareText = `I just solved the "Khardal WordSearch and found all the words! Can you do the same?`;
+				const shareText = `🔍I just solved the "Khardal WordSearch Day2 and found all the words! Can you do the same?`;
 				const dummyTextArea = document.createElement("textarea");
 				dummyTextArea.value = shareText;
 				document.body.appendChild(dummyTextArea);
