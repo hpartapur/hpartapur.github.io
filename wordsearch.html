@@ -322,7 +322,7 @@
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-amiri">
 		<div class="game-container">
 			<div class="game-header">
-				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 3</h1>
+				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 4</h1>
 				<p class="text-lg text-gray-600">Find the hidden words in the grid!</p>
 			</div>
 
@@ -360,14 +360,13 @@
 
 		<script>
 			const words = ["ورزش", "صدقة", "خوشموهي", "بهشتي", "ملتقى"]; // Actual words to find
-        const hints = [
-            "جسم ني صحة باقي راكهوا واسطسس وقت انسس محنة خرححي نسس ___ كرسس", // Hint for 'ورزش'
-            "امام علي زين العابدين سفر پر سي ولي نسس شكر كري نسس ___ كرتا تها", // Hint for 'صدقة'
-            "مومنين سككلا نسس ___ سي ملسس، هستو ححظظره راكهسس", // Hint for 'خوشموهي'
-            "مولاي ادم انسس سككلا حدود ___ نا پيچهسس نماز پرهي", // Hint for 'بهشتي'
-            "سككلا نسس ___ ما سمجهاوي نسس وياج ني كيچر سي بچاوي ديدا" // Hint for 'ملتقى'
-        ];
-
+			const hints = [
+				"جسم ني صحة باقي راكهوا واسطسس وقت انسس محنة خرححي نسس ___ كرسس", // Hint for 'ورزش'
+				"امام علي زين العابدين سفر پر سي ولي نسس شكر كري نسس ___ كرتا تها", // Hint for 'صدقة'
+				"مومنين سككلا نسس ___ سي ملسس، هستو ححظظره راكهسس", // Hint for 'خوشموهي'
+				"مولاي ادم انسس سككلا حدود ___ نا پيچهسس نماز پرهي", // Hint for 'بهشتي'
+				"سككلا نسس ___ ما سمجهاوي نسس وياج ني كيچر سي بچاوي ديدا", // Hint for 'ملتقى'
+			];
 
 			const GRID_SIZE = 10; // Smaller grid for easier play
 			const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنوهىيىءةگپےٹچ"; // Common Arabic letters for filler
@@ -635,13 +634,13 @@
 
 			// Share button logic
 			shareButton.addEventListener("click", () => {
-				const shareText = `🔍I just solved the "Khardal WordSearch Day3 and found all the words! Can you do the same?`;
+				const shareText = `🔍I just solved the "Khardal WordSearch Day4 and found all the words! Can you do the same? https://khardal.net/wordsearch.html`;
 				const dummyTextArea = document.createElement("textarea");
 				dummyTextArea.value = shareText;
 				document.body.appendChild(dummyTextArea);
 				dummyTextArea.select();
 				try {
-navigator.share(shareText)
+					navigator.share(shareText);
 					document.execCommand("copy");
 					shareStatusMessage.textContent = "Copied to clipboard! Share with your friends!";
 				} catch (err) {
