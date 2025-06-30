@@ -6,7 +6,17 @@
 		<title>Khardal WordSearch</title>
 		<audio id="tile-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3" preload="auto"></audio>
 		<link rel="preload" as="font" href="../assets/Kanz-al-Marjaan.ttf" type="font/ttf" crossorigin="anonymous" />
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZJM8TVT5H6"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
 
+			gtag("config", "G-ZJM8TVT5H6");
+		</script>
 		<!-- Tailwind CSS CDN -->
 		<script src="https://cdn.tailwindcss.com"></script>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
@@ -578,6 +588,7 @@
 				if (foundExactWord) {
 					foundWords.add(foundExactWord);
 					displayMessage(`Great! You found "${foundExactWord}"!`, "success");
+					foundWordAnalytics(foundExactWord); // Track found word for analytics
 
 					// Play tile sound when a word is found
 					if (tileSound) {
@@ -630,6 +641,14 @@
 				congratsModalOverlay.classList.remove("show");
 				gameGridElement.style.pointerEvents = "auto"; // Re-enable game interaction
 				resetButton.disabled = false;
+			}
+			function foundWordAnalytics(word) {
+				gtag("event", "ًWord Found", {
+					event_label: word,
+					event_category: "Word Found",
+					non_interaction: true,
+					value: word.length, // Optional: use word length as value
+				});
 			}
 
 			// Share button logic
