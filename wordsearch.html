@@ -332,7 +332,7 @@
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-amiri">
 		<div class="game-container">
 			<div class="game-header">
-				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 4</h1>
+				<h1 class="text-4xl font-bold text-gray-800 mb-2">Khardal WordSearch🔍🔎Day 5</h1>
 				<p class="text-lg text-gray-600">Find the hidden words in the grid!</p>
 			</div>
 
@@ -369,14 +369,16 @@
 		</div>
 
 		<script>
-			const words = ["ورزش", "صدقة", "خوشموهي", "بهشتي", "ملتقى"]; // Actual words to find
-			const hints = [
-				"جسم ني صحة باقي راكهوا واسطسس وقت انسس محنة خرححي نسس ___ كرسس", // Hint for 'ورزش'
-				"امام علي زين العابدين سفر پر سي ولي نسس شكر كري نسس ___ كرتا تها", // Hint for 'صدقة'
-				"مومنين سككلا نسس ___ سي ملسس، هستو ححظظره راكهسس", // Hint for 'خوشموهي'
-				"مولاي ادم انسس سككلا حدود ___ نا پيچهسس نماز پرهي", // Hint for 'بهشتي'
-				"سككلا نسس ___ ما سمجهاوي نسس وياج ني كيچر سي بچاوي ديدا", // Hint for 'ملتقى'
-			];
+const words = ["اللهم", "تابع", "سيراب", "پيشاني", "اقصى"]; // Actual words to find
+        const hints = [
+            "خدا نسس دعاء كروانو كلمة", // Hint for 'اللهم'
+            "جه خدا ني محبة كرتا هوئي يه منسس ___ تهائي، خدا اهني محبة كرسسس", // Hint for 'تابع'
+            "ايك بكري ني جهانكك انسس ايك دوده ني قدح پر سككلا سير انسس ____ تهئي ككيا", // Hint for 'سيراب'
+            "عمار تو مارا _____ نا محل ما چهسس", // Hint for 'پيشاني'
+            "رسول الله معراج ني رات ما مسجد ___ ما تمام انبياء نسس نماز پرهاوي" // Hint for 'اقصى'
+        ];
+
+
 
 			const GRID_SIZE = 10; // Smaller grid for easier play
 			const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنوهىيىءةگپےٹچ"; // Common Arabic letters for filler
@@ -653,7 +655,7 @@
 
 			// Share button logic
 			shareButton.addEventListener("click", () => {
-				const shareText = `🔍I just solved the Khardal WordSearch Day4 and found all the words! Can you do the same? https://khardal.net/wordsearch.html`;
+				const shareText = `🔍I just solved the Khardal WordSearch Day5 and found all the words! Can you do the same? https://khardal.net/wordsearch.html`;
 				const dummyTextArea = document.createElement("textarea");
 				dummyTextArea.value = shareText;
 				document.body.appendChild(dummyTextArea);
