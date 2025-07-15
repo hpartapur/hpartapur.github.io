@@ -3,54 +3,177 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Certificate Validation</title>
+		<title>Umoor Maliyah Training Certification</title>
 		<style>
 			body {
-				font-family: Arial, sans-serif;
-				text-align: center;
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				background: #f0f2f5;
 				margin: 0;
-				padding: 0;
+				padding: 20px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
 			}
+
 			.container {
-				margin-top: 50px;
+				background: white;
+				padding: 30px;
+				border-radius: 16px;
+				box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+				max-width: 550px;
+				width: 100%;
+				text-align: center;
 			}
-			input[type="text"] {
-				padding: 10px;
-				width: 300px;
+
+			.logo {
+				width: 100px;
+				margin-bottom: 10px;
+			}
+
+			.main-title {
+				font-size: 22px;
+				font-weight: bold;
+				color: #004080;
+				margin-bottom: 5px;
+			}
+
+			h1 {
+				font-size: 20px;
+				margin-bottom: 10px;
+				color: #333;
+			}
+
+			p {
+				color: #555;
+				font-size: 16px;
 				margin-bottom: 20px;
 			}
-			button {
-				padding: 10px 20px;
+
+			input[type="text"] {
+				width: 100%;
+				padding: 12px;
+				border-radius: 8px;
+				border: 1px solid #ccc;
+				margin-bottom: 15px;
 				font-size: 16px;
-				cursor: pointer;
 			}
+
+			button {
+				padding: 12px 20px;
+				background-color: #007bff;
+				color: white;
+				border: none;
+				border-radius: 8px;
+				cursor: pointer;
+				font-size: 16px;
+				transition: background-color 0.3s;
+			}
+
+			button:hover {
+				background-color: #0056b3;
+			}
+
 			.result {
-				margin-top: 20px;
+				margin-top: 25px;
 				font-size: 18px;
-				font-weight: bold;
+				transition: opacity 0.3s ease-in-out;
+			}
+
+			.valid {
+				color: green;
+			}
+
+			.invalid {
+				color: red;
+			}
+
+			.certificate-details {
+				margin-top: 20px;
+				background: #f9f9f9;
+				padding: 20px;
+				border-radius: 12px;
+				text-align: left;
+			}
+
+			.certificate-image {
+				width: 100%;
+				max-width: 400px;
+				margin: 15px auto;
+				border-radius: 8px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
+			<img class="logo" src="https://www.12umoor.com/images/3-Maaliyah.png" alt="Umoor Maliyah Logo" />
+			<div class="main-title">Umoor Maliyah Training Certification</div>
 			<h1>Certificate Validation</h1>
-			<p>Enter your certificate ID to validate:</p>
-			<input type="text" id="certificateId" placeholder="Enter Certificate ID" />
+			<p>Enter your certificate ID below to verify</p>
+			<input type="text" id="certificateId" placeholder="e.g. CERT123" onkeydown="handleKey(event)" />
 			<button onclick="validateCertificate()">Validate</button>
 			<div class="result" id="result"></div>
 		</div>
-		<script>
-			function validateCertificate() {
-				const registeredIds = ["CERT123", "CERT456", "CERT789"]; // Hardcoded certificate IDs
-				const inputId = document.getElementById("certificateId").value.trim();
-				const resultDiv = document.getElementById("result");
 
-				if (registeredIds.includes(inputId)) {
-					resultDiv.textContent = "VALID CERTIFICATE BY UMOOR MALIYAH";
-					resultDiv.style.color = "green";
+		<script>
+			const certificateData = {
+				CERT123: {
+					name: "Fatema Hakim",
+					date: "2025-01-15",
+					location: "Mumbai",
+				},
+				CERT456: {
+					name: "Ali Qutbuddin",
+					date: "2025-02-20",
+					location: "Mumbai",
+				},
+				CERT789: {
+					name: "Zainab Bhai",
+					date: "2025-03-10",
+					location: "Kolkata",
+				},
+			};
+
+			function formatDate(dateStr) {
+				const options = { year: "numeric", month: "long", day: "numeric" };
+				return new Date(dateStr).toLocaleDateString(undefined, options);
+			}
+
+			function validateCertificate() {
+				const input = document.getElementById("certificateId");
+				const resultDiv = document.getElementById("result");
+				const inputId = input.value.trim().toUpperCase();
+				resultDiv.className = "result";
+				resultDiv.innerHTML = "";
+
+				if (!inputId) {
+					resultDiv.textContent = "Please enter a certificate ID.";
+					resultDiv.classList.add("invalid");
+					return;
+				}
+
+				if (certificateData[inputId]) {
+					const data = certificateData[inputId];
+					const dateFormatted = formatDate(data.date);
+
+					resultDiv.classList.add("valid");
+					resultDiv.innerHTML = `
+					✅ <strong>Valid Certificate by Umoor Maliyah</strong><br><br>
+					<div class="certificate-details">
+						<img class="certificate-image" src="./accountingcert.jpeg" alt="Certificate Placeholder" />
+						<p><strong>${data.name}</strong> was certified to have completed this workshop on <strong>${dateFormatted}</strong> in <strong>${data.location}</strong>.</p>
+					</div>
+				`;
 				} else {
-					resultDiv.textContent = "INVALID CERTIFICATE";
-					resultDiv.style.color = "red";
+					resultDiv.textContent = "❌ Invalid Certificate";
+					resultDiv.classList.add("invalid");
+				}
+			}
+
+			function handleKey(event) {
+				if (event.key === "Enter") {
+					validateCertificate();
 				}
 			}
 		</script>
