@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanz al Marjaan Font Input</title>
+    <style>
+        /* Define the custom font using @font-face */
+        @font-face {
+            font-family: 'Kanz al Marjaan';
+            /* Specify the URL of the TrueType Font (TTF) file */
+            /* The 'format' descriptor is crucial for browser interpretation */
+            src: url('https://khardal.net/assets/Kanz-al-Marjaan') format('truetype');
+            font-weight: normal; /* Standard font weight */
+            font-style: normal;  /* Standard font style */
+            /* Optional: Add font-display to control font loading behavior */
+            font-display: swap; /* Tells the browser to use a fallback font while the custom font loads */
+        }
+
+        /* Basic body styling for overall page appearance */
+        body {
+            font-family: Arial, sans-serif; /* Default body font for general text, not the custom font */
+            font-size: 1.2em;
+            text-align: center;
+            margin: 0; /* Remove default body margin */
+            padding: 30px 0; /* Add padding to the top and bottom */
+            background-color: #f4f4f4; /* Light grey background */
+            color: #333; /* Dark grey text color */
+            display: flex; /* Use flexbox for centering content */
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center items horizontally */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        /* Styling for the main heading, applying the custom font */
+        h1 {
+            font-family: 'Kanz al Marjaan', sans-serif; /* Apply Kanz al Marjaan font */
+            font-size: 2.5em; /* Large font size for heading */
+            color: #4a4a4a; /* Slightly darker grey for heading */
+            margin-bottom: 20px; /* Space below the heading */
+        }
+
+        /* Container for the input area to provide structure and styling */
+        .container {
+            width: 90%; /* Responsive width */
+            max-width: 800px; /* Maximum width to prevent it from becoming too wide on large screens */
+            margin: 20px auto; /* Center the container with vertical margin */
+            padding: 25px; /* Inner padding */
+            background-color: #fff; /* White background for the container */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
+            display: flex; /* Use flexbox for label and textarea alignment */
+            flex-direction: column; /* Stack label and textarea vertically */
+            align-items: flex-start; /* Align items to the start (left) */
+        }
+
+        /* Styling for the label of the textarea */
+        label {
+            display: block; /* Make label a block element to take full width */
+            margin-bottom: 12px; /* Space below the label */
+            font-size: 1.15em; /* Slightly larger font size */
+            font-weight: bold; /* Bold text */
+            color: #555; /* Medium grey color */
+            text-align: left; /* Align label text to the left */
+        }
+
+        /* Styling for the textarea where text is input and rendered */
+        textarea {
+            width: 100%; /* Take full width of its parent container */
+            min-height: 200px; /* Minimum height for the textarea */
+            padding: 15px; /* Inner padding for text */
+            font-family: 'Kanz al Marjaan', sans-serif; /* Apply the custom font here */
+            font-size: 1.6em; /* Larger font size for better readability of the custom font */
+            line-height: 1.6; /* Line height for better spacing between lines */
+            border: 1px solid #ddd; /* Light grey border */
+            border-radius: 8px; /* Rounded corners for the textarea */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            resize: vertical; /* Allow vertical resizing by the user */
+            outline: none; /* Remove default focus outline */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus effect */
+            color: #2c3e50; /* Darker text color for contrast */
+        }
+
+        /* Styling for the textarea when it is focused (clicked on) */
+        textarea:focus {
+            border-color: #007bff; /* Blue border on focus */
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Soft blue shadow on focus */
+        }
+
+        /* Styling for the explanatory note */
+        p.note {
+            font-family: Arial, sans-serif; /* Use a standard font for the note */
+            font-size: 0.95em; /* Slightly smaller font size */
+            color: #777; /* Lighter grey color */
+            margin-top: 25px; /* Space above the note */
+        }
+
+        /* Styling for the font status message */
+        #fontStatus {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        #fontStatus.loaded {
+            color: green;
+            font-weight: bold;
+        }
+        #fontStatus.error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main heading for the page -->
+    <h1>Kanz al Marjaan Font Text Input</h1>
+
+    <!-- Container for the text input area -->
+    <div class="container">
+        <!-- Label for the textarea, indicating its purpose -->
+        <label for="textInput">Type your text below (rendered in Kanz al Marjaan):</label>
+        <!-- Textarea for user input -->
+        <textarea id="textInput" placeholder="Start typing here..."></textarea>
+    </div>
+
+    <!-- An explanatory note for the user -->
+    <p class="note">The text in the box above will appear in the Kanz al Marjaan font as you type.</p>
+
+    <!-- Element to display font loading status -->
+    <div id="fontStatus">Checking font loading status...</div>
+
+    <script>
+        // Get the font status element
+        const fontStatus = document.getElementById('fontStatus');
+
+        // Function to check if the font is loaded
+        function checkFontLoad() {
+            // Check if the font 'Kanz al Marjaan' is loaded
+            document.fonts.ready.then(() => {
+                if (document.fonts.check('1em "Kanz al Marjaan"')) {
+                    fontStatus.textContent = 'Kanz al Marjaan font loaded successfully!';
+                    fontStatus.classList.remove('error');
+                    fontStatus.classList.add('loaded');
+                } else {
+                    fontStatus.textContent = 'Kanz al Marjaan font failed to load. Please check your internet connection or try again later.';
+                    fontStatus.classList.remove('loaded');
+                    fontStatus.classList.add('error');
+                }
+            }).catch(error => {
+                fontStatus.textContent = `Error checking font status: ${error.message}. This might be due to network issues or browser restrictions.`;
+                fontStatus.classList.remove('loaded');
+                fontStatus.classList.add('error');
+                console.error("Font loading error:", error);
+            });
+        }
+
+        // Call the function when the window loads
+        window.onload = checkFontLoad;
+    </script>
+</body>
+</html>
+
