@@ -490,6 +490,11 @@
 					return;
 				}
 				console.log(weeks);
+				// Remove duplicates and sort weeks
+				const uniqueWeeks = Array.from(new Set(weeks.map(week => week.Week)))
+					.sort((a, b) => a - b)
+					.map(week => ({ Week: week }));
+				weeks = uniqueWeeks;
 				const dropdown = document.querySelector(".week-dropdown-content");
 				document.getElementById("week-dropdown").addEventListener("change", (event) => {
 					console.log(event.target.value);
@@ -552,7 +557,7 @@
 				weekid = document.getElementById("week-dropdown").value;
 				weekid = weekid + "_"
 				let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
-				if (weekid !== "Select Week_") // If weekid is not empty, filter by week{}
+				if (weekid !== "_") // If weekid is not empty, filter by week{}
 				{classMarks = classMarks.filter(mark => mark.Assessments.Name.startsWith(weekid));}
 				console.log("Marks Data 2:", classMarks);
 
