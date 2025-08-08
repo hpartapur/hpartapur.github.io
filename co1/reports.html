@@ -287,6 +287,10 @@
                         <option value="">Select Class</option>
                         <div class="dropdown-content"></div>
                     </select>
+					<select class="dropdown" id="week-dropdown">
+                        <option value="">Select Week</option>
+                        <div class="dropdown-content"></div>
+                    </select>
                     <div>
                         <button onclick="exportMarks()" class=" auth-button red-button">Export Marks</button>
 					<table id="marks-table">
@@ -518,6 +522,7 @@
 					.eq("Assessments.ClassID", classid);
 				console.log("Marks Data 2:", marks);
 				let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
+				classMarks = classMarks.filter(mark => mark.Week === 8); // Filter by Week 1
 				console.log("Marks Data 2:", classMarks);
 
 				const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
