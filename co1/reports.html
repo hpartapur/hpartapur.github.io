@@ -491,9 +491,7 @@
 				}
 				console.log(weeks);
 				// Remove duplicates and sort weeks
-				weeks = [...new Set(weeks.map(w => w.Week))]
-				.sort((a, b) => a - b)
-				.map(w => ({ Week: w }));
+
 
 				const dropdown = document.querySelector(".week-dropdown-content");
 				document.getElementById("week-dropdown").addEventListener("change", (event) => {
@@ -502,12 +500,24 @@
 				});
 				dropdown.innerHTML = ""; // Clear existing options
 
+				console.log("Weeks Data:", weeks);
+
+				let weekOptions = []
+
 				weeks.forEach((weekItem) => {
 					const option = document.createElement("option");
 					weekname = "Week"+ weekItem.Week;
 					option.value = weekname
 					option.textContent = weekname
-					dropdown.appendChild(option);
+					weekOptions.push(option);
+				});
+				weekOptions = [...new Set(weekOptions.map(option => option.value))] // Remove duplicates
+					.sort((a, b) => a.localeCompare(b)); // Sort alphabetically
+				weekOptions.forEach((option) => {
+					const optionElement = document.createElement("option");
+					optionElement.value = option;
+					optionElement.textContent = option;
+					dropdown.appendChild(optionElement);
 				});
 			}
 
