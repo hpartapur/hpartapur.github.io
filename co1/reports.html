@@ -289,7 +289,7 @@
                     </select>
 					<select class="dropdown" id="week-dropdown">
                         <option value="">Select Week</option>
-                        <div class="dropdown-content"></div>
+                        <div class="week-dropdown-content"></div>
                     </select>
                     <div>
                         <button onclick="exportMarks()" class=" auth-button red-button">Export Marks</button>
@@ -480,6 +480,31 @@
 				globalMessageArea.style.color = type === "error" ? "red" : "green";
 			}
 
+			async function populateWeekDropdown() {
+				const { data: weeks, error } = await supabase
+					.from("Assessments")
+					.select("Week");
+
+				if (error) {
+					showMessage("Error fetching weeks: " + error.message, "error");
+					return;
+				}
+				console.log(weeks);
+				const dropdown = document.querySelector(".week-dropdown-content");
+				document.getElementById("week-dropdown").addEventListener("change", (event) => {
+					console.log(event.target.value);
+					getMarks(document.getElementById("class-dropdown").value);
+				});
+				dropdown.innerHTML = ""; // Clear existing options
+
+				weeks.forEach((weekItem) => {
+					const option = document.createElement("option");
+					weekname = "Week"+ weekItem.Week;
+					option.value = weekname
+					option.textContent = weekname
+					dropdown.appendChild(option);
+				});
+			}
 
             async function populateClassDropdown() {
                 const { data: classes, error } = await supabase
@@ -510,6 +535,7 @@
                 });
             }
             populateClassDropdown(); // Call this function to populate the dropdown on page load
+			populateWeekDropdown(); // Call this function to populate the dropdown on page load
 
 			async function getMarks(classid) {
 				const { data: marks, error } = await supabase
@@ -521,8 +547,13 @@
 					`)
 					.eq("Assessments.ClassID", classid);
 				console.log("Marks Data 2:", marks);
+
+				classid = document.getElementById("class-dropdown").value;
+				weekid = document.getElementById("week-dropdown").value;
+				weekid = weekid + "_"
 				let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
-				classMarks = classMarks.filter(mark => mark.Assessments.Name.startsWith("Week6"));
+				if (weekid !== "Select Week_") // If weekid is not empty, filter by week{}
+				{classMarks = classMarks.filter(mark => mark.Assessments.Name.startsWith(weekid));}
 				console.log("Marks Data 2:", classMarks);
 
 				const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
