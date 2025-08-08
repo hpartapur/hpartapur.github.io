@@ -491,10 +491,10 @@
 				}
 				console.log(weeks);
 				// Remove duplicates and sort weeks
-				const uniqueWeeks = Array.from(new Set(weeks.map(week => week.Week)))
-					.sort((a, b) => a - b)
-					.map(week => ({ Week: week }));
-				weeks = uniqueWeeks;
+				weeks = [...new Set(weeks.map(w => w.Week))]
+				.sort((a, b) => a - b)
+				.map(w => ({ Week: w }));
+
 				const dropdown = document.querySelector(".week-dropdown-content");
 				document.getElementById("week-dropdown").addEventListener("change", (event) => {
 					console.log(event.target.value);
