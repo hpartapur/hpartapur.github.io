@@ -287,6 +287,7 @@
                         <option value="">Select Class</option>
                         <div class="dropdown-content"></div>
                     </select>
+					<!-- TODO: replace week with this <input type="range" /> -->
 					<select class="dropdown" id="week-dropdown">
                         <option value="">Select Week</option>
                         <div class="week-dropdown-content"></div>
@@ -566,9 +567,14 @@
 				classid = document.getElementById("class-dropdown").value;
 				weekid = document.getElementById("week-dropdown").value;
 				weekid = weekid + "_"
-				let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
-				if (weekid !== "_") // If weekid is not empty, filter by week{}
-				{classMarks = classMarks.filter(mark => mark.Assessments.Name.startsWith(weekid));}
+				if (classid === "") {
+					let classMarks= marks; // If no class is selected, get all marks
+				}else{
+					let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
+				}
+				if (weekid !== "_") {      // If weekid is not empty, filter by week{}
+				classMarks = classMarks.filter(mark => mark.Assessments.Name.startsWith(weekid));
+				}
 				console.log("Marks Data 2:", classMarks);
 
 				const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
