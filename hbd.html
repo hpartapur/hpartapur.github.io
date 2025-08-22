@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Happy Birthday!</title>
+		<!-- Use Tailwind CSS for styling -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+			:root {
+				/* A palette of 7 colors, including ultramarine */
+				--color-1: #ffb347; /* Pastel Orange */
+				--color-2: #84dcc6; /* Mint Green */
+				--color-3: #b584d8; /* Lavender */
+				--color-4: #ff6961; /* Salmon */
+				--color-5: #4166f5; /* Ultramarine */
+				--color-6: #d47282; /* Pink */
+				--color-7: #439ef9; /* Sky Blue */
+			}
+
+			body {
+				font-family: "Inter", sans-serif;
+				background-color: #f7e9e9;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				margin: 0;
+				padding: 1rem;
+				overflow: hidden;
+				text-align: center;
+			}
+
+			.container {
+				max-width: 800px;
+				width: 100%;
+				background-color: #ffffff;
+				padding: 2.5rem;
+				border-radius: 20px;
+				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+				position: relative;
+				animation: bounceIn 1s ease-in-out;
+				border: 4px solid #f9d5d5;
+			}
+
+			.heading {
+				font-size: 2.5rem;
+				font-weight: 700;
+				color: #d85c5c;
+				margin-bottom: 2rem;
+				letter-spacing: 2px;
+				text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+				animation: pulse 1.5s infinite;
+			}
+
+			.message-container {
+				text-align: left;
+				font-size: 1.25rem;
+				line-height: 1.8;
+				color: #333;
+			}
+
+			.sentence {
+				opacity: 0;
+				transform: translateY(20px);
+				transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+				margin-bottom: 0.5rem;
+				display: block; /* Ensure each sentence is on a new line */
+			}
+
+			.sentence.visible {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			/* Multicolored text classes for the 7 colors */
+			.color1 {
+				color: var(--color-1);
+			}
+			.color2 {
+				color: var(--color-2);
+			}
+			.color3 {
+				color: var(--color-3);
+			}
+			.color4 {
+				color: var(--color-4);
+			}
+			.color5 {
+				color: var(--color-5);
+			}
+			.color6 {
+				color: var(--color-6);
+			}
+			.color7 {
+				color: var(--color-7);
+			}
+
+			/* Keyframes for animations */
+			@keyframes bounceIn {
+				0% {
+					transform: scale(0.9);
+					opacity: 0;
+				}
+				50% {
+					transform: scale(1.05);
+					opacity: 1;
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+
+			@keyframes pulse {
+				0% {
+					transform: scale(1);
+				}
+				50% {
+					transform: scale(1.03);
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+		</style>
+	</head>
+	<body style="overflow-y: scroll">
+		<div class="container">
+			<h1 class="heading">Happy Birthday!🎈</h1>
+			<div id="message-container" class="message-container"></div>
+		</div>
+
+		<script>
+			// The long birthday message to be displayed.
+			// Words between asterisks will be multicolored.
+			let fullMessage = `Happy Birthday you absolute WORK OF ART! \n
+
+So, as you know, I was thinking about our shaadi today, looking at pictures from all the *rusu-matte*. *Easel-ly* the craziest decision you've ever made. You really ought to have done your *doo-dligence* before marrying me. I mean, who *pix-e-late* husband that looks like a potato? Who's a much better *texture* than he is a talker? Every photo of us, you look like a masterpiece, and I just look *crafty* and *sketch*-y. 
+
+But let's not lose *perspective*, all these problems *trace* back to the day we first met. I gave you gum then, and I'm giving you gham now; crazy fore-*shadow*ing, right? I mean, *hue* knew you'd end up with me?
+I love your *light*-hearted demeanor, which *contrasts* very well with the way you throw *shade*. You showed me *wat-are-color* ful insults.
+
+The point of all this *background* is, you're incredibly *impor-tint* to me. Even though you're miles away, your words and actions continue to *resin-ate* with me. I'm so incredibly fortunate to have you *blend* into every aspect of my life. You *complement* and compliment me in the best ways. I still think sometimes you might be just a *pigment* of my imagination. 
+And I'm unbelievably *drawn* to you. The way your lips *brush* against mine and your hands *stroke* my body drives me wild. I  love you so so so *smudge*. Hope you have many *dreams of procreating* .
+
+I hope you know what this is for.`;
+			// Select the container where the message will be displayed
+			const messageContainer = document.getElementById("message-container");
+
+			// Split the message into sentences.
+			// We use a regular expression to handle common sentence-ending punctuation.
+			const sentences = fullMessage.match(/[^.!?]+[.!?]|\S+/g);
+
+			let sentenceIndex = 0;
+			// Update the color classes to include all 7 colors
+			const colorClasses = ["color1", "color2", "color3", "color4", "color5", "color6", "color7"];
+
+			/**
+			 * @param {string} text The text to be processed.
+			 * @returns {string} The HTML string with multicolored words.
+			 * This function replaces words between asterisks with multicolored spans,
+			 * choosing a random color from the available palette for each word.
+			 */
+			function processText(text) {
+				return text.replace(/\*([^*]+)\*/g, (match, word) => {
+					// Get a random index from the colorClasses array
+					const randomIndex = Math.floor(Math.random() * colorClasses.length);
+					const colorClass = colorClasses[randomIndex];
+					return `<span class="${colorClass} font-bold">${word}</span>`;
+				});
+			}
+
+			/**
+			 * Reveals each sentence one by one with a delay.
+			 */
+			function revealSentence() {
+				if (sentenceIndex < sentences.length) {
+					// Create a new div element for the sentence
+					const sentenceDiv = document.createElement("div");
+					sentenceDiv.classList.add("sentence");
+
+					// Process the text for multicolored words
+					const processedText = processText(sentences[sentenceIndex]);
+					sentenceDiv.innerHTML = processedText;
+
+					// Append the new sentence element to the container
+					messageContainer.appendChild(sentenceDiv);
+
+					// scrollintoview;
+					sentenceDiv.scrollIntoView({ behavior: "smooth", block: "end" });
+
+					// Trigger the animation by adding the 'visible' class after a short delay
+					// This small delay ensures the transition is triggered correctly.
+					setTimeout(() => {
+						sentenceDiv.classList.add("visible");
+					}, 10);
+
+					// Move to the next sentence
+					sentenceIndex++;
+
+					// Set a timer to reveal the next sentence
+					setTimeout(revealSentence, 5000); // 2-second delay between sentences
+				} else {
+					// If all sentences are revealed, scroll to the top of the message containe
+					// and add a final message with an image.
+					messageContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+					messageContainer.innerHTML =
+						`<div class="sentence visible color5 font-bold">I love you so much! 💖<img src='hbd.jpeg'></div>` +
+						messageContainer.innerHTML;
+					messageContainer.scrollTop = 0;
+				}
+			}
+
+			// Start the reveal process on window load.
+			window.onload = function () {
+				// A short delay before the first sentence appears.
+				setTimeout(revealSentence, 1500);
+			};
+		</script>
+	</body>
+</html>
