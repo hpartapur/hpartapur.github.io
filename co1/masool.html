@@ -263,13 +263,8 @@ async function getStudentsData(classid) {
     }
     uniqueAssessments = Array.from(uniqueAssessments);  // List of all unique assessments
 	// Sort unique assessments alphabetically
-	uniqueAssessments.sort((a, b) => {
-            // Extract the week number by finding the first underscore and removing the "week" part
-            const weekA = parseInt(a.Name.split('_')[0].replace('Week', ''), 10);
-            const weekB = parseInt(b.Name.split('_')[0].replace('Week', ''), 10);
-            return weekA - weekB; // Sort numerically
-        });
-
+	uniqueAssessments.sort((a, b) => a.localeCompare(b));
+	console.log("Unique Assessments:", uniqueAssessments);  // Log to check the data structure")
 
     
     // Create header row with the assessments dynamically
