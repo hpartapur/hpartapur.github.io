@@ -285,7 +285,8 @@ async function getStudentsData(classid) {
     // Dynamically create headers for each assessment
     uniqueAssessments.forEach(assessment => {
         const assessmentHeader = document.createElement("th");
-        assessmentHeader.textContent = assessment;
+		let title = assessment.split("_")[0] + "\n" + assessment.split("_")[1] 
+        assessmentHeader.textContent = title;
         headerRow.appendChild(assessmentHeader);
     });
     
