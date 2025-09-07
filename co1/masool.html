@@ -251,7 +251,8 @@ async function getStudentsData(classid) {
     
     const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
     console.log("Students Data:", students);
-	studentData.sort((a, b) => a.Name.localeCompare(b.Name));
+	students.sort((a, b) => a.TRNO - b.TRNO);
+
     
     const studentsBody = document.getElementById("students-body");
     studentsBody.innerHTML = ""; // Clear previous entries
@@ -299,6 +300,7 @@ async function getStudentsData(classid) {
             trno: student.TRNO,
             assessments: {}
         };
+
 
         uniqueAssessments.forEach(assessment => {
             const mark = studentMarks.find(m => m.Assessments.Name === assessment);
