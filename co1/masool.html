@@ -245,12 +245,13 @@
 				document.getElementById("average-count").textContent = average + "%";
 			}
 
-            async function getStudentsData(classid) {
+async function getStudentsData(classid) {
     const { data: marks, error } = await supabase.from("Marks").select("*, Students(*), Assessments(Name, ClassID, MaxMarks)");
     let classMarks = marks.filter(mark => mark.Assessments.ClassID === classid);
     
     const { data: students, error: studentError } = await supabase.from("Students").select("*").eq("ClassID", classid);
     console.log("Students Data:", students);
+	studentData.sort((a, b) => a.Name.localeCompare(b.Name));
     
     const studentsBody = document.getElementById("students-body");
     studentsBody.innerHTML = ""; // Clear previous entries
@@ -260,6 +261,9 @@
         uniqueAssessments.add(mark.Assessments.Name);
     }
     uniqueAssessments = Array.from(uniqueAssessments);  // List of all unique assessments
+	// Sort unique assessments alphabetically
+	uniqueAssessments.sort((a, b) => a.localeCompare(b));
+
     
     // Create header row with the assessments dynamically
     const headerRow = document.createElement("tr");
@@ -388,6 +392,9 @@
 				const user = session?.user;
 				console.log(user);
 				updateUI(user); // Update UI when authentication state changes
+				if(!user){
+					window.location.href = "index.html";
+				}
 			});
 		</script>
 
