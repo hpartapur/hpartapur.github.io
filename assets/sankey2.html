@@ -1,0 +1,137 @@
+<html>
+	<head>
+		<script
+			type="text/javascript"
+			src="https://www.gstatic.com/charts/loader.js"
+		></script>
+		<script type="module">
+			google.charts.load("current", { packages: ["sankey"] });
+			google.charts.setOnLoadCallback(drawChart);
+
+			import { ledger } from "./ledger.js";
+			console.log(ledger);
+
+			let listofData = [];
+
+			ledger.forEach((item, index) => {
+				if (!item) {
+					console.warn(`Skipping empty item at index ${index}`);
+					return;
+				}
+
+				const newBudget = cleanBudget(item.Budget);
+
+				if (
+					!item.MainGroupDesc ||
+					!item.SubGroupDesc ||
+					!item.AccountDesc ||
+					isNaN(newBudget) ||
+					newBudget <= 0
+				) {
+					console.warn("Skipping invalid item:", item);
+					return;
+				}
+
+				const type = item.TypeDescription?.trim();
+
+				if (type === "Payment") {
+					// Account → SubGroup
+					// listofData.push([
+					// 	item.SubGroupDesc,
+					// 	item.AccountDesc,
+					// 	newBudget,
+					// ]);
+					// SubGroup → MainGroup
+					listofData.push([
+						item.MainGroupDesc,
+						item.SubGroupDesc,
+						newBudget,
+					]);
+				} else if (type === "Receipt") {
+					// MainGroup → SubGroup
+					listofData.push([
+						item.SubGroupDesc,
+						item.MainGroupDesc,
+						newBudget,
+					]);
+					// SubGroup → Account
+					// listofData.push([
+					// 	item.AccountDesc,
+					// 	item.SubGroupDesc,
+					// 	newBudget,
+					// ]);
+				} else {
+					console.warn(
+						"Unknown TypeDescription:",
+						item.TypeDescription
+					);
+				}
+			});
+
+			function cleanBudget(value) {
+				if (typeof value !== "string") {
+					console.warn("Budget is not a string:", value);
+					return 0;
+				}
+				const cleaned = value.replace(/[₹,]/g, "").trim();
+				const number = Number(cleaned);
+
+				if (isNaN(number)) {
+					console.warn(
+						"Failed to parse budget:",
+						value,
+						"→",
+						cleaned
+					);
+					return 0;
+				}
+				return number;
+			}
+
+			function drawChart() {
+				var data = new google.visualization.DataTable();
+				data.addColumn("string", "From");
+				data.addColumn("string", "To");
+				data.addColumn("number", "Weight");
+				// data.addRows([
+				// 	["Sabeel", "Income", 5],
+				// 	["Laagat", "Income", 7],
+				// 	["Income", "Expense", 12],
+				// 	["Expense", "Operational", 10],
+				// 	["Expense", "12 Umoor", 6],
+				// 	["Expense", "12 Umoor", 6],
+				// 	// ["A", "Z", 6],
+				// 	// ["B", "X", 2],
+				// 	// ["B", "Y", 9],
+				// 	// ["B", "Z", 4],
+				// ]);
+				data.addRows(listofData);
+
+				// Sets chart options.
+				var options = {
+					width: 1000,
+					height: 600,
+					sankey: {
+						node: {
+							padding: 20, // Increase spacing between nodes
+							width: 15, // Optional: make nodes thinner
+							label: { fontSize: 9 }, // Optional: smaller font for better fit
+						},
+						link: {
+							colorMode: "source", // Optional: distinguish links by source
+						},
+					},
+				};
+
+				// Instantiates and draws our chart, passing in some options.
+				var chart = new google.visualization.Sankey(
+					document.getElementById("sankey_basic")
+				);
+				chart.draw(data, options);
+			}
+		</script>
+	</head>
+	<body>
+		<div id="sankey_basic" style="width: 900px; height: 300px"></div>
+	</body>
+</html>
