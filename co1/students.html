@@ -150,7 +150,7 @@
 				// const studentID = email.split("@")[0];
 				const studentID = '27050'
 				console.log("Student ID:", studentID);
-				const {studentData,studentError}  = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
+				const {data: studentData,error:studentError}  = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
 
                 let chartlabels =[]
@@ -189,7 +189,7 @@
 				});
 
 		console.log(chartdata)
-      google.charts.load('current', {'packages':['bar']});
+      google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
 	  function drawChart(){
