@@ -189,33 +189,33 @@
 				    const ctx = document.getElementById('myBarChart').getContext('2d');
 
 					let myBarChart;
-  if (myBarChart) {
-    myBarChart.destroy();
-  }
+					let created=false;
 
-
-    // Create a new Chart instance
-     myBarChart = new Chart(ctx, {
-      type: 'bar', // specify chart type
-      data: {
-        labels: chartlabels, // x-axis labels
-        datasets: [{
-          label: 'Marks Percentage',
-          data: chartdata, // data points
-          backgroundColor: 'rgba(54, 162, 235, 0.7)', // bar fill color
-          borderColor: 'rgba(54, 162, 235, 1)', // border color
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true, // makes chart responsive
-        scales: {
-          y: {
-            beginAtZero: true // y-axis starts at zero
-          }
-        }
-      }
-    });
+if (created==false)
+		{    // Create a new Chart instance
+			myBarChart = new Chart(ctx, {
+			type: 'bar', // specify chart type
+			data: {
+				labels: chartlabels, // x-axis labels
+				datasets: [{
+				label: 'Marks Percentage',
+				data: chartdata, // data points
+				backgroundColor: 'rgba(54, 162, 235, 0.7)', // bar fill color
+				borderColor: 'rgba(54, 162, 235, 1)', // border color
+				borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true, // makes chart responsive
+				scales: {
+				y: {
+					beginAtZero: true // y-axis starts at zero
+				}
+				}
+			}
+			});
+			created = true
+}
 				signInButton.classList.add("hidden");
 				signOutButton.classList.remove("hidden");
 				let msg = studentData.Name + "Signed in sucessfully"
