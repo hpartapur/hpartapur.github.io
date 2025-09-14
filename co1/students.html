@@ -191,10 +191,10 @@
     const myBarChart = new Chart(ctx, {
       type: 'bar', // specify chart type
       data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'], // x-axis labels
+        labels: chartlabels, // x-axis labels
         datasets: [{
-          label: 'Sales (in units)',
-          data: [12, 19, 3, 5, 2, 3], // data points
+          label: 'Marks Percentage',
+          data: chartdata, // data points
           backgroundColor: 'rgba(54, 162, 235, 0.7)', // bar fill color
           borderColor: 'rgba(54, 162, 235, 1)', // border color
           borderWidth: 1
