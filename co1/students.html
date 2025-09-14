@@ -181,6 +181,9 @@
                     tr.appendChild(marksCell);
                     marksTableBody.appendChild(tr);
 
+					if (row.MarksObtained == null) {
+						chartdata.push([row.Assessments.Name, 0]);
+					}
 					chartdata.push([row.Assessments.Name, row.MarksObtained/row.Assessments.MaxMarks]);
 
 				});
