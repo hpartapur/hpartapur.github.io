@@ -68,10 +68,10 @@
 	}
 
 	#marks-table tr:nth-child(even) {
-		background-color: #ffcb5b;
+		background-color: lightskyblue
 	}
 	#marks-table tr:nth-child(odd) {
-		background-color: #e1a82d;
+		background-color: lightskyblue
 	}
 
 	#marks-table tr:hover {
@@ -97,6 +97,7 @@
 		</div>
 
 		<div id="global-message-area"></div>
+		<canvas id="myBarChart" width="600" height="400"></canvas>
         <table class="hidden" id="marks-table" style="margin-top: 20px; width: 100%; text-align: left;">
             <thead>
                 <tr>
@@ -107,6 +108,8 @@
             <tbody id="marks-table-body">
                 <!-- Marks will be populated here -->
             </tbody>
+			
+
 
 		<script>
 			const signInButton = document.getElementById("sign-in-button");
@@ -149,7 +152,8 @@
 				const studentData = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
 
-                
+                let chartlabels = [];
+                let chartdata = [];
 
 				const { data, error } = await supabase.from("Marks").select("*, Assessments(Name, MaxMarks)").eq("StudentID", studentID);
 				data.sort((a, b) => {
@@ -175,8 +179,36 @@
                     tr.appendChild(subjectCell);
                     tr.appendChild(marksCell);
                     marksTableBody.appendChild(tr);
+
+					chartdata.push(row.MarksObtained/row.Assessments.MaxMarks);
+					chartlabels.push(row.Assessments.Name);
+
 				});
 
+				    const ctx = document.getElementById('myBarChart').getContext('2d');
+
+    // Create a new Chart instance
+    const myBarChart = new Chart(ctx, {
+      type: 'bar', // specify chart type
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'], // x-axis labels
+        datasets: [{
+          label: 'Sales (in units)',
+          data: [12, 19, 3, 5, 2, 3], // data points
+          backgroundColor: 'rgba(54, 162, 235, 0.7)', // bar fill color
+          borderColor: 'rgba(54, 162, 235, 1)', // border color
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true, // makes chart responsive
+        scales: {
+          y: {
+            beginAtZero: true // y-axis starts at zero
+          }
+        }
+      }
+    });
 				signInButton.classList.add("hidden");
 				signOutButton.classList.remove("hidden");
 				let msg = studentData.Name + "Signed in sucessfully"
