@@ -150,7 +150,7 @@
 				// const studentID = email.split("@")[0];
 				const studentID = '27050'
 				console.log("Student ID:", studentID);
-				const studentData = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
+				const {studentData,studentError} = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
 
                 let chartlabels = [];
@@ -176,7 +176,7 @@
                     const subjectCell = document.createElement("td");
                     const marksCell = document.createElement("td");
                     subjectCell.textContent = row.Assessments.Name;
-                    marksCell.textContent = row.MarksObtained += "/" + row.Assessments.MaxMarks;
+                    marksCell.textContent = row.MarksObtained + "/" + row.Assessments.MaxMarks;
                     tr.appendChild(subjectCell);
                     tr.appendChild(marksCell);
                     marksTableBody.appendChild(tr);
