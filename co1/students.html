@@ -184,9 +184,9 @@
 					let formattedName = row.Assessments.Name.split("_")[1]
 					if (row.MarksObtained == null) {
 						chartdata.push([formattedName, 0]);
-					}
+					}else{
 					chartdata.push([formattedName, 100*(row.MarksObtained/row.Assessments.MaxMarks)]);
-
+					}
 				});
 
 		console.log(chartdata)
