@@ -68,7 +68,10 @@
 	}
 
 	#marks-table tr:nth-child(even) {
-		background-color: #f2f2f2;
+		background-color: #ffcb5b;
+	}
+	#marks-table tr:nth-child(odd) {
+		background-color: #e1a82d;
 	}
 
 	#marks-table tr:hover {
@@ -143,13 +146,18 @@
 				// const studentID = email.split("@")[0];
 				const studentID = '27050'
 				console.log("Student ID:", studentID);
-				// const studentData = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
+				const studentData = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
 
                 
 
-				const { data, error } = await supabase.from("Marks").select("*, Assessments(Name)").eq("StudentID", studentID);
-
+				const { data, error } = await supabase.from("Marks").select("*, Assessments(Name, MaxMarks)").eq("StudentID", studentID);
+				data.sort((a, b) => {
+					// Extract the week number by finding the first underscore and removing the "week" part
+					const weekA = parseInt(a.Assessments.Name.split('_')[0].replace('Week', ''), 10);
+					const weekB = parseInt(b.Assessments.Name.split('_')[0].replace('Week', ''), 10);
+					return weekA - weekB; // Sort numerically
+				});
 				if (error) {
 					showMessage(`Error fetching marks: ${error.message}`, "error");
 					return;
@@ -163,7 +171,7 @@
                     const subjectCell = document.createElement("td");
                     const marksCell = document.createElement("td");
                     subjectCell.textContent = row.Assessments.Name;
-                    marksCell.textContent = row.MarksObtained;
+                    marksCell.textContent = row.MarksObtained += "/" + row.Assessments.MaxMarks;
                     tr.appendChild(subjectCell);
                     tr.appendChild(marksCell);
                     marksTableBody.appendChild(tr);
@@ -171,7 +179,8 @@
 
 				signInButton.classList.add("hidden");
 				signOutButton.classList.remove("hidden");
-				showMessage("Signed in successfully", "success");
+				let msg = studentData.Name + "Signed in sucessfully"
+				showMessage(msg, "success");
 			}
 
 			signInButton.addEventListener("click", signInWithGoogle);
