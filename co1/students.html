@@ -5,7 +5,23 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Student Portal - Collegiate 1 Awraq</title>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+				<script src="https://cdn.lordicon.com/lordicon.js"></script>
 		<style>
+			.body-navy {
+	background: radial-gradient(circle at center, #3156e9, #0f1d9a);
+	background-size: 200% 200%;
+	animation: moveGradient 6s ease infinite alternate;
+}
+
+@keyframes moveGradient {
+	0% {
+		background-position: 0% 0%;
+	}
+	100% {
+		background-position: 100% 100%;	
+	}
+}
+
 			body {
 				font-family: Arial, sans-serif;
 				background-color: #f4f7fa;
@@ -60,16 +76,25 @@
 	}
 		</style>
 	</head>
-	<body>
+	<body class="body-navy">
 		<h1>Student Marks Viewer</h1>
 
 		<div>
-			<button id="sign-in-button" class="auth-button blue-button">Sign In with Google</button>
+			<button id="sign-in-button" class="auth-button">
+					<!-- <span class="material-symbols-outlined"> lock_open</span> -->
+					<lord-icon
+						src="https://cdn.lordicon.com/eziplgef.json"
+						trigger="loop"
+						delay="1000"
+						state="hover-draw"
+						style="width:4rem;height:4rem">
+					</lord-icon>
+					<br>Sign In</button>
 			<button id="sign-out-button" class="auth-button red-button hidden">Sign Out</button>
 		</div>
 
 		<div id="global-message-area"></div>
-        <table class="hidden" id="marks-table" border="1" style="margin-top: 20px; width: 100%; text-align: left;">
+        <table class="hidden" id="marks-table" style="margin-top: 20px; width: 100%; text-align: left;">
             <thead>
                 <tr>
                     <th>Subject</th>
@@ -103,6 +128,7 @@
 				showMessage("Signed out successfully", "success");
 				signOutButton.classList.add("hidden");
 				signInButton.classList.remove("hidden");
+				window.location.reload()
 			}
 
 			function showMessage(message, type) {
@@ -114,8 +140,11 @@
 				if (!user) return;
 
 				const email = user.email;
-				const studentID = email.split("@")[0];
+				// const studentID = email.split("@")[0];
+				const studentID = '27050'
 				console.log("Student ID:", studentID);
+				// const studentData = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
+
 
                 
 
