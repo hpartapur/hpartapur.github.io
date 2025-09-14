@@ -147,8 +147,8 @@
 				if (!user) return;
 
 				const email = user.email;
-				// const studentID = email.split("@")[0];
-				const studentID = '27050'
+				const studentID = email.split("@")[0];
+				// const studentID = '27050'
 				console.log("Student ID:", studentID);
 				const {data: studentData,error:studentError}  = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
