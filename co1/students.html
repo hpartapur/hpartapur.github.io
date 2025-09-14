@@ -188,8 +188,14 @@
 
 				    const ctx = document.getElementById('myBarChart').getContext('2d');
 
+					let myBarChart;
+  if (myBarChart) {
+    myBarChart.destroy();
+  }
+
+
     // Create a new Chart instance
-    const myBarChart = new Chart(ctx, {
+     myBarChart = new Chart(ctx, {
       type: 'bar', // specify chart type
       data: {
         labels: chartlabels, // x-axis labels
