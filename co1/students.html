@@ -181,11 +181,11 @@
                     tr.appendChild(marksCell);
                     marksTableBody.appendChild(tr);
 
-					let formattedName = row.Assessments.Name.split("_")[0]
+					let formattedName = row.Assessments.Name.split("_")[1]
 					if (row.MarksObtained == null) {
-						chartdata.push([row.Assessments.Name, 0]);
+						chartdata.push([formattedName, 0]);
 					}
-					chartdata.push([row.Assessments.Name, 100*(row.MarksObtained/row.Assessments.MaxMarks)]);
+					chartdata.push([formattedName, 100*(row.MarksObtained/row.Assessments.MaxMarks)]);
 
 				});
 
