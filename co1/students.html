@@ -186,7 +186,9 @@
 				});
       google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
-				let options= {
+
+	  function drawChart(){
+		let options= {
           title: 'Monthly Sales',
           chartArea: { width: '50%' },
           hAxis: {
@@ -201,6 +203,8 @@
 				var chart = new google.visualization.BarChart(document.getElementById('bar_chart_div'));
 				chart.draw(gdata, options)
 
+	  }
+				
 
 				signInButton.classList.add("hidden");
 				signOutButton.classList.remove("hidden");
