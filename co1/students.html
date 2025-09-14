@@ -187,6 +187,8 @@
 					chartdata.push([row.Assessments.Name, row.MarksObtained/row.Assessments.MaxMarks]);
 
 				});
+
+		console.log(chartdata)
       google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
 
