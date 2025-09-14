@@ -153,8 +153,8 @@
 				const {studentData,studentError}  = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
 
-                let chartlabels = [['Assessment','Percentage']];
-                let chartdata = [];
+                let chartlabels =[]
+                let chartdata = [['Assessment','Percentage']];
 
 				const { data, error } = await supabase.from("Marks").select("*, Assessments(Name, MaxMarks)").eq("StudentID", studentID);
 				data.sort((a, b) => {
