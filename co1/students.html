@@ -150,10 +150,10 @@
 				// const studentID = email.split("@")[0];
 				const studentID = '27050'
 				console.log("Student ID:", studentID);
-				const {studentData,studentError} = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
+				const {studentData,studentError}  = await supabase.from("Students").select("*").eq("TRNO", studentID).single();
 
 
-                let chartlabels = [];
+                let chartlabels = [['Assessment','Percentage']];
                 let chartdata = [];
 
 				const { data, error } = await supabase.from("Marks").select("*, Assessments(Name, MaxMarks)").eq("StudentID", studentID);
@@ -194,14 +194,14 @@
 
 	  function drawChart(){
 		let options= {
-          title: 'Monthly Sales',
+          title: 'Marks by Assessment',
           chartArea: { width: '50%' },
           hAxis: {
-            title: 'Units Sold',
+            title: 'Percentage',
             minValue: 0
           },
           vAxis: {
-            title: 'Month'
+            title: 'Assessment'
           }
         };
 		let gdata = google.visualization.arrayToDataTable(chartdata)
@@ -213,8 +213,8 @@
 
 				signInButton.classList.add("hidden");
 				signOutButton.classList.remove("hidden");
+				console.log("Student Data:", studentData);
 				let msg = studentData.Name + "Signed in sucessfully"
-				console.log(studentData)
 				showMessage(msg, "success");
 			}
 
