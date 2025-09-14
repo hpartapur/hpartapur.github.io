@@ -98,7 +98,7 @@
 		</div>
 
 		<div id="global-message-area"></div>
-		<div id="bar_chart_div"></div>
+		<div id="bar_chart_div" style="height: 40vw;"></div>
         <table class="hidden" id="marks-table" style="margin-top: 20px; width: 100%; text-align: left;">
             <thead>
                 <tr>
@@ -198,7 +198,12 @@
         chart: {
           title: 'Percentage by Assessment',
         },
-        bars: 'horizontal'
+        bars: 'horizontal',
+		animation: {
+          startup: true,
+          duration: 4000,
+          easing: 'out'
+        }
       };
 		let gdata = google.visualization.arrayToDataTable(chartdata)
 				var chart = new google.charts.Bar(document.getElementById('bar_chart_div'));
