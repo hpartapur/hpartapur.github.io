@@ -181,32 +181,28 @@
                     tr.appendChild(marksCell);
                     marksTableBody.appendChild(tr);
 
+					let formattedName = row.Assessments.Name.split("_")[0]
 					if (row.MarksObtained == null) {
 						chartdata.push([row.Assessments.Name, 0]);
 					}
-					chartdata.push([row.Assessments.Name, row.MarksObtained/row.Assessments.MaxMarks]);
+					chartdata.push([row.Assessments.Name, 100*(row.MarksObtained/row.Assessments.MaxMarks)]);
 
 				});
 
 		console.log(chartdata)
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
 
 	  function drawChart(){
-		let options= {
-          title: 'Marks by Assessment',
-          chartArea: { width: '50%' },
-          hAxis: {
-            title: 'Percentage',
-            minValue: 0
-          },
-          vAxis: {
-            title: 'Assessment'
-          }
-        };
+      var options = {
+        chart: {
+          title: 'Percentage by Assessment',
+        },
+        bars: 'horizontal'
+      };
 		let gdata = google.visualization.arrayToDataTable(chartdata)
-				var chart = new google.visualization.BarChart(document.getElementById('bar_chart_div'));
-				chart.draw(gdata, options)
+				var chart = new google.charts.Bar(document.getElementById('bar_chart_div'));
+				chart.draw(gdata, google.charts.Bar.convertOptions(options))
 
 	  }
 				
