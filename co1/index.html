@@ -196,12 +196,22 @@
 		</center>
 
 		<center>
-			<button id="ios-share" style="display: block; margin-top: 10px;"> 
+			<button id="ios-share" style="display: none; margin-top: 10px;"> 
 				Install on iOS 
 				<i class="fa-brands fa-apple fa-bounce" style="color: black"></i>
 			</button>
 		</center>
 		<script>
+			//check if ios device
+			const isIos = () => {
+				const userAgent = window.navigator.userAgent.toLowerCase();
+				return /iphone|ipad|ipod/.test(userAgent);
+			};
+			if (isIos()) {
+				document.getElementById("ios-share").style.display = "block";
+				document.getElementById("install-button").remove();
+			}
+
 			document.getElementById("ios-share").addEventListener("click", function() {
 			alert("To install this web app on iOS, tap the Share button in Safari and select Add to Home Screen.");
 			navigator.share({
