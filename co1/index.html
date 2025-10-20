@@ -619,5 +619,24 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();  
+  deferredPrompt = e;
+  document.getElementById('install-button').style.display = 'block';
+
+  document.getElementById('install-button').addEventListener('click', () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') {
+        console.log('User accepted install');
+      } else {
+        console.log('User dismissed install');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
+
 	</script>
 </html>
