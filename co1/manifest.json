@@ -1,0 +1,37 @@
+{
+    "name":"Collegiate 1 Awraaq",
+    "short_name":"Awraaq", 
+    "start_url":"/co1",
+    "display":"fullscreen",
+    "background_color":"lightblue",
+    "theme_color":"lightblue",
+    "icons":[
+                {
+            "src":"./awraaq_logo.png",
+            "sizes":"512x512",
+            "type":"image/png"
+        }   
+    ],
+    "screenshots":[
+        {
+            "src":"./assets/Mawarid_512.png",
+            "sizes":"512x512",
+            "type":"image/png",
+            "form-factor":"wide"
+        }
+    ],
+    "shortcuts":[
+        {
+            "name": "Marks Entry",
+            "url": "./entry.html",
+            "icons":[
+                 {
+                    "src":"./grading-icon.png",
+                    "sizes":"512x512",
+                    "type":"image/png",
+                    "form-factor":"wide"
+                }
+            ]
+        }
+    ]
+}
