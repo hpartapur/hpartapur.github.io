@@ -2,7 +2,7 @@
     "name":"Collegiate 1 Awraaq",
     "short_name":"Awraaq", 
     "start_url":"/co1",
-    "display":"fullscreen",
+    "display":"standalone",
     "background_color":"lightblue",
     "theme_color":"lightblue",
     "icons":[
