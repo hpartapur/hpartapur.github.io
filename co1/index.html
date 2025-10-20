@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="https://cdn.lordicon.com/lordicon.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 		<link rel="icon" href="https://img.icons8.com/arcade/64/report-card.png" type="image/x-icon" />
 		<link rel="manifest" href="/co1/manifest.json">
 		<title>Home - Collegiate 1 Awraq</title>
@@ -189,8 +190,28 @@
 				<p>Once you're signed in, you can start managing assessments and marks.</p>
 			</div>
 		</div>
-		<center><button id="install-button">Install as App📲</button></center>
+		<center><button id="install-button" style="display: none;">Install as App
+		<i class="fa-brands fa-android fa-bounce" style="color: #39a739"></i>
+		<i class="fa-brands fa-windows fa-bounce" style="color: #4a8cd6"></i></button>
+		</center>
 
+		<center>
+			<button id="ios-share" style="display: block; margin-top: 10px;"> 
+				Install on iOS 
+				<i class="fa-brands fa-apple fa-bounce" style="color: black"></i>
+			</button>
+		</center>
+		<script>
+			document.getElementById("ios-share").addEventListener("click", function() {
+			alert("To install this web app on iOS, tap the Share button in Safari and select Add to Home Screen.");
+			navigator.share({
+          title: document.title,
+          text: "Check out this app!",
+          url: window.location.href,
+        });
+			});
+		</script>
+		
 		<script>
 			// --- DOM Elements ---
 			const signInButton = document.getElementById("sign-in-button");
