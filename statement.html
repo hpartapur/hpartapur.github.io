@@ -44,7 +44,7 @@
             <h2 class="text-lg font-bold text-indigo-700 mb-2">Processing Rules Applied:</h2>
             <ul class="text-sm text-indigo-800 list-disc pl-5 space-y-1">
                 <li>The first 13 rows of data are removed.</li>
-                <li>Column C is renamed to "Date".</li>
+                <li>Column C is renamed to "Date" (and converted from Excel serial number to `YYYY-MM-DD` format).</li>
                 <li>Column D is split by `/` into three new columns: J, K, and I.</li>
                 <li>If Column G contains "DR", the value in Column F is multiplied by -1.</li>
             </ul>
@@ -127,7 +127,7 @@
             // Create table body
             const tbody = table.createTBody();
             rows.forEach(rowData => {
-                const tr = tbody.insertRow();
+                const tr = tbody.insertRow(); // FIX: Changed tbody.insertCell() to tbody.insertRow()
                 rowData.forEach(cellData => {
                     const td = tr.insertCell();
                     td.textContent = cellData !== undefined && cellData !== null ? cellData : '';
@@ -137,6 +137,36 @@
 
             previewDiv.innerHTML = '';
             previewDiv.appendChild(table);
+        }
+        
+        /**
+         * Converts Excel date serial numbers in the Date column (index 2) into formatted date strings.
+         * @param {Array<Array<any>>} data - The raw data array from the Excel sheet.
+         * @returns {Array<Array<any>>} The data array with dates formatted as strings.
+         */
+        function formatExcelDates(data) {
+            // Dates start at index 14 (first data row)
+            for (let i = 14; i < data.length; i++) {
+                const row = data[i];
+                // Date column is C, which is array index 2
+                const dateIndex = 2;
+                if (row && row.length > dateIndex) {
+                    let dateCell = row[dateIndex];
+                    // Check if the cell value is a number (Excel date serial) and positive
+                    if (typeof dateCell === 'number' && dateCell > 0) {
+                        try {
+                            // Use SheetJS SSF utility to format the serial number to 'YYYY-MM-DD'
+                            // This ensures proper date representation in the resulting CSV.
+                            row[dateIndex] = XLSX.SSF.format('yyyy-mm-dd', dateCell);
+                        } catch(e) {
+                            console.error("Error formatting date:", e);
+                            // If formatting fails, leave as is or set to empty string
+                            row[dateIndex] = ''; 
+                        }
+                    }
+                }
+            }
+            return data;
         }
 
         // --- Core Data Processing Logic ---
@@ -202,14 +232,16 @@
                 const d_cell = safeRow[ORIGINAL_D_INDEX] || "";
                 // Handle potential null/undefined by converting to string first
                 const parts = String(d_cell).split('/').map(p => p.trim());
-                const [J, K, I] = [parts[0] || "", parts[1] || "", parts[2] || ""];
+                // Note: The headers are J, Payee, I. The original request said J, K, I. 
+                // Using the most recent headers (J, Payee, I) for parts assignment.
+                const [J, Payee, I] = [parts[0] || "", parts[1] || "", parts[2] || ""];
 
                 // Create the new row structure
                 const rowWithoutD = [...safeRow.slice(0, ORIGINAL_D_INDEX), ...safeRow.slice(ORIGINAL_D_INDEX + 1)];
 
                 let newRow = [
                     ...rowWithoutD.slice(0, 3), // A(0), B(1), Date(2)
-                    J, K, I,                    // J(3), K(4), I(5)
+                    J, Payee, I,                // J(3), Payee(4), I(5)
                     ...rowWithoutD.slice(3)     // E(6), F(7), G(8), ...
                 ];
 
@@ -267,11 +299,14 @@
                     const sheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
 
-                    // Convert sheet data to an array of arrays (header: 1)
+                    // Convert sheet data to an array of arrays (header: 1). Raw values (numbers) are returned.
                     const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+                    // FORMATTING FIX: Convert date serial numbers in column C to date strings
+                    const formattedData = formatExcelDates(rawData);
+
                     // Process the data
-                    const resultData = processExcelData(rawData);
+                    const resultData = processExcelData(formattedData);
 
                     if (resultData.length > 0) {
                         newHeaders = resultData[0];
@@ -300,7 +335,7 @@
         }
 
         /**
-         * Exports the processed data to a new Excel file.
+         * Exports the processed data to a new CSV file.
          */
         function exportProcessedData() {
             if (processedData.length === 0) {
@@ -309,32 +344,32 @@
             }
 
             try {
-    // Combine headers and data rows
-    const exportDataArray = [newHeaders, ...processedData];
+                // Combine headers and data rows
+                const exportDataArray = [newHeaders, ...processedData];
 
-    // Convert array of arrays to a worksheet
-    const ws = XLSX.utils.aoa_to_sheet(exportDataArray);
+                // Convert array of arrays to a worksheet
+                const ws = XLSX.utils.aoa_to_sheet(exportDataArray);
 
-    // Convert worksheet to CSV format
-    const csvData = XLSX.utils.sheet_to_csv(ws);
+                // Convert worksheet to CSV format
+                const csvData = XLSX.utils.sheet_to_csv(ws);
 
-    // Create a Blob with CSV data
-    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+                // Create a Blob with CSV data
+                const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
 
-    // Create a link element to trigger the download
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Processed_Data.csv";
+                // Create a link element to trigger the download
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "Processed_Data.csv";
 
-    // Trigger download
-    link.click();
+                // Trigger download
+                link.click();
 
-    showMessage("Success", "New CSV file has been generated and downloaded!", false);
+                showMessage("Success", "New CSV file has been generated and downloaded!", false);
 
-} catch (error) {
-    console.error("Error during file export:", error);
-    showMessage("Export Error", `Failed to create/download the file: ${error.message}`);
-}
+            } catch (error) {
+                console.error("Error during file export:", error);
+                showMessage("Export Error", `Failed to create/download the file: ${error.message}`);
+            }
         }
 
         // --- Drag and Drop Handlers (Enhanced User Experience) ---
