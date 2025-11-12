@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Data Transformer</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load SheetJS (XLSX) for Excel file handling -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* Custom font for a clean look */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10">
+        <h1 class="text-3xl font-extrabold text-indigo-700 mb-6 border-b pb-2">
+            Excel Data Transformation Tool
+        </h1>
+
+        <!-- File Upload Area -->
+        <div class="flex flex-col sm:flex-row items-center justify-between mb-8 space-y-4 sm:space-y-0 sm:space-x-4">
+            <label for="excel-upload" class="flex-grow w-full cursor-pointer">
+                <div id="drop-area" class="border-2 border-dashed border-indigo-400 p-4 rounded-lg text-center hover:bg-indigo-50 transition duration-150 ease-in-out">
+                    <p id="file-status" class="text-gray-600 font-medium">
+                        Drag & drop an Excel file here, or click to select (.xlsx, .xls)
+                    </p>
+                    <input type="file" id="excel-upload" accept=".xlsx, .xls" class="hidden" onchange="handleFileSelect(event)">
+                </div>
+            </label>
+            <button id="export-btn" onclick="exportProcessedData()"
+                    class="w-full sm:w-auto px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                Export New File
+            </button>
+        </div>
+
+        <!-- Processing Log & Instructions -->
+        <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+            <h2 class="text-lg font-bold text-indigo-700 mb-2">Processing Rules Applied:</h2>
+            <ul class="text-sm text-indigo-800 list-disc pl-5 space-y-1">
+                <li>The first 13 rows of data are removed.</li>
+                <li>Column C is renamed to "Date".</li>
+                <li>Column D is split by `/` into three new columns: J, K, and I.</li>
+                <li>If Column G contains "DR", the value in Column F is multiplied by -1.</li>
+            </ul>
+        </div>
+
+        <!-- Data Preview Container (Optional, but helpful for debugging) -->
+        <div class="mt-8">
+            <h2 class="text-xl font-bold text-gray-700 mb-4">Processed Data Preview (First 5 Rows)</h2>
+            <div id="data-preview" class="overflow-x-auto bg-gray-50 p-3 rounded-lg border">
+                <p class="text-gray-500">Upload a file to see the processed results here.</p>
+            </div>
+        </div>
+
+        <!-- Custom Message Box for Errors -->
+        <div id="message-box" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full">
+                <h3 id="message-title" class="text-xl font-bold text-red-600 mb-4">Error</h3>
+                <p id="message-content" class="text-gray-700 mb-6"></p>
+                <button onclick="closeMessage()" class="w-full py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600">
+                    Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Global variables to store the processed data and headers
+        let processedData = [];
+        let newHeaders = [];
+        const app_id = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // --- Utility Functions ---
+
+        /**
+         * Custom message box (replaces alert())
+         */
+        function showMessage(title, content, isError = true) {
+            const box = document.getElementById('message-box');
+            document.getElementById('message-title').textContent = title;
+            document.getElementById('message-content').textContent = content;
+            document.getElementById('message-title').className = isError ? 'text-xl font-bold text-red-600 mb-4' : 'text-xl font-bold text-green-600 mb-4';
+            box.classList.remove('hidden');
+            box.classList.add('flex');
+        }
+
+        function closeMessage() {
+            document.getElementById('message-box').classList.add('hidden');
+            document.getElementById('message-box').classList.remove('flex');
+        }
+
+        /**
+         * Displays a preview of the processed data in a simple HTML table.
+         * @param {Array<Array<any>>} data - The array of processed data rows (including headers).
+         */
+        function displayPreview(data) {
+            const previewDiv = document.getElementById('data-preview');
+            if (data.length === 0) {
+                previewDiv.innerHTML = '<p class="text-gray-500">No data to preview or data is empty after processing.</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.className = 'min-w-full divide-y divide-gray-200 border border-gray-300 rounded-lg';
+
+            // Extract headers and the first few body rows for preview
+            const headers = data[0] || [];
+            const rows = data.slice(1, 6); // First 5 data rows
+
+            // Create table header
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                th.className = 'px-3 py-2 text-left text-xs font-semibold text-white uppercase tracking-wider bg-indigo-600';
+                headerRow.appendChild(th);
+            });
+
+            // Create table body
+            const tbody = table.createTBody();
+            rows.forEach(rowData => {
+                const tr = tbody.insertRow();
+                rowData.forEach(cellData => {
+                    const td = tr.insertCell();
+                    td.textContent = cellData !== undefined && cellData !== null ? cellData : '';
+                    td.className = 'px-3 py-2 whitespace-nowrap text-sm text-gray-700 border-t border-gray-200';
+                });
+            });
+
+            previewDiv.innerHTML = '';
+            previewDiv.appendChild(table);
+        }
+
+        // --- Core Data Processing Logic ---
+
+        /**
+         * Performs all required data transformations on the sheet data.
+         * @param {Array<Array<any>>} data - The raw data array from the Excel sheet.
+         * @returns {Array<Array<any>>} The processed data array.
+         */
+        function processExcelData(data) {
+            if (!data || data.length === 0) {
+                return [];
+            }
+
+            // 1. Remove the first 13 rows (Data starts at index 13)
+            // We assume the 14th row (index 13) is the new header row.
+            if (data.length <= 14) {
+                 showMessage("Error", "File does not contain enough rows (needs at least 14 rows for processing).");
+                 return [];
+            }
+
+            let currentHeaders = data[13] || [];
+            let body = data.slice(14);
+
+            // Ensure headers and body are populated
+            if (currentHeaders.length === 0 || body.length === 0) {
+                showMessage("Error", "Data is empty after skipping header rows.");
+                return [];
+            }
+
+            // 2. Rename Column C (original index 2) to "Date"
+            if (currentHeaders.length > 2) {
+                currentHeaders[2] = "Date";
+            }
+
+            // --- Header Reconstruction for Column Split ---
+            
+            // D is original index 3. E is 4. F is 5. G is 6.
+            const ORIGINAL_D_INDEX = 3;
+
+            // Check if column D exists
+            if (currentHeaders.length > ORIGINAL_D_INDEX) {
+                // Remove original D header, and insert J, K, I headers
+                newHeaders = [
+                    ...currentHeaders.slice(0, ORIGINAL_D_INDEX), // A, B, Date (0, 1, 2)
+                    "J", "Payee", "I",                               // New Headers (3, 4, 5)
+                    ...currentHeaders.slice(ORIGINAL_D_INDEX + 1) // E, F, G, ... (6, 7, 8, ...)
+                ];
+            } else {
+                newHeaders = currentHeaders; // Cannot split if column D is missing, but continue processing
+            }
+
+            // --- Body Row Transformation ---
+
+            const processedBody = body.map(row => {
+                // Ensure row is an array, fill with empty strings if too short for D
+                const safeRow = [...row];
+                while (safeRow.length <= ORIGINAL_D_INDEX) {
+                    safeRow.push('');
+                }
+
+                // 3. Split column D (original index 3)
+                const d_cell = safeRow[ORIGINAL_D_INDEX] || "";
+                // Handle potential null/undefined by converting to string first
+                const parts = String(d_cell).split('/').map(p => p.trim());
+                const [J, K, I] = [parts[0] || "", parts[1] || "", parts[2] || ""];
+
+                // Create the new row structure
+                const rowWithoutD = [...safeRow.slice(0, ORIGINAL_D_INDEX), ...safeRow.slice(ORIGINAL_D_INDEX + 1)];
+
+                let newRow = [
+                    ...rowWithoutD.slice(0, 3), // A(0), B(1), Date(2)
+                    J, K, I,                    // J(3), K(4), I(5)
+                    ...rowWithoutD.slice(3)     // E(6), F(7), G(8), ...
+                ];
+
+                // 4. Conditional calculation
+                // Original F (Value) is now index 7.
+                // Original G (DR/CR) is now index 8.
+
+                const NEW_F_INDEX = 7;
+                const NEW_G_INDEX = 8;
+                
+                // Ensure the necessary columns exist after restructuring
+                if (newRow.length > NEW_G_INDEX) {
+                    const g_cell = String(newRow[NEW_G_INDEX]).toUpperCase().trim();
+
+                    if (g_cell === "DR") {
+                        let valueF = parseFloat(newRow[NEW_F_INDEX]);
+                        // Only apply the multiplication if the cell contains a valid number
+                        if (!isNaN(valueF)) {
+                            newRow[NEW_F_INDEX] = valueF * -1;
+                        }
+                    }
+                } else {
+                    console.warn("Skipping conditional check: Row is too short after restructuring.");
+                }
+
+                return newRow;
+            });
+
+            // Combine the new headers with the processed body data
+            return [newHeaders, ...processedBody];
+        }
+
+        // --- Event Handlers ---
+
+        /**
+         * Main function to handle file input.
+         * @param {Event} event - The file change event.
+         */
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                document.getElementById('file-status').textContent = 'No file selected.';
+                document.getElementById('export-btn').disabled = true;
+                return;
+            }
+
+            document.getElementById('file-status').textContent = `Processing file: ${file.name}...`;
+            document.getElementById('export-btn').disabled = true;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = e.target.result;
+                    const workbook = XLSX.read(data, { type: 'binary' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+
+                    // Convert sheet data to an array of arrays (header: 1)
+                    const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    // Process the data
+                    const resultData = processExcelData(rawData);
+
+                    if (resultData.length > 0) {
+                        newHeaders = resultData[0];
+                        processedData = resultData.slice(1);
+
+                        // Show preview and enable export
+                        displayPreview(resultData);
+                        document.getElementById('file-status').textContent = `File loaded and successfully processed: ${file.name}`;
+                        document.getElementById('export-btn').disabled = false;
+                        showMessage("Success", "File processed successfully! Data is ready for export.", false);
+                    } else {
+                         // Processing failed (error message handled by processExcelData)
+                         processedData = [];
+                         newHeaders = [];
+                         document.getElementById('file-status').textContent = 'Processing failed. Check error log.';
+                         displayPreview([]);
+                    }
+
+                } catch (error) {
+                    console.error("Error reading or processing file:", error);
+                    document.getElementById('file-status').textContent = 'An error occurred during file processing.';
+                    showMessage("Processing Error", `An error occurred: ${error.message}`);
+                }
+            };
+            reader.readAsBinaryString(file);
+        }
+
+        /**
+         * Exports the processed data to a new Excel file.
+         */
+        function exportProcessedData() {
+            if (processedData.length === 0) {
+                showMessage("Export Error", "No processed data available to export.");
+                return;
+            }
+
+            try {
+    // Combine headers and data rows
+    const exportDataArray = [newHeaders, ...processedData];
+
+    // Convert array of arrays to a worksheet
+    const ws = XLSX.utils.aoa_to_sheet(exportDataArray);
+
+    // Convert worksheet to CSV format
+    const csvData = XLSX.utils.sheet_to_csv(ws);
+
+    // Create a Blob with CSV data
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+
+    // Create a link element to trigger the download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Processed_Data.csv";
+
+    // Trigger download
+    link.click();
+
+    showMessage("Success", "New CSV file has been generated and downloaded!", false);
+
+} catch (error) {
+    console.error("Error during file export:", error);
+    showMessage("Export Error", `Failed to create/download the file: ${error.message}`);
+}
+        }
+
+        // --- Drag and Drop Handlers (Enhanced User Experience) ---
+
+        const dropArea = document.getElementById('drop-area');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false); // Prevent file open on drag drop anywhere
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('bg-indigo-200'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('bg-indigo-200'), false);
+        });
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            // Assign the dropped file to the hidden input and trigger the change event
+            document.getElementById('excel-upload').files = files;
+            const event = new Event('change');
+            document.getElementById('excel-upload').dispatchEvent(event);
+        }
+
+        // Initialize drag and drop styling
+        window.onload = () => {
+             console.log("App ID:", app_id);
+             console.log("Firestore/Auth variables are available for use if needed for persistence, but not used in this single-file utility app.");
+        }
+
+    </script>
+</body>
+</html>
