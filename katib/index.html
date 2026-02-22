@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Replacer</title>
+    <title>Katib AI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,8 +34,11 @@
     </style>
 </head>
 <body>
-
-    <h2>Word Replacer</h2>
+<center>
+    <h1 style="color: rgb(1, 108, 92);">✒️Katib AI</h1>
+    <h5>A.I. - Advanced Imla</h5>
+</center>
+    
 
     <textarea id="input-box" placeholder="Type something..."></textarea>
     <textarea dir="rtl" id="output-box" readonly style="font-family: Kanz-al-Marjaan;" placeholder="Replaced text will appear here..."></textarea>
@@ -43,7 +46,7 @@
     <button id="copy-button">Copy Text</button>
     <script type="module">
         // Define the dictionary of words to replace
-        import {WORDS} from './katib/translations.js';
+        import {WORDS} from './translations.js';
 
         // Function to replace words in the text
         function replaceWords(text) {
