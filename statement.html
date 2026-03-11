@@ -212,7 +212,7 @@
                 // Remove original D header, and insert J, K, I headers
                 newHeaders = [
                     ...currentHeaders.slice(0, ORIGINAL_D_INDEX), // A, B, Date (0, 1, 2)
-                    "J", "Payee", "I",                               // New Headers (3, 4, 5)
+                    "J", "Payee", "I","Memo",                               // New Headers (3, 4, 5)
                     ...currentHeaders.slice(ORIGINAL_D_INDEX + 1) // E, F, G, ... (6, 7, 8, ...)
                 ];
             } else {
